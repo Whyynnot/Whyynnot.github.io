@@ -27,10 +27,10 @@
 <meta property="og:site_name" content="Whyynnot">
 <meta property="og:description" content="EM算法  最大期望演算法（Expectation-maximization algorithm，又譯期望最大化算法）在统计中被用于寻找，依赖于不可观察的隐性变量的概率模型中，参数的最大似然估计。本文将从EM算法的背景、原理和应用三个层面对该算法进行细致的讲解。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/.com//01/15/EM/BL.png">
+<meta property="og:image" content="http://example.com/2023/01/15/EM/01/15/EM/BL.png">
 <meta property="og:image" content="https://picx.zhimg.com/50/v2-a38b6748f36f0cb9bcd43b5ca435e5c6_720w.jpg?source=1940ef5c">
-<meta property="og:image" content="http://example.com/.com//image-20230115193948771.png">
-<meta property="og:image" content="http://example.com/.com//image-20220913224805897.png">
+<meta property="og:image" content="http://example.com/2023/01/15/EM/image-20230115193948771.png">
+<meta property="og:image" content="http://example.com/2023/01/15/EM/image-20220913224805897.png">
 <meta property="og:image" content="https://pic2.zhimg.com/50/v2-1c1d5d2b658b4e9580a051f955df7b48_720w.jpg?source=1940ef5c">
 <meta property="og:image" content="https://images2015.cnblogs.com/blog/797505/201604/797505-20160401131828238-1041936013.png">
 <meta property="og:image" content="https://images2015.cnblogs.com/blog/797505/201604/797505-20160401131856191-574167681.png">
@@ -43,11 +43,11 @@
 <meta property="og:image" content="https://pic3.zhimg.com/50/v2-227eccdac2131d6e0538d83515444624_720w.jpg?source=1940ef5c">
 <meta property="og:image" content="https://pic1.zhimg.com/50/v2-2004ef50d0796d32e6cd61ac7a6cdf2d_720w.jpg?source=1940ef5c">
 <meta property="article:published_time" content="2023-01-15T10:52:21.000Z">
-<meta property="article:modified_time" content="2023-01-15T11:41:28.588Z">
+<meta property="article:modified_time" content="2023-01-15T11:57:36.565Z">
 <meta property="article:author" content="Haoran Li">
 <meta property="article:tag" content="EM算法">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/.com//01/15/EM/BL.png">
+<meta name="twitter:image" content="http://example.com/2023/01/15/EM/01/15/EM/BL.png">
 
 <link rel="canonical" href="http://example.com/2023/01/15/EM/">
 
@@ -219,7 +219,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2023-01-15 18:52:21 / 修改时间：19:41:28" itemprop="dateCreated datePublished" datetime="2023-01-15T18:52:21+08:00">2023-01-15</time>
+              <time title="创建时间：2023-01-15 18:52:21 / 修改时间：19:57:36" itemprop="dateCreated datePublished" datetime="2023-01-15T18:52:21+08:00">2023-01-15</time>
             </span>
 
           
@@ -384,7 +384,7 @@ P(Y|\theta^{i})}\end{aligned}\)</span>
 我们根据定义，可以得知如下两个结论： (1)<span class="math inline">\(B(\theta_i,\theta_i) = L(\theta_i)\)</span>
 (2)<span class="math inline">\(L(\theta) \geq
 B(\theta,\theta_i)\)</span> 更形象地看，两者的关系可以用下图表示：
-<img src="/.com//01/15/EM/BL.png" class title="图片引用方法一">
+<img src="/2023/01/15/EM/01/15/EM/BL.png" class title="图片引用方法一">
 其中，对于每次迭代的增值。B函数的增值幅度永远不超过对数似然函数的增值幅度。因此，我们只需要保证迭代每次都可以增加B函数，即可达到通过迭代逐步增加对数似然函数的目的。
 因此，第i+1轮的<span class="math inline">\(\theta\)</span>的估计值可以表示为： <span class="math inline">\(\begin{aligned}\theta_{i+1} &amp;= argmax_{\theta}
 B(\theta,\theta_i) \\ &amp;= argmax_\theta (L(\theta_i) + \sum_{Z}
@@ -441,13 +441,13 @@ F( \widetilde{P},\theta) = E_{ \widetilde{P}}[\log P(Y,Z|\theta)] + H(
 </figure></li>
 <li><p>如下图所示，每次都构造一个下限（绿色），然后通过下限的不断提升，保证似然函数的不断提升</p>
 <figure>
-<img src="/.com//image-20230115193948771.png" alt="image-20230115193948771">
+<img src="/2023/01/15/EM/image-20230115193948771.png" alt="image-20230115193948771">
 <figcaption aria-hidden="true">image-20230115193948771</figcaption>
 </figure></li>
 </ul>
 <h3 id="k-means是一种hard-em算法">K-means是一种Hard EM算法</h3>
 <figure>
-<img src="/.com//image-20220913224805897.png" alt="image-20220913224805897">
+<img src="/2023/01/15/EM/image-20220913224805897.png" alt="image-20220913224805897">
 <figcaption aria-hidden="true">image-20220913224805897</figcaption>
 </figure>
 <ul>

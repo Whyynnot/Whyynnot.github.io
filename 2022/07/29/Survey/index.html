@@ -27,17 +27,17 @@
 <meta property="og:site_name" content="Whyynnot">
 <meta property="og:description" content="A Survey  目前的seq2seq类的模型在NLP领域大行其道。但是，它将各种复合句都编码为一个向量来处理。这样会出现组合爆炸问题，即简单句的组合会导致数据量剧增。因此，分析句子的结构，对复合句进行拆分，并将句子的结构知识运用到模型中，有望解决数据获取难等问题。针对该直觉，我进行了相关工作的调研，现将一些调研结果总结如下。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/.com//07/29/Survey/img-20220730153106.png">
-<meta property="og:image" content="http://example.com/.com//07/29/Survey/img-20220730153231.png">
-<meta property="og:image" content="http://example.com/.com//07/29/Survey/img-20220730151705.png">
-<meta property="og:image" content="http://example.com/.com//07/29/Survey/img-20220730153205.png">
-<meta property="og:image" content="http://example.com/.com//07/29/Survey/img-20220730151835.png">
-<meta property="og:image" content="http://example.com/.com//07/29/Survey/img-20220730152243.png">
+<meta property="og:image" content="http://example.com/2022/07/29/Survey/07/29/Survey/img-20220730153106.png">
+<meta property="og:image" content="http://example.com/2022/07/29/Survey/07/29/Survey/img-20220730153231.png">
+<meta property="og:image" content="http://example.com/2022/07/29/Survey/07/29/Survey/img-20220730151705.png">
+<meta property="og:image" content="http://example.com/2022/07/29/Survey/07/29/Survey/img-20220730153205.png">
+<meta property="og:image" content="http://example.com/2022/07/29/Survey/07/29/Survey/img-20220730151835.png">
+<meta property="og:image" content="http://example.com/2022/07/29/Survey/07/29/Survey/img-20220730152243.png">
 <meta property="article:published_time" content="2022-07-29T12:18:43.000Z">
 <meta property="article:modified_time" content="2023-01-15T10:39:33.293Z">
 <meta property="article:author" content="Haoran Li">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/.com//07/29/Survey/img-20220730153106.png">
+<meta name="twitter:image" content="http://example.com/2022/07/29/Survey/07/29/Survey/img-20220730153106.png">
 
 <link rel="canonical" href="http://example.com/2022/07/29/Survey/">
 
@@ -263,7 +263,7 @@ Training
 <ul>
 <li>训练过程中对事实的遗失：Fact-aware Sentence Encoding</li>
 <li>简单句的顺序的影响：PIT(Permutation Invariant Training)</li>
-<li><img src="/.com//07/29/Survey/img-20220730153106.png" class title="图片引用方法一"></li>
+<li><img src="/2022/07/29/Survey/07/29/Survey/img-20220730153106.png" class title="图片引用方法一"></li>
 </ul></li>
 </ul>
 <h2 id="语义解析semantic-parsing">语义解析:Semantic Parsing</h2>
@@ -271,14 +271,14 @@ Training
 <li>Iterative Utterance Segmentation for Neural Semantic Parsing
 <ul>
 <li>神经语义解析器通常无法将长时间和复杂的话语解析为正确的含义表示，因为缺乏利用组成的原则。为了解决这个问题，我们提出了一个新颖的框架，用于通过迭代话语细分来促进神经语义解析器。给定输入话语，我们的框架在两个神经模块之间迭代：用于从说话分割跨度的细分器，以及将跨度映射到部分含义表示的解析器。然后，这些中间解析结果被组成到最终含义表示形式中。一个关键优势是，该框架不需要任何手工艺模板或其他标记的数据进行分割：我们通过提出一种新颖的培训方法来实现这一目标，在这种方法中，解析器为细分器提供伪监督</li>
-<li><img src="/.com//07/29/Survey/img-20220730153231.png" class title="图片引用方法一"></li>
+<li><img src="/2022/07/29/Survey/07/29/Survey/img-20220730153231.png" class title="图片引用方法一"></li>
 </ul></li>
 <li>SEQZERO: Few-shot Compositional Semantic Parsing with Sequential
 Prompts and Zero-shot Models
 <ul>
 <li>Seqzero将问题分解为一系列子问题，这些序列与形式语言的子语言相对应。基于分解，LMS只需要使用预测子段的提示来生成简短的答案。因此，seqzero避免了一次产生长长的规范话语。此外，Seqzero不仅采用了几个射击模型，而且还采用了零拍模型来减轻过度拟合。特别是，Seqzero通过配备了我们建议的约束重新制定的合奏来阐明两种模型的优点。
 Seqzero在GeoQuery和EcommerceQuery上实现了基于BART的模型的SOTA性能，它们是两个具有组成数据分配的少量数据集。</li>
-<li>SQL拆分示例<img src="/.com//07/29/Survey/img-20220730151705.png" class title="图片引用方法一"></li>
+<li>SQL拆分示例<img src="/2022/07/29/Survey/07/29/Survey/img-20220730151705.png" class title="图片引用方法一"></li>
 </ul></li>
 </ul>
 <h2 id="组合泛化compositional-generalization">组合泛化：Compositional
@@ -290,12 +290,12 @@ Language
 <li>我们将人类语言理解形式化为结构化的预测任务，其中输出为部分有序集（POSET）。当前的编码器架构不能正确考虑语义的POSET结构，因此遭受了不良的组成概括能力。在本文中，我们提出了一种新型的层次poset解码范式，用于语言中的组成概括。直觉：（1）拟议的范式在语义中执行部分置换不变性，从而避免过拟合bias
 ordering信息；
 （2）分层机制允许捕获POSET的高级结构。我们评估了建议的decoder关于CFQ的表现。这是一个庞大而现实的自然语言问题，回答数据集，专门设计用于衡量组成概括。结果表明，它的表现优于当前解码器。</li>
-<li><img src="/.com//07/29/Survey/img-20220730153205.png" class title="图片引用方法一"></li>
+<li><img src="/2022/07/29/Survey/07/29/Survey/img-20220730153205.png" class title="图片引用方法一"></li>
 </ul></li>
 <li>SUBS: Subtree Substitution for Compositional Semantic Parsing
 <ul>
 <li>将子树替换用于组成数据增强，在此我们认为具有类似语义函数的子树是可交换的。</li>
-<li>子树替换示例：<img src="/.com//07/29/Survey/img-20220730151835.png" class title="图片引用方法一"></li>
+<li>子树替换示例：<img src="/2022/07/29/Survey/07/29/Survey/img-20220730151835.png" class title="图片引用方法一"></li>
 </ul></li>
 <li>Unlocking Compositional Generalization in Pre-trained Models Using
 Intermediate Representations
@@ -322,7 +322,7 @@ Compliance Checking）</h2>
 <ul>
 <li>自动化合规检查（ACC）系统旨在将语义解析为一组规则。但是，已知语义解析很难，需要大量的培训数据。创建此类培训数据的复杂性导致了研究的研究，该研究重点是小型子任务，例如浅解析或提取有限的规则子集。这项研究介绍了一项浅解析任务，培训数据相对便宜，目的是学习ACC的词典。我们注释了200个句子Spar.txt1的小域特异性数据集，并训练一个序列标记器，该序列标记器在测试集上达到79,93
 F1分数。</li>
-<li><img src="/.com//07/29/Survey/img-20220730152243.png" class title="图片引用方法一"></li>
+<li><img src="/2022/07/29/Survey/07/29/Survey/img-20220730152243.png" class title="图片引用方法一"></li>
 </ul></li>
 </ul>
 
