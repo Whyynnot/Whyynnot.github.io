@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="A Survey 目前的seq2seq类的模型在NLP领域大行其道。但是，它将各种复合句都编码为一个向量来处理。这样会出现组合爆炸问题，即简单句的组合会导致数据量剧增。因此，分析句子的结构，对复合句进行拆分，并将句子的结构知识运用到模型中，有望解决数据获取难等问题。针对该直觉，我进行了相关工作的调研，现将一些调研结果总结如下。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Survey">
+<meta property="og:url" content="http://example.com/2022/07/29/Survey/index.html">
+<meta property="og:site_name" content="Whyynnot">
+<meta property="og:description" content="A Survey 目前的seq2seq类的模型在NLP领域大行其道。但是，它将各种复合句都编码为一个向量来处理。这样会出现组合爆炸问题，即简单句的组合会导致数据量剧增。因此，分析句子的结构，对复合句进行拆分，并将句子的结构知识运用到模型中，有望解决数据获取难等问题。针对该直觉，我进行了相关工作的调研，现将一些调研结果总结如下。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/.com//07/29/Survey/img-20220730153106.png">
+<meta property="og:image" content="http://example.com/.com//07/29/Survey/img-20220730153231.png">
+<meta property="og:image" content="http://example.com/.com//07/29/Survey/img-20220730151705.png">
+<meta property="og:image" content="http://example.com/.com//07/29/Survey/img-20220730153205.png">
+<meta property="og:image" content="http://example.com/.com//07/29/Survey/img-20220730151835.png">
+<meta property="og:image" content="http://example.com/.com//07/29/Survey/img-20220730152243.png">
+<meta property="article:published_time" content="2022-07-29T12:18:43.000Z">
+<meta property="article:modified_time" content="2022-07-30T14:19:24.390Z">
+<meta property="article:author" content="Haoran Li">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/.com//07/29/Survey/img-20220730153106.png">
+
+<link rel="canonical" href="http://example.com/2022/07/29/Survey/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Survey | Whyynnot</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Whyynnot</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/07/29/Survey/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Haoran Li">
+      <meta itemprop="description" content="Blog of Whyynnot">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Whyynnot">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Survey
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-07-29 20:18:43" itemprop="dateCreated datePublished" datetime="2022-07-29T20:18:43+08:00">2022-07-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-07-30 22:19:24" itemprop="dateModified" datetime="2022-07-30T22:19:24+08:00">2022-07-30</time>
+              </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2022/07/29/Survey/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/07/29/Survey/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="A-Survey"><a href="#A-Survey" class="headerlink" title="A Survey"></a>A Survey</h1><blockquote>
+<p>目前的seq2seq类的模型在NLP领域大行其道。但是，它将各种复合句都编码为一个向量来处理。这样会出现组合爆炸问题，即简单句的组合会导致数据量剧增。因此，分析句子的结构，对复合句进行拆分，并将句子的结构知识运用到模型中，有望解决数据获取难等问题。针对该直觉，我进行了相关工作的调研，现将一些调研结果总结如下。<br><span id="more"></span></p>
+</blockquote>
+<h2 id="句子的拆分和改写：Sentence-Split-and-Rephrase"><a href="#句子的拆分和改写：Sentence-Split-and-Rephrase" class="headerlink" title="句子的拆分和改写：Sentence Split and Rephrase"></a>句子的拆分和改写：Sentence Split and Rephrase</h2><ul>
+<li>Fact-Aware Sentence Split and Rephrase with Permutation Invariant Training<ul>
+<li>训练过程中对事实的遗失：Fact-aware Sentence Encoding</li>
+<li>简单句的顺序的影响：PIT(Permutation Invariant Training)</li>
+<li><img src="/.com//07/29/Survey/img-20220730153106.png" class title="图片引用方法一">
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="语义解析-Semantic-Parsing"><a href="#语义解析-Semantic-Parsing" class="headerlink" title="语义解析:Semantic Parsing"></a>语义解析:Semantic Parsing</h2><ul>
+<li><p>Iterative Utterance Segmentation for Neural Semantic Parsing</p>
+<ul>
+<li>神经语义解析器通常无法将长时间和复杂的话语解析为正确的含义表示，因为缺乏利用组成的原则。为了解决这个问题，我们提出了一个新颖的框架，用于通过迭代话语细分来促进神经语义解析器。给定输入话语，我们的框架在两个神经模块之间迭代：用于从说话分割跨度的细分器，以及将跨度映射到部分含义表示的解析器。然后，这些中间解析结果被组成到最终含义表示形式中。一个关键优势是，该框架不需要任何手工艺模板或其他标记的数据进行分割：我们通过提出一种新颖的培训方法来实现这一目标，在这种方法中，解析器为细分器提供伪监督</li>
+<li><img src="/.com//07/29/Survey/img-20220730153231.png" class title="图片引用方法一">
+</li>
+</ul>
+</li>
+<li><p>SEQZERO: Few-shot Compositional Semantic Parsing with Sequential Prompts and Zero-shot Models</p>
+<ul>
+<li>Seqzero将问题分解为一系列子问题，这些序列与形式语言的子语言相对应。基于分解，LMS只需要使用预测子段的提示来生成简短的答案。因此，seqzero避免了一次产生长长的规范话语。此外，Seqzero不仅采用了几个射击模型，而且还采用了零拍模型来减轻过度拟合。特别是，Seqzero通过配备了我们建议的约束重新制定的合奏来阐明两种模型的优点。 Seqzero在GeoQuery和EcommerceQuery上实现了基于BART的模型的SOTA性能，它们是两个具有组成数据分配的少量数据集。</li>
+<li>SQL拆分示例<img src="/.com//07/29/Survey/img-20220730151705.png" class title="图片引用方法一"></li>
+</ul>
+</li>
+</ul>
+<h2 id="组合泛化：Compositional-Generalization"><a href="#组合泛化：Compositional-Generalization" class="headerlink" title="组合泛化：Compositional Generalization"></a>组合泛化：Compositional Generalization</h2><ul>
+<li>Hierarchical Poset Decoding for Compositional Generalization in Language<ul>
+<li>我们将人类语言理解形式化为结构化的预测任务，其中输出为部分有序集（POSET）。当前的编码器架构不能正确考虑语义的POSET结构，因此遭受了不良的组成概括能力。在本文中，我们提出了一种新型的层次poset解码范式，用于语言中的组成概括。直觉：（1）拟议的范式在语义中执行部分置换不变性，从而避免过拟合bias ordering信息； （2）分层机制允许捕获POSET的高级结构。我们评估了建议的decoder关于CFQ的表现。这是一个庞大而现实的自然语言问题，回答数据集，专门设计用于衡量组成概括。结果表明，它的表现优于当前解码器。</li>
+<li><img src="/.com//07/29/Survey/img-20220730153205.png" class title="图片引用方法一">
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p>SUBS: Subtree Substitution for Compositional Semantic Parsing</p>
+<ul>
+<li>将子树替换用于组成数据增强，在此我们认为具有类似语义函数的子树是可交换的。</li>
+<li>子树替换示例：<img src="/.com//07/29/Survey/img-20220730151835.png" class title="图片引用方法一"></li>
+</ul>
+</li>
+<li><p>Unlocking Compositional Generalization in Pre-trained Models Using Intermediate Representations</p>
+<ul>
+<li>序列到序列（SEQ2SEQ）模型在语义解析中很普遍，但已被发现在分布外的组成概括方面挣扎。尽管已经提出了专门的模型体系结构和SEQ2SEQ模型的预培训来解决此问题，但前者通常以一般性为代价，而后者仅显示有限的成功。在本文中，我们研究了中间表示对预训练的SEQ2SEQ模型中组成概括的影响，而无需更改模型体系结构，并确定设计有效表示的关键方面。我们没有将自然语言直接映射到可执行形式的训练，而是将其映射到具有更强的与自然语言的结构对应的可逆或有损中间表示形式。我们提出的中间表示和预培训模型的组合非常有效，最佳组合获得了CFQ上的最新最新作品（+14.8精度点）以及三个文本到 - 到 - SQL数据集（+15.0至+19.4精度点）。这项工作强调了中间表示提供了一种重要且可能被忽视的自由度，以提高预训练的SEQ2SEQ模型的组成概括能力。</li>
+</ul>
+</li>
+</ul>
+<h2 id="语义角色标注：Semantic-role-labeling"><a href="#语义角色标注：Semantic-role-labeling" class="headerlink" title="语义角色标注：Semantic role labeling"></a>语义角色标注：Semantic role labeling</h2><ul>
+<li>Syntax-aware Neural Semantic Role Labeling∗<ul>
+<li>传统的基于离散功能的SRL方法是由句法和语义结构之间的紧密相关性的激励，从而大大利用了句法特征。相反，基于深神经网络的方法通常将输入句子编码为单词序列，而无需考虑句法结构。在这项工作中，我们研究了以前的几种编码句法树的方法，并对额外的语法感知表示是否对神经SRL模型有益。基准CONLL-2005数据集的实验表明，语法感知的SRL方法可以通过Elmo的外部单词表示有效地改善强大基线的性能。借助额外的语法意识表示，我们的方法在测试数据上实现了新的最新的85.6 F1（单个模型）和86.6 F1（集合），分别优于0.8和1.0的Elmo的相应强基础。进行了详细的错误分析，以获得有关研究方法的更多见解。</li>
+</ul>
+</li>
+</ul>
+<h2 id="自动化合规检查：ACC（Automated-Compliance-Checking）"><a href="#自动化合规检查：ACC（Automated-Compliance-Checking）" class="headerlink" title="自动化合规检查：ACC（Automated Compliance Checking）"></a>自动化合规检查：ACC（Automated Compliance Checking）</h2><ul>
+<li>SPAR.txt, a cheap Shallow Parsing approach for Regulatory texts<ul>
+<li>自动化合规检查（ACC）系统旨在将语义解析为一组规则。但是，已知语义解析很难，需要大量的培训数据。创建此类培训数据的复杂性导致了研究的研究，该研究重点是小型子任务，例如浅解析或提取有限的规则子集。这项研究介绍了一项浅解析任务，培训数据相对便宜，目的是学习ACC的词典。我们注释了200个句子Spar.txt1的小域特异性数据集，并训练一个序列标记器，该序列标记器在测试集上达到79,93 F1分数。</li>
+<li><img src="/.com//07/29/Survey/img-20220730152243.png" class title="图片引用方法一">
+</li>
+</ul>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2022/09/14/HMM/" rel="next" title="">
+       <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#A-Survey"><span class="nav-number">1.</span> <span class="nav-text">A Survey</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%A5%E5%AD%90%E7%9A%84%E6%8B%86%E5%88%86%E5%92%8C%E6%94%B9%E5%86%99%EF%BC%9ASentence-Split-and-Rephrase"><span class="nav-number">1.1.</span> <span class="nav-text">句子的拆分和改写：Sentence Split and Rephrase</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%AD%E4%B9%89%E8%A7%A3%E6%9E%90-Semantic-Parsing"><span class="nav-number">1.2.</span> <span class="nav-text">语义解析:Semantic Parsing</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%84%E5%90%88%E6%B3%9B%E5%8C%96%EF%BC%9ACompositional-Generalization"><span class="nav-number">1.3.</span> <span class="nav-text">组合泛化：Compositional Generalization</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%AD%E4%B9%89%E8%A7%92%E8%89%B2%E6%A0%87%E6%B3%A8%EF%BC%9ASemantic-role-labeling"><span class="nav-number">1.4.</span> <span class="nav-text">语义角色标注：Semantic role labeling</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%8A%A8%E5%8C%96%E5%90%88%E8%A7%84%E6%A3%80%E6%9F%A5%EF%BC%9AACC%EF%BC%88Automated-Compliance-Checking%EF%BC%89"><span class="nav-number">1.5.</span> <span class="nav-text">自动化合规检查：ACC（Automated Compliance Checking）</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Haoran Li</p>
+  <div class="site-description" itemprop="description">Blog of Whyynnot</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Haoran Li</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'c2AnFNAFnFrReTpruCM2RWMV-gzGzoHsz',
+      appKey     : 'rMWSQ6KHYU6DHK01uJS0Mvmg',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
