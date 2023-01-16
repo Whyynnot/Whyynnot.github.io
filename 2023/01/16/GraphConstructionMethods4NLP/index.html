@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="GNN in NLP 2  GNN in NLP介绍的第二部分，延续上一部分内容。继续介绍三个子部分内容：  Graph Construction Methods Graph Representation Learning Graph Based Encoder-Decoder Model">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GraphConstructionMethods4NLP">
+<meta property="og:url" content="http://example.com/2023/01/16/GraphConstructionMethods4NLP/index.html">
+<meta property="og:site_name" content="Whyynnot">
+<meta property="og:description" content="GNN in NLP 2  GNN in NLP介绍的第二部分，延续上一部分内容。继续介绍三个子部分内容：  Graph Construction Methods Graph Representation Learning Graph Based Encoder-Decoder Model">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2023/01/16/GraphConstructionMethods4NLP/image-20221013115352600.png">
+<meta property="og:image" content="http://example.com/2023/01/16/GraphConstructionMethods4NLP/image-20221013115412629.png">
+<meta property="og:image" content="http://example.com/2023/01/16/GraphConstructionMethods4NLP/image-20221013120751635.png">
+<meta property="og:image" content="http://example.com/2023/01/16/GraphConstructionMethods4NLP/image-20221013151356999.png">
+<meta property="og:image" content="http://example.com/2023/01/16/GraphConstructionMethods4NLP/image-20221013165928021.png">
+<meta property="og:image" content="http://example.com/2023/01/16/GraphConstructionMethods4NLP/image-20221013174523073.png">
+<meta property="og:image" content="http://example.com/2023/01/16/GraphConstructionMethods4NLP/image-20221013235057395.png">
+<meta property="og:image" content="http://example.com/2023/01/16/GraphConstructionMethods4NLP/image-20221014000501523.png">
+<meta property="og:image" content="http://example.com/2023/01/16/GraphConstructionMethods4NLP/image-20221014000533458.png">
+<meta property="og:image" content="http://example.com/2023/01/16/GraphConstructionMethods4NLP/image-20221015000556815.png">
+<meta property="og:image" content="http://example.com/2023/01/16/GraphConstructionMethods4NLP/image-20221016223847470.png">
+<meta property="article:published_time" content="2023-01-16T04:48:08.000Z">
+<meta property="article:modified_time" content="2023-01-16T04:52:47.837Z">
+<meta property="article:author" content="Haoran Li">
+<meta property="article:tag" content="EM算法">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2023/01/16/GraphConstructionMethods4NLP/image-20221013115352600.png">
+
+<link rel="canonical" href="http://example.com/2023/01/16/GraphConstructionMethods4NLP/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>GraphConstructionMethods4NLP | Whyynnot</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Whyynnot</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/01/16/GraphConstructionMethods4NLP/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Haoran Li">
+      <meta itemprop="description" content="Blog of Whyynnot">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Whyynnot">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          GraphConstructionMethods4NLP
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-01-16 12:48:08 / 修改时间：12:52:47" itemprop="dateCreated datePublished" datetime="2023-01-16T12:48:08+08:00">2023-01-16</time>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2023/01/16/GraphConstructionMethods4NLP/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2023/01/16/GraphConstructionMethods4NLP/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="gnn-in-nlp-2">GNN in NLP 2</h1>
+<blockquote>
+<p>GNN in
+NLP介绍的第二部分，延续上一部分内容。继续介绍三个子部分内容：</p>
+<ul>
+<li>Graph Construction Methods</li>
+<li>Graph Representation Learning</li>
+<li>Graph Based Encoder-Decoder Model</li>
+</ul>
+<span id="more"></span>
+</blockquote>
+<h2 id="graph-construction-methods-for-natural-language-processing">Graph
+Construction Methods for Natural Language Processing</h2>
+<p>对绝大多数的NLP任务，典型的输入是一个文本序列，而不是图。因此，为了利用
+GNN 的强大功能，如何从文本序列构建图形输入成为一个艰巨的步骤。</p>
+<h3 id="static-graph-construction">Static Graph Construction</h3>
+<p>静态图构建方法旨在通过利用现有的<strong>关系解析工具</strong>（例如，依赖解析）或手动定义的<strong>规则</strong>在预处理期间构建图结构。从概念上讲，静态图结合了隐藏在原始文本序列中的不同<strong>领域知识/外部知识</strong>，从而为原始文本增加了丰富的<strong>结构化信息</strong>。</p>
+<p>我们假设输入是一个文档<span class="math inline">\(doc =
+\{para_1,para_2,...,para_n\}\)</span>，它由n个表示为para的段落组成。类似的，一个段落由m个句子组成<span class="math inline">\(para_i =
+\{sent_1,sent_2,...,sent_m\}\)</span>每个句子由l个单词组成<span class="math inline">\(sent_i = \{w_1,w_2,...,w_l\}\)</span></p>
+<p><strong>STATIC GRAPH CONSTRUCTION APPROACHES</strong></p>
+<ul>
+<li><p>Dependency Graph Construction</p>
+<figure>
+<img src="/2023/01/16/GraphConstructionMethods4NLP/image-20221013115352600.png" alt="image-20221013115352600">
+<figcaption aria-hidden="true">image-20221013115352600</figcaption>
+</figure>
+<p>省流：</p>
+<ul>
+<li>节点：单词</li>
+<li>边：
+<ul>
+<li>依赖关系的边</li>
+<li>词在初始输入中的顺序的边（相邻则添加无向边）</li>
+</ul></li>
+</ul></li>
+<li><p>Constituency Graph Construction</p>
+<figure>
+<img src="/2023/01/16/GraphConstructionMethods4NLP/image-20221013115412629.png" alt="image-20221013115412629">
+<figcaption aria-hidden="true">image-20221013115412629</figcaption>
+</figure>
+<p>省流：</p>
+<ul>
+<li>节点：
+<ul>
+<li>非终结节点<span class="math inline">\(V_{nt}\)</span></li>
+<li>终结节点<span class="math inline">\(V_{words}\)</span></li>
+</ul></li>
+<li>边：<span class="math inline">\(\textbf{R}_{cons} \subseteq
+\textbf{V}_{nt} \times (\textbf{V}_{nt}+\textbf{V}_{words})\)</span>
+<ul>
+<li>选取关系的边，有向边从非终结节点指向终结节点，可以一对多（短语级别的关系）</li>
+<li>初始输入顺序的边仍然添加在相邻单词之间的无向边</li>
+</ul></li>
+</ul></li>
+<li><p>AMR Graph Construction</p>
+<figure>
+<img src="/2023/01/16/GraphConstructionMethods4NLP/image-20221013120751635.png" alt="image-20221013120751635">
+<figcaption aria-hidden="true">image-20221013120751635</figcaption>
+</figure>
+<blockquote>
+<p>这是一个AMR图的示例，原始的句子是："Pual’s description of himself: a
+fighter"。</p>
+</blockquote>
+<p>AMR图是<strong>有根、有标签、有向、无环图</strong>，广泛用于表示非结构化和具体自然文本的抽象概念之间的高级<strong>语义关系</strong>。</p>
+<p>AMR图表示的是句子的高级语义抽象。语义相似的不同句子可能会共享同样的AMR图。</p>
+<p>省流：AMR 图 G(V, E) 是有根的、标记的、有向的、无环图
+(DAG)，由下面讨论的 AMR 节点和 AMR 关系组成。</p>
+<ul>
+<li>节点：
+<ul>
+<li><strong>名称（name）</strong>（例如“Paul”）是节点实例的特定值</li>
+<li><strong>概念（concept）</strong>可以是英文单词（例如“boy”）、PropBank
+框架集（Kingsbury 和 Palmer，2002
+年）（例如“want-01”）或特殊关键字。</li>
+<li><strong>名称</strong>节点是唯一身份，而<strong>概念</strong>节点由不同的实例共享。</li>
+</ul></li>
+<li>边:连接节点的边称为关系（例如 :ARG0 和
+:name）。可以从带边的节点对中提取这些 AMR 关系，表示为<span class="math inline">\((n_i,r_{i,j},n_j)\in R_{amr}\)</span>
+<ul>
+<li>对每一个三元组，设置从节点<span class="math inline">\(n_i\)</span>指向<span class="math inline">\(n_j\)</span>的有向边，其边的类型为<span class="math inline">\(r_{i,j}\)</span></li>
+</ul></li>
+</ul></li>
+<li><p>Information Extraction Graph Construction</p>
+<figure>
+<img src="/2023/01/16/GraphConstructionMethods4NLP/image-20221013151356999.png" alt="image-20221013151356999">
+<figcaption aria-hidden="true">image-20221013151356999</figcaption>
+</figure>
+<blockquote>
+<p>一个 IE 图构建的例子，它包含<strong>共同引用过程(Co-reference
+process)</strong>和<strong>开放信息提取过程(Open Information Extraction
+process)</strong>。</p>
+</blockquote>
+<p>信息提取图（IE
+Graph）旨在提取结构信息以表示自然句子中的高级信息，例如基于文本的文档。</p>
+<p>下面我们将描述如何从给定的段落<span class="math inline">\(para\)</span>中生成对应的IE
+graph,这个过程主要分为三个步骤：</p>
+<ul>
+<li><p>coreference resolution</p>
+<p>共指解析是信息提取任务的基本过程，旨在找到引用文本序列中相同<strong>实体</strong>的<strong>表达式(expressions)</strong>。如图
+4 所示，名称“Pual”、名词术语“He”和“a renowned computer
+scientist”可能指的是同一个对象（人）。</p>
+<p>我们将共指簇 C
+表示为一组<strong>引用同一对象的短语</strong>。给定一个段落，可以得到从非结构化数据中提取的共指集
+<span class="math inline">\(C = \{C_1, C_2, ...,
+C_n\}\)</span>。</p></li>
+<li><p>constructing IE relations</p>
+<p>为了构建IE图，我们首先需要从段落中提取三元组，这可以通过使用一些注明的信息提取系统实现。</p>
+<p>我们称<span class="math inline">\((subject,predicate,object)\)</span>为一个关系，可以表示为<span class="math inline">\((n_i,r_{i,j},n_j)\in R_{ie}\)</span>.</p>
+<blockquote>
+<p>值得注意的是，如果两个三元组只有一个参数不同，而其他参数重叠，我们只保留较长的三元组。</p>
+</blockquote></li>
+<li><p>graph construction</p>
+<ul>
+<li>首先，对关系三元组，我们添加节点和对应的有向边，边的类型是对应的谓语类型</li>
+<li>然后，对于每个共指簇 <span class="math inline">\(C_i \in
+C\)</span>，可以将 <span class="math inline">\(C_i\)</span>
+中的所有共指短语折叠到一个节点中。这可以通过仅保留一个节点来帮助大大<strong>减少节点数</strong>量并<strong>消除歧义</strong>。</li>
+</ul></li>
+</ul></li>
+<li><p>Discourse Graph Construction</p>
+<p>当候选文档太长时，许多 NLP
+任务都会遇到长依赖挑战。描述两个句子如何在逻辑上相互连接的<strong>语篇图(Discourse
+Graph)</strong>被证明可以有效应对这一挑战。</p>
+<ul>
+<li><p>Discourse Relation</p>
+<p>语篇关系源自语篇分析，旨在识别一组句子上的句子顺序约束。</p>
+<p>给定两个句子，我们可以将discourse relation定义为<span class="math inline">\((sent_i,sent_j)\)</span>,它代表着"<span class="math inline">\(sentence_j\)</span>可以被放置到<span class="math inline">\(sentence_i\)</span>之后"的discourse relation。</p>
+<p>在许多NLP任务中，给定一个文档<span class="math inline">\(doc\)</span>,我们首先将它分割成句子集<span class="math inline">\(V =
+\{sent_1,sent_2,...,sent_m\}\)</span>。然后，我们应用discourse
+analysis来得到成对的discourse relation，表示为<span class="math inline">\(R_{sep}\subseteq V\times V\)</span>。</p></li>
+<li><p>Discourse Graph</p>
+<p>话语图 G(V, E) 由上面讨论的句子节点和话语关系组成。</p>
+<p>给定文档 doc 和话语关系集 <span class="math inline">\(R_{dis}\)</span>，对于每个关系 <span class="math inline">\((sent_i, sent_j) \in R_{dis}\)</span>，添加节点
+<span class="math inline">\(v_i\)</span>（对于句子 <span class="math inline">\(sent_i\)</span>）和 <span class="math inline">\(v_j\)</span>（对于句子 <span class="math inline">\(sent_j\)</span>），并添加从节点 <span class="math inline">\(v_i\)</span> 到节点 <span class="math inline">\(v_j\)</span>的<strong>有向边</strong>。</p></li>
+</ul></li>
+<li><p>Knowledge Graph Construction</p>
+<figure>
+<img src="/2023/01/16/GraphConstructionMethods4NLP/image-20221013165928021.png" alt="image-20221013165928021">
+<figcaption aria-hidden="true">image-20221013165928021</figcaption>
+</figure>
+<blockquote>
+<p>知识图构建示例，其中使用的知识库 (KB) 和生成的概念图均来自数据集
+MetaQA（Zhang 等人，2018b）。</p>
+</blockquote>
+<p>捕获实体和关系的知识图 (KG) 可以极大地促进许多 NLP
+应用程序中的学习和推理。</p>
+<p>一般来说，KG 可以根据它们的图构建方法分为两大类。</p>
+<ul>
+<li>许多应用程序将 KG
+视为<strong>非结构化数据</strong>的紧凑且可解释的中间表示。从概念上讲，它几乎类似于我们之前讨论过的
+IE 图。</li>
+<li>许多其他作品（Wu et al., 2020b; Ye et al., 2019; Bansal et al.,
+2019; Yang et al., 2019）整合了现有的知识库，例如 YAGO (Suchanek et al.,
+2008)）和ConceptNet (Speer et al., 2017) 进一步提高下游任务的性能 (Zhao
+et al., 2020c)。</li>
+</ul>
+<p>下面我们重点讨论第二种知识图。</p>
+<p><span class="math inline">\(\mathcal{G}(\mathcal{V},\mathcal{E})\)</span>由知识库中的元素构成，元素三元组<span class="math inline">\((e_1,rel,e_2)\)</span>中，前者是source
+entity,后者是target
+entity，中间的rel表示关系的类型。构建知识图的时候，前后两者为节点，中间的是从前者指向后者的有向边的类型。</p>
+<p>在当做数据增广手段的时候，由于知识库过大，且存在许多噪声，因此需要在特定域中抽取出对应的子图。其构建方法：不同应用差距很大，下面只是一种例子:</p>
+<ul>
+<li>首先需要做的是获取给定<strong>查询</strong>中的<strong>术语实例</strong>。</li>
+<li>然后可以通过一些匹配算法（例如最大子字符串匹配）将术语实例链接到 KG
+中的概念。这些概念被视为抽取出的子图中的初始节点</li>
+<li>下一步是获取 KG 中初始节点的 1 跳邻居。</li>
+<li>此外，可以通过应用一些图节点相关性模型来计算邻居与初始节点的相关性，例如个性化
+PageRank (PPR) 算法 (Page et al., 1999)。</li>
+<li>然后根据结果，可以进一步剪除相关分数低于置信阈值的边缘，并移除孤立的邻居。</li>
+<li>剩余的最终子图随后用于提供任何图表示学习模块。</li>
+</ul></li>
+<li><p>Coreference Graph Construction</p>
+<p>当给定段落中的两个或多个术语指代同一个对象时，就会发生<strong>共同指称(coreference或co-reference）</strong></p>
+<p>这种现象有助于更好地理解语料库的复杂结构和逻辑，解决歧义</p>
+<p>为了有效地利用共指信息，共指图被构造为显式地对隐式共指关系建模。</p>
+<p>给定一组短语，共指图可以链接指向文本语料库中相同实体的节点（短语）。在下面的小节中，我们将重点关注由
+m 个句子组成的段落 para 的共指图构造。值得注意的是，虽然它与 IE
+图的第一步类似，但共指图将通过图<strong>显式地对共指关系进行建模</strong>，而不是<strong>折叠成一个节点</strong>。</p>
+<ul>
+<li><p>Coreference Relation</p>
+<p>共指关系可以很容易地通过共指解析系统获得，如 IE
+图构造中所讨论的。类似地，我们可以在给定特定段落的情况下获得共指簇 C。簇
+<span class="math inline">\(C_i \in C\)</span>
+中的所有短语都指向同一个对象。</p></li>
+<li><p>Coreference Graph</p>
+<p>共指图建立在共指关系集 <span class="math inline">\(R_{coref}\)</span>
+之上。根据节点类型，一般可以分为两大类：</p>
+<ul>
+<li>phrases (or mentions)</li>
+<li>words</li>
+</ul>
+<p>对第一类，coreference图由关系集合<span class="math inline">\(\mathcal{R}_{coref}\)</span>中的所有mentions构成。对于共指簇中的短语对<span class="math inline">\(p_i,p_j\)</span>，我们可以在代表两个短语的节点之间添加无向边。</p>
+<p>对于第二类，共指图则是由words构成</p>
+<p>一个小的区别是，对于每个相关的<strong>短语</strong>，<strong>只链接</strong>每个短语的<strong>第一个单词</strong>。</p></li>
+</ul></li>
+<li><p>Similarity Graph Construction</p>
+<figure>
+<img src="/2023/01/16/GraphConstructionMethods4NLP/image-20221013174523073.png" alt="image-20221013174523073">
+<figcaption aria-hidden="true">image-20221013174523073</figcaption>
+</figure>
+<blockquote>
+<p>相似图构建的示例。我们使用<strong>句子</strong>作为节点，并使用
+<strong>TF-IDF
+向量</strong>初始化它们的特征。<strong>较大的相似度值对应于较粗的虚线</strong>。</p>
+</blockquote>
+<p>由于相似度图通常是面向应用程序的，因此我们只关注为实体、句子和文档等各种类型的元素构建相似度图的基本过程，而忽略了应用程序的具体细节。值得注意的是，相似图的构建是在<strong>预处理过程</strong>中进行的，并<strong>没有</strong>与剩余的学习系统以端到端的方式<strong>联合训练</strong>。</p>
+<ul>
+<li><p>Similarity Graph</p>
+<p>给定一个语料库C，在相似度图G(V,
+E)中，图节点可以定义为实体、句子和文档等不同粒度级别。基础的节点集合用<span class="math inline">\(\mathcal{V}\)</span>来表示。</p>
+<p>人们可以通过各种机制计算节点特征，例如句子（或文档）的 TF-IDF（Liu
+等人，2019a；Yasunaga 等人，2017）和实体的embeddings（Linmei
+等人，2019）。</p>
+<p>节点对之间的<strong>相似度分数</strong>可以通过余弦相似度等各种度量来计算（Liu
+et al., 2019a; Linmei et al., 2019; Yasunaga et al.,
+2017），用于表示节点对的<strong>边权重</strong>。</p></li>
+<li><p>Spare mechanism</p>
+<p>初始相似度图通常是密集的，即使某些边缘权重非常小甚至为负。这些值可以被视为噪声，它在相似度图中的作用很小。</p>
+<p>因此，提出了各种稀疏技术，通过对图进行稀疏化来进一步提高图的质量。</p>
+<p>一种广泛使用的稀疏方法是 <strong>k-NN</strong> (Liu et al.,
+2019a)。具体来说，对于节点 <span class="math inline">\(v_i\)</span>
+和它的邻居集合 <span class="math inline">\(N
+(v_i)\)</span>，只有通过保留 k 个最大边权重并丢弃剩余边来保留边。</p>
+<p>另一种广泛使用的方法是<span class="math inline">\(\epsilon
+-sparse\)</span>（Linmei et al., 2019; Yasunaga et al.,
+2017）。特别是，将删除权重小于某个阈值<span class="math inline">\(\epsilon\)</span>的边。</p></li>
+</ul></li>
+<li><p>Co-occurrence Graph Construction</p>
+<figure>
+<img src="/2023/01/16/GraphConstructionMethods4NLP/image-20221013235057395.png" alt="image-20221013235057395">
+<figcaption aria-hidden="true">image-20221013235057395</figcaption>
+</figure>
+<blockquote>
+<p>共现图构造的示例，其中边权重代表单词之间的共现频率。我们将窗口大小设置为
+3。</p>
+</blockquote>
+<p>共现图旨在捕捉文本中单词之间的<strong>共现关系</strong>，广泛用于许多
+NLP 任务（Christopoulou 等人，2019；Zhang 和 Qian，2020；Zhang
+等人，2020f）。共现关系描述了两个词在固定大小的上下文窗口内同时出现的频率，是捕捉语料库中词之间语义关系的重要特征。在下文中，我们将首先介绍获得同现关系的方法，然后讨论为语料库
+C 构建同现图的基本过程。</p>
+<ul>
+<li><p>Co-occurrence Relation:</p>
+<p>共现关系由给定语料库 C 的共现矩阵定义。</p>
+<p>可以将矩阵的共现表示为 <span class="math inline">\(M \in
+\mathbb{R}^{|V |×|V |}\)</span>，其中$ |V |$是 <span class="math inline">\(C\)</span> 的词汇量。<span class="math inline">\(M_{w_i,w_j}\)</span> 描述了词 <span class="math inline">\(w_i,w_j\)</span> 在语料库 C
+中固定大小的滑动窗口内一起出现的次数。</p>
+<p>在得到共现矩阵之后，有两种典型的方法来计算单词之间的权重：</p>
+<ul>
+<li>共现频率</li>
+<li>逐点互信息/point-wise mutual information (PMI)</li>
+</ul></li>
+<li><p>Co-occurrence Graph</p>
+<p>同现图 <span class="math inline">\(\mathcal{G}(\mathcal{V},\mathcal{E})\)</span>
+由上面讨论的<strong>单词节点</strong>和<strong>同现关系</strong>组成。</p>
+<p>给定语料库<span class="math inline">\(C\)</span> 和共现关系集 <span class="math inline">\(R_{co}\)</span>，对于每个关系 <span class="math inline">\((w_i, w_j) \in R_{co}\)</span>，添加节点 <span class="math inline">\(v_i\)</span>（对于单词 <span class="math inline">\(w_i\)</span>）和 <span class="math inline">\(v_j\)</span>（对于单词 <span class="math inline">\(w_j\)</span>）并添加来自节点的无向<strong>边</strong><span class="math inline">\(v_i\)</span> 到节点 <span class="math inline">\(v_j\)</span>
+用上述计算的<strong>边权重</strong>初始化。</p></li>
+</ul></li>
+<li><p>Topic Graph Construction</p>
+<figure>
+<img src="/2023/01/16/GraphConstructionMethods4NLP/image-20221014000501523.png" alt="image-20221014000501523">
+<figcaption aria-hidden="true">image-20221014000501523</figcaption>
+</figure>
+<blockquote>
+<p>主题图构建示例，其中虚线表示通过利用数据集 AG 新闻上的 LDA
+算法进行的主题建模过程</p>
+</blockquote>
+<p>主题图建立在<strong>多个文档</strong>之上，旨在对<strong>不同主题之间的高级语义关系</strong>进行建模。</p>
+<ul>
+<li>输入：<span class="math inline">\(\mathcal{D} =
+\{doc_1,doc_2,...,doc_m\}\)</span></li>
+<li>流程：
+<ul>
+<li>通过LDA等算法学习潜在的主题<span class="math inline">\(\mathcal{T}\)</span></li>
+<li>则图为<span class="math inline">\(\mathcal{G}(\mathcal{V},\mathcal{E})\)</span>,其中<span class="math inline">\(\mathcal{V} =
+\mathcal{D}\cup\mathcal{T}\)</span>,我们添加从文档<span class="math inline">\(v_i\)</span>到主题<span class="math inline">\(v_j\)</span>之间的无向边。当且仅当该文档含有该主题时添加。</li>
+</ul></li>
+</ul></li>
+<li><p>App-driven Graph Construction</p>
+<figure>
+<img src="/2023/01/16/GraphConstructionMethods4NLP/image-20221014000533458.png" alt="image-20221014000533458">
+<figcaption aria-hidden="true">image-20221014000533458</figcaption>
+</figure>
+<blockquote>
+<p>应用程序驱动的图构建示例，专为 SQL 查询输入而设计。</p>
+</blockquote>
+<p>应用驱动图是指专门为特定 NLP
+任务设计的图，前面讨论的静态图类型无法轻松涵盖。</p>
+<p>在一些 NLP
+任务中，通常使用特定于应用程序的方法通过结构化形成来表示非结构化数据。例如，SQL
+语言可以很自然地用 SQL 解析树来表示。因此它可以转换为 SQL 图（Xu et al.,
+2018a; Bogin et al., 2019a; Huo et al., 2019; Bogin et al.,
+2019b）。由于这些图基于领域知识过于专业，因此没有统一的模式来总结如何构建应用程序驱动的图。</p></li>
+</ul>
+<p><strong>HYBRID GRAPH CONSTRUCTION AND DISCUSSION</strong></p>
+<p>大多数以前的静态图构造方法只考虑节点之间的<strong>一种</strong>特定关系。尽管获得的图在一定程度上很好地捕捉了结构信息，但它们在利用<strong>不同类型</strong>的图关系方面也受到限制。</p>
+<p>为了解决这个限制，人们越来越关注通过将<strong>多个图组合在一起</strong>来构建<strong>混合图</strong>，以丰富图中的语义信息。这些构造混合图的方法往往是根据应用变化的，下面给出一些代表性方法。</p>
+<p>为了捕获多个关系，一个常见的策略是构建一个<strong>异构图(heterogeneous
+graph)</strong>，其中包含多种类型的节点和边。在不失一般性的情况下，我们假设可以创建具有两个不同图源
+<span class="math inline">\(\mathcal{G}_a(\mathcal{V}_a,
+\mathcal{E}_a)\)</span> 和 <span class="math inline">\(\mathcal{G}_b(\mathcal{V}_b,
+\mathcal{E}_b)\)</span>的混合图 Ghybrid。图 a、b
+是两种不同的图类型，例如依赖图和选区图。</p>
+<ul>
+<li><p>给定这些文本输入，如果 <span class="math inline">\(\mathcal{G}_a\)</span> 和 <span class="math inline">\(\mathcal{G}_b\)</span> 共享相同的节点集（即 <span class="math inline">\(\mathcal{V}_a =
+\mathcal{V}_b\)</span>），我们通过<strong>注释特定关系的边类型</strong>来合并边集。</p></li>
+<li><p>否则，我们将 $_a <span class="math inline">\(和\)</span> _b$
+合并得到混合节点集，记为 <span class="math inline">\(\mathcal{V} =
+\mathcal{V}_a \cup
+\mathcal{V}_b\)</span>。然后我们通过将源节点和目标节点从 $_a <span class="math inline">\(和\)</span> _b$ 映射到 <span class="math inline">\(\mathcal{V}\)</span> 来生成 <span class="math inline">\(\mathcal{E}_a\)</span> 和 <span class="math inline">\(\mathcal{E}_b\)</span> 到 <span class="math inline">\(\mathcal{E}\)</span>。</p></li>
+</ul>
+<h3 id="dynamic-graph-construction">Dynamic Graph Construction</h3>
+<p>尽管静态图构造具有将数据的<strong>先验知识</strong>编码到图结构中的优点，但它有几个限制。</p>
+<ul>
+<li>为了构建合理性能的图拓扑，需要大量的人力和领域专业知识。</li>
+<li>手动构建的图结构可能容易出错（例如，嘈杂或不完整）</li>
+<li>由于图构建阶段和图表示学习阶段是不相交的，在图构建阶段引入的错误无法纠正，可能会累积到后续阶段，从而导致性能下降。</li>
+<li>图构建过程通常仅由机器学习从业者的洞察力提供信息，并且对于下游预测任务可能不是最佳的</li>
+</ul>
+<p>大多数动态图构建方法旨在<strong>动态学习图结构（即加权邻接矩阵）</strong>，并且图构建模块可以<strong>与后续图表示学习模块联合优化</strong>，以实现<strong>端到端</strong>的下游任务。</p>
+<figure>
+<img src="/2023/01/16/GraphConstructionMethods4NLP/image-20221015000556815.png" alt="image-20221015000556815">
+<figcaption aria-hidden="true">image-20221015000556815</figcaption>
+</figure>
+<blockquote>
+<p>动态图构建方法的总体说明。虚线（在左侧的数据点中）表示可选的内在图拓扑。</p>
+</blockquote>
+<p>这些动态图构建方法通常包括一个<strong>图相似度度量学习组件</strong>，用于通过考虑嵌入空间中的<strong>成对节点相似性</strong>来学习<strong>邻接矩阵</strong>，以及一个<strong>图稀疏化组件</strong>，用于从学习的全连接图中提取<strong>稀疏图</strong>。</p>
+<p>据报道，将<strong>内在图结构</strong>和学习的<strong>隐式图结构</strong>相结合以获得更好的学习性能是有益的。</p>
+<p>此外，为了有效地进行联合<strong>图结构和表示</strong>学习，已经提出了各种学习范式。</p>
+<p><strong>GRAPH SIMILARITY METRIC LEARNING TECHNIQUES</strong></p>
+<p>基于假设<strong>节点属性包含用于学习隐式图结构的信息</strong>，最近的工作将图结构学习问题转换成定义在节点嵌入空间的相似度度量学习问题。</p>
+<p>学习到的<strong>相似度度量函数</strong>可以之后被应用到未见过的节点embeddings中去推断一个图结构，从而实现归纳图结构。</p>
+<ul>
+<li><p>Node Embedding Based Similarity Metric Learning</p>
+<p>基于节点嵌入的相似度度量函数旨在通过计算嵌入空间中的成对节点<strong>相似度</strong>来学习<strong>加权邻接矩阵</strong>。</p>
+<p>常见的度量函数包括基于<strong>注意力</strong>的度量函数和基于<strong>余弦</strong>的度量函数。</p>
+<ul>
+<li><p>Attention-based Similarity Metric Functions(most of the
+similarity metric functions)</p>
+<p>为了提高基于<strong>点积</strong>的注意力机制的学习能力，Chen 等人。
+（2020d）通过引入可学习参数提出了一种改进的点积，公式如下： <span class="math display">\[
+S_{i,j} = (\vec{v_i}\odot\vec{u})^{T}\vec{v_j}
+\]</span> 其中<span class="math inline">\(\vec{u}\)</span>是一个非负的权重向量，学习它以便于强调节点embeddings中的不同维度。其中<span class="math inline">\(\odot\)</span>是逐元素的向量乘法。</p>
+<p>相似的，通过引入一个可学习的权重矩阵，一个更具表现力的点积版本，公式如下：
+<span class="math display">\[
+S_{i,j} = ReLU(\vec{W}\vec{v_i})^TReLU(\vec{W}\vec{v_j})
+\]</span> 其中<span class="math inline">\(\vec{W}\)</span>是一个<span class="math inline">\(d\times d\)</span>的权重矩阵，而<span class="math inline">\(ReLU(x) = max(0, x)\)</span> 是一个整流线性单元
+(ReLU)，用于强制相似矩阵的稀疏性。</p></li>
+<li><p>Cosine-based Similarity Metric Functions.</p>
+<p>陈等人。
+（2020e）将基础余弦相似度扩展为<strong>多头加权余弦相似度</strong>，以从多个角度捕获成对节点相似度，公式如下：
+<span class="math display">\[
+S_{i,j}^p = cos(\vec{w}_p\odot\vec{v_i},\vec{w}_p\odot\vec{v}_j)
+\newline
+S_{i,j} = \frac{1}{m}\sum_{p=1}^{m}S_{i,j}^p
+\]</span> 其中的<span class="math inline">\(\vec{w}_p\)</span>是一个和第p个视角相关的权重向量，和节点embeddings有相同的维数。</p>
+<p>直观地说，<span class="math inline">\(S^p_{i,j}\)</span> 计算第 p
+个视角的成对余弦相似度，其中每个视角都考虑嵌入中捕获的语义的一部分。</p>
+<p>除了<strong>提高学习能力</strong>外，采用多头学习器还能够<strong>稳定学习过程</strong>。</p></li>
+</ul></li>
+<li><p>Structure-aware Similarity Metric Learning</p>
+<p>受结构感知转换器（structure-aware
+transformers）的启发，最近的方法采用了<strong>结构感知相似度度量函数</strong>，该函数额外考虑了节点信息之外的<strong>内在图的现有边缘信息</strong>。</p>
+<p>一种用于学习成对节点相似度的结构感知注意机制，公式如下： <span class="math display">\[
+S_{i,j}^l =
+softmax(\vec{u}^Ttanh(\vec{W}[\vec{h}_i^l,\vec{h}_j^l,\vec{v}_i,\vec{v}_j,\vec{e}_{i,j}]))
+\]</span> 其中<span class="math inline">\(\vec{v}_i\)</span>表示的是节点i的embeddings,<span class="math inline">\(\vec{e}_{i,j}\)</span>表示的是连接节点i和j的边的embeddings。<span class="math inline">\(\vec{h}_i^l\)</span>是在第l个GNN层中的节点i的embeddings。并且，<span class="math inline">\(\vec{u}\)</span>和<span class="math inline">\(\vec{W}\)</span>是可训练的权重向量和权重矩阵。</p>
+<p>一种结构感知的全局注意力机制，公式如下： <span class="math display">\[
+S_{i,j} =
+\frac{ReLU(\vec{W}^Q\vec{v}_i)^T(ReLU(\vec{W}^K\vec{v}_j))+ReLU(\vec{W}^R\vec{e}_{i,j})}{\sqrt{d}}
+\]</span>
+三个W是将节点embeddings和边embeddings映射到潜在embeddings空间的线性映射。</p></li>
+</ul>
+<p><strong>GRAPH SPARSIFICATION TECHNIQUES</strong></p>
+<p>现实世界场景中的大多数图都是稀疏图。<strong>相似度度量函数</strong>考虑任何节点对之间的关系并返回一个<strong>全连接图</strong>，这不仅<strong>计算量大</strong>，而且可能<strong>引入噪声</strong>，例如不重要的边。因此，明确地对学习的图结构<strong>强制执行</strong>稀疏性可能是有益的。除了在相似性度量函数中<strong>应用
+ReLU 函数</strong>（Chen et al., 2020f; Liu et al.,
+2021b），还采用了各种图稀疏化技术来增强学习图结构的稀疏性。</p>
+<ul>
+<li><p>一个kNN风格的稀疏化操作，从相似度学习函数计算的节点相似度矩阵中得到一个稀疏邻接矩阵，公式如下：
+<span class="math display">\[
+\vec{A}_{i,:} = topk(\vec{S}_{i,:})
+\]</span>
+对每个节点，只有K个最近的邻居节点(包括它自己)以及对应的相似度分数会被保留下来，剩下的相似度分数会被屏蔽掉。</p></li>
+<li><p>通过仅考虑每个节点的 <span class="math inline">\(ε\)</span>-邻域来强制执行稀疏邻接矩阵，公式如下：
+<span class="math display">\[
+A _ { i , j } = \{ \begin{array}  { l l  }  { S _ { i , j } } &amp; { S
+_ { i , j } \gt ε } \\ { 0 } &amp; { otherwise } \end{array}
+\]</span> 其中 S 中小于非负阈值<span class="math inline">\(ε\)</span>的那些元素都被屏蔽掉（即设置为零）。</p></li>
+<li><p>除了通过应用某种形式的阈值来显式地强制学习图的稀疏性之外，稀疏性还以基于<strong>学习的方式隐式地强制执行</strong>。陈等人。
+（2020e）引入了以下正则化术语来鼓励稀疏图。 <span class="math display">\[
+\frac{1}{n^2}||A||^2_F
+\]</span> 在哪里 <span class="math inline">\(|| · ||_F\)</span>
+表示矩阵的 <strong>Frobenius 范数</strong>。</p>
+<blockquote>
+<p>矩阵A的Frobenius范数定义为矩阵A各项<strong>元素的绝对值平方的总和</strong></p>
+</blockquote></li>
+</ul>
+<p><strong>COMBINING INTRINSIC GRAPH STRUCTURES AND IMPLICIT GRAPH
+STRUCTURES</strong></p>
+<p>最近的研究表明，如果在进行动态图构建时完全丢弃内在图结构，可能会损害下游任务的性能。这可能是因为内在图通常仍然携带有关下游任务的最佳图结构的丰富且有用的信息。</p>
+<p>因此，他们提出将学习到的隐式图结构与内在图结构相结合，<strong>假设</strong>是学习到的隐式图可能是内在图结构的“转移”（例如子结构），内在图结构是对内在图结构的补充。</p>
+<p>另一个潜在的好处是结合内在的图结构可能有助于<strong>加速训练过程</strong>并提高<strong>训练稳定性</strong>。(由于没有关于相似度度量的先验知识，并且可训练的参数是随机初始化的，因此通常可能需要很长时间才能收敛。)</p>
+<p>提出计算内在图结构的归一化图拉普拉斯算子 $L^{(0)} $和隐式图结构 <span class="math inline">\(f(A)\)</span>
+的归一化邻接矩阵的线性组合，公式如下： <span class="math display">\[
+\widetilde{A} = \lambda L^{(0)} + (1-\lambda)f(A)
+\]</span> 其中<span class="math inline">\(f: \mathbb{R}^{n \times n}
+\rightarrow \mathbb{R}^{n \times
+n}\)</span>可以是任意归一化操作，例如图拉普拉斯运算和行归一化操作。</p>
+<p>并没有明确地融合两个图邻接矩阵,而是提出了一种用于 GNN
+的<strong>混合消息传递机制</strong>，该机制分别融合从内在图和学习到的隐式图计算的两个聚合节点向量，然后将融合向量馈送到
+GRU 以更新节点嵌入。</p>
+<p><strong>LEARNING PARADIGMS</strong></p>
+<p>大多数现有的 GNN
+动态图构建方法由两个关键学习组件组成：图结构学习（即相似性度量学习）和图表示学习（即
+GNN
+模块），最终目标是学习优化关于某些下游预测任务的<strong>图结构和表示</strong>。</p>
+<p>如何优化两个独立的学习组件以实现相同的最终目标成为一个重要的问题。</p>
+<ul>
+<li>最直接的策略是以端到端的方式共同优化整个学习系统，面向下游（半）监督预测任务。</li>
+<li>另一种常见的策略是自适应地学习每个堆叠 GNN
+层的输入图结构，以反映中间图表示的变化。这类似于 Transformer
+模型如何在每一层中学习不同的加权全连接图。</li>
+<li>提出了一种<strong>迭代</strong>图学习框架，通过基于更好的<strong>图表示</strong>学习更好的<strong>图结构</strong>，同时以迭代的方式基于更好的<strong>图结构</strong>学习更好的<strong>图表示</strong>。结果，这种迭代学习范式反复细化图结构和图表示以达到最佳下游性能。</li>
+</ul>
+<h2 id="graph-representation-learning-for-nlp">Graph Representation
+Learning for NLP</h2>
+<p>在本节中，我们将讨论各种图表示学习技术，这些技术直接在构建的图上运行，用于各种
+NLP 任务。</p>
+<p>图表示学习技术</p>
+<ul>
+<li>目标：找到一种通过<strong>机器学习模型</strong>将<strong>图结构和属性信息</strong>合并到<strong>低维embeddings</strong>中的方法</li>
+<li>数学形式化：
+<ul>
+<li>图： <span class="math inline">\(\mathcal{G}(\mathcal{V},\mathcal{E},\mathcal{T},\mathcal{R})\)</span>
+<ul>
+<li>节点集合： <span class="math inline">\(\mathcal{V}\)</span></li>
+<li>边集合： <span class="math inline">\(\mathcal{E}\)</span></li>
+<li>节点类型 <span class="math inline">\(\mathcal{T} =
+\{T_1,T_2,...,T_p\}\)</span></li>
+<li>边类型： <span class="math inline">\(\mathcal{R} =
+\{R_1,...,R_q\}\)</span></li>
+</ul></li>
+<li>元素数目： <span class="math inline">\(|\cdot|\)</span></li>
+<li>节点类型指示函数：<span class="math inline">\(\tau(\cdot) \in
+\mathcal{T}\)</span>，其中输入元素为节点<span class="math inline">\(v_i\)</span></li>
+<li>边类型指示函数：<span class="math inline">\(\phi(\cdot) \in
+\mathcal{R}\)</span>，其中输入元素是边<span class="math inline">\(e_{i,j}\)</span></li>
+</ul></li>
+</ul>
+<h3 id="gnns-for-homogeneous-graphs">GNNs for Homogeneous Graphs</h3>
+<p>Homogeneous Graphs(同构图)：<span class="math inline">\(|\mathcal{T}|
+= |\mathcal{R}| = 1\)</span></p>
+<h3 id="graph-neural-networks-for-multi-relational-graphs">Graph Neural
+Networks for Multi-relational Graphs</h3>
+<p>Multi-relational Graphs(多关系图)：<span class="math inline">\(|\mathcal{T}| = 1\)</span> 并且 <span class="math inline">\(|\mathcal{R}| &gt; 1\)</span></p>
+<h3 id="graph-neural-networks-for-heterogeneous-graph">Graph Neural
+Networks for Heterogeneous Graph</h3>
+<p>Heterogeneous Graphs(异构图)：<span class="math inline">\(|\mathcal{T}| &gt; 1\)</span> 或者 <span class="math inline">\(|\mathcal{R}| &gt; 1\)</span></p>
+<h2 id="gnn-based-encoder-decoder-models">GNN Based Encoder-Decoder
+Models</h2>
+<figure>
+<img src="/2023/01/16/GraphConstructionMethods4NLP/image-20221016223847470.png" alt="image-20221016223847470">
+<figcaption aria-hidden="true">image-20221016223847470</figcaption>
+</figure>
+<blockquote>
+<p>基于图的编码器-解码器模型的整体架构，包含 Graph2Seq 和 Graph2Tree
+模型。输入和输出来自 JOBS640 数据集 (Luke, 2005)。 S1、S2
+等节点代表子树节点，从中生成新的分支。</p>
+</blockquote>
+<h3 id="sequence-to-sequence-models">Sequence-to-Sequence Models</h3>
+<h3 id="graph-to-sequence-models">Graph-to-Sequence Models</h3>
+<p>与 Seq2Seq 范式相比，Graph2Seq
+范式更善于捕捉输入文本的丰富结构信息，可以应用于任意图结构数据。与
+Seq2Seq 模型相比，Graph2Seq 模型在包括神经机器翻译在内的广泛 NLP
+任务中表现出卓越的性能</p>
+<h3 id="graph-to-tree-models">Graph-to-Tree Models</h3>
+<p>与考虑输入端结构信息的 Graph2Seq 模型相比，许多 NLP
+任务还包含以复杂结构表示的输出，例如树，输出端也包含丰富的结构信息，例如句法解析（Ji
+et al., 2019)(Yang and Deng, 2020), 语义解析(Li et al., 2020a)(Xu et
+al., 2018c), 数学单词问题求解(Li et al., 2020a)(Zhang et al.,
+2020b)。考虑这些输出的结构信息是我们自然的选择。为此，提出了一些
+Graph2Tree
+模型，在输入端和输出端都包含结构信息，使编码解码过程中的信息流更加完整。</p>
+<h3 id="graph-to-graph-models">Graph-to-Graph Models</h3>
+<p>通常用于解决图转换问题的图到图模型作为图编码器-解码器模型。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/EM%E7%AE%97%E6%B3%95/" rel="tag"># EM算法</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/" rel="prev" title="广义EM的一个特例是VBEM">
+      <i class="fa fa-chevron-left"></i> 广义EM的一个特例是VBEM
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#gnn-in-nlp-2"><span class="nav-number">1.</span> <span class="nav-text">GNN in NLP 2</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#graph-construction-methods-for-natural-language-processing"><span class="nav-number">1.1.</span> <span class="nav-text">Graph
+Construction Methods for Natural Language Processing</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#static-graph-construction"><span class="nav-number">1.1.1.</span> <span class="nav-text">Static Graph Construction</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dynamic-graph-construction"><span class="nav-number">1.1.2.</span> <span class="nav-text">Dynamic Graph Construction</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#graph-representation-learning-for-nlp"><span class="nav-number">1.2.</span> <span class="nav-text">Graph Representation
+Learning for NLP</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#gnns-for-homogeneous-graphs"><span class="nav-number">1.2.1.</span> <span class="nav-text">GNNs for Homogeneous Graphs</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#graph-neural-networks-for-multi-relational-graphs"><span class="nav-number">1.2.2.</span> <span class="nav-text">Graph Neural
+Networks for Multi-relational Graphs</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#graph-neural-networks-for-heterogeneous-graph"><span class="nav-number">1.2.3.</span> <span class="nav-text">Graph Neural
+Networks for Heterogeneous Graph</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gnn-based-encoder-decoder-models"><span class="nav-number">1.3.</span> <span class="nav-text">GNN Based Encoder-Decoder
+Models</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#sequence-to-sequence-models"><span class="nav-number">1.3.1.</span> <span class="nav-text">Sequence-to-Sequence Models</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#graph-to-sequence-models"><span class="nav-number">1.3.2.</span> <span class="nav-text">Graph-to-Sequence Models</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#graph-to-tree-models"><span class="nav-number">1.3.3.</span> <span class="nav-text">Graph-to-Tree Models</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#graph-to-graph-models"><span class="nav-number">1.3.4.</span> <span class="nav-text">Graph-to-Graph Models</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Haoran Li</p>
+  <div class="site-description" itemprop="description">Blog of Whyynnot</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Haoran Li</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'c2AnFNAFnFrReTpruCM2RWMV-gzGzoHsz',
+      appKey     : 'rMWSQ6KHYU6DHK01uJS0Mvmg',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
