@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="Self-supervised Learning: Generative or Contrastive 本文简要介绍Self-supervised Learning技术，为数据扩充等前期处理做准备。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Self-supervised_Learning">
+<meta property="og:url" content="http://example.com/2023/01/16/Self-supervised-Learning/index.html">
+<meta property="og:site_name" content="Whyynnot">
+<meta property="og:description" content="Self-supervised Learning: Generative or Contrastive 本文简要介绍Self-supervised Learning技术，为数据扩充等前期处理做准备。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2023/01/16/Self-supervised-Learning/v2-4caa39b9d3e0ee762eccff0aaeceba82_b.jpg">
+<meta property="og:image" content="http://example.com/2023/01/16/Self-supervised-Learning/v2-59aa2c112bf8c94cc6e8e2594e13da80_b.jpg">
+<meta property="og:image" content="http://example.com/2023/01/16/Self-supervised-Learning/v2-48719807a50725f127c6e54fcaaf0675_b.jpg">
+<meta property="og:image" content="http://example.com/2023/01/16/Self-supervised-Learning/image-20221023231711831.png">
+<meta property="og:image" content="http://example.com/2023/01/16/Self-supervised-Learning/v2-ec15bcddf873e5c63b58cfa21cfbad5f_b.jpg">
+<meta property="og:image" content="http://example.com/2023/01/16/Self-supervised-Learning/v2-518e7588b6b2cbb7daddb3f561037ec2_r.jpg">
+<meta property="og:image" content="http://example.com/2023/01/16/Self-supervised-Learning/v2-717a108926ab2a7feee1ed88596b1b85_r.jpg">
+<meta property="og:image" content="http://example.com/2023/01/16/Self-supervised-Learning/v2-1d49f1b8d24bc755e8c1fc4a2b105211_r.jpg">
+<meta property="og:image" content="http://example.com/2023/01/16/Self-supervised-Learning/v2-067db86c25e2e1fba0ad42c16cb0a2ec_r.jpg">
+<meta property="og:image" content="http://example.com/2023/01/16/Self-supervised-Learning/v2-9642b94de841d63f752c3412f2ced928_r.jpg">
+<meta property="og:image" content="http://example.com/2023/01/16/Self-supervised-Learning/v2-c395fc7e5d97412001cd965103a5a846_r.jpg">
+<meta property="og:image" content="http://example.com/2023/01/16/Self-supervised-Learning/v2-c7f0c2407835450b6eb799f1ded512f8_r.jpg">
+<meta property="og:image" content="http://example.com/2023/01/16/Self-supervised-Learning/image-20221025001451606.png">
+<meta property="og:image" content="https://pic4.zhimg.com/v2-aa3bed434b00a6d4091d8328adea054b_b.jpg">
+<meta property="og:image" content="http://example.com/2023/01/16/Self-supervised-Learning/image-20221025001902562.png">
+<meta property="og:image" content="http://example.com/2023/01/16/Self-supervised-Learning/image-20221026190346668.png">
+<meta property="og:image" content="http://example.com/2023/01/16/Self-supervised-Learning/image-20221026215710486.png">
+<meta property="og:image" content="http://example.com/2023/01/16/Self-supervised-Learning/image-20221026222739800.png">
+<meta property="og:image" content="http://example.com/2023/01/16/Self-supervised-Learning/image-20221027003350538.png">
+<meta property="og:image" content="http://example.com/2023/01/16/Self-supervised-Learning/image-20221027093910961.png">
+<meta property="og:image" content="http://example.com/2023/01/16/Self-supervised-Learning/image-20221027101547987.png">
+<meta property="og:image" content="http://example.com/2023/01/16/Self-supervised-Learning/image-20221027102903911.png">
+<meta property="article:published_time" content="2023-01-16T05:07:52.000Z">
+<meta property="article:modified_time" content="2023-01-16T05:10:52.347Z">
+<meta property="article:author" content="Haoran Li">
+<meta property="article:tag" content="Self-Supervised Learning">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2023/01/16/Self-supervised-Learning/v2-4caa39b9d3e0ee762eccff0aaeceba82_b.jpg">
+
+<link rel="canonical" href="http://example.com/2023/01/16/Self-supervised-Learning/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Self-supervised_Learning | Whyynnot</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Whyynnot</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/01/16/Self-supervised-Learning/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Haoran Li">
+      <meta itemprop="description" content="Blog of Whyynnot">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Whyynnot">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Self-supervised_Learning
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-01-16 13:07:52 / 修改时间：13:10:52" itemprop="dateCreated datePublished" datetime="2023-01-16T13:07:52+08:00">2023-01-16</time>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2023/01/16/Self-supervised-Learning/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2023/01/16/Self-supervised-Learning/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Self-supervised-Learning-Generative-or-Contrastive"><a href="#Self-supervised-Learning-Generative-or-Contrastive" class="headerlink" title="Self-supervised Learning: Generative or Contrastive"></a>Self-supervised Learning: Generative or Contrastive</h1><blockquote>
+<p>本文简要介绍Self-supervised Learning技术，为数据扩充等前期处理做准备。</p>
+<span id="more"></span>
+</blockquote>
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>深度学习模型是data-hungry的。为何如此？和传统的feature-based的方法相比，深度学习通常采用end-to-end的模式。它只有<strong>很少的先验假设</strong>，这就导致了在数据不够的情况下出现过拟合和偏差的问题。</p>
+<p>文献表明，简单的多层感知器具有非常差的泛化能力（总是假设分布外（OOD）样本的线性关系）[145]，这会导致over-confident（和错误）的预测。</p>
+<blockquote>
+<p>这里对over-confident现象进行说明和补充。</p>
+<p><img src="/2023/01/16/Self-supervised-Learning/v2-4caa39b9d3e0ee762eccff0aaeceba82_b.jpg" alt="img"></p>
+<p>首先，让咱们来思考一个普通图像分类任务。对于一张“koala”的图像，在经过神经网络后会得到 logits 输出 z(x)=[−5.2,0.1,2.1] ，经过softmax 层后得到对各类别的预测的后验概率，接着我们选择概率最大的类别（ koala）输出为最后的预测类别。这里，最终的预测类别 、$\hat{y}(x)=koala$ ，其对应的置信度为 $\hat{p}(x)=0.88$ 。在大多情况下，我们<strong>只关心类别的预测 $\hat{y}(x)$ 有多准</strong>，根本不 care 置信度是怎样的。然而，在一些实际应用场景下，<strong>置信度</strong>的度量也同样重要。例如：</p>
+<p><img src="/2023/01/16/Self-supervised-Learning/v2-59aa2c112bf8c94cc6e8e2594e13da80_b.jpg" alt="img"></p>
+<p>如上图，对于自动驾驶中的目标识别任务，车辆的前方出现了一个人，神经网络会将其<strong>识别成塑料袋</strong>，此时输出的置信度为50%（低于阈值），则可通过其它传感器进行二次的正确识别（识别为人）。但想想看，若神经网络对塑料袋预测的置信度为90%会怎样？</p>
+<p><strong>思考</strong>：就是说给很多类别打分，其中塑料袋分数最高。如果仅仅考虑分类正确与否，只要正确的类比其他类更高就行了。但是实际应用场景可能会根据置信度进行进一步的确认等操作，这个时候仅仅是相对更高是无法保证任务的顺利完成的。</p>
+<p>再例如：<img src="/2023/01/16/Self-supervised-Learning/v2-48719807a50725f127c6e54fcaaf0675_b.jpg" alt="img"></p>
+<p>使用 Resnet 模型简单的对一些图片任务进行训练，收敛后的模型对测试集的平均置信度高达80%-85%，然而只有将近70%的图片能被正确分对（红色代表分错，绿色代表分对）。这意味着啥？训练好的模型好像有点盲目自信，即出现 <strong>overconfidence</strong> 现象，或者可以称为模型的准确率和置信度不匹配（<strong>miscalibration</strong>）。</p>
+<p><strong>预期校准误差（ECE）</strong></p>
+<p>直观地看，模型的准确率应当和置信度相匹配。一个完美校准的模型可定义成如下所示：</p>
+<script type="math/tex; mode=display">
+\mathbb{P}(\hat{Y}=Y|\hat{P}=p)=p,\forall p \in [0,1]</script><p>即模型的置信度等于概率p的条件下模型的预测$\hat{Y}$为真实标记Y的概率同样也为p。因此，本文提出一个新的度量方式叫做<strong>预期校准误差（ECE）</strong>来描述模型学习的匹配程度</p>
+<script type="math/tex; mode=display">
+ECE = \mathbb{E}_{\hat{P}}[|\mathbb{P}(\hat{Y}=Y|\hat{P}=p)-p|]</script></blockquote>
+<p>为了解决这样的问题，很多人去设计更新的网络的架构，但是还有一个很简单的方法就是增大可以使用的数据量（基于人工标注的高昂成本的现实，这个方法很难实现。）</p>
+<p>因此，self-supervised learning应运而生。它的成功在于它找到了一种可以有效地使用大量未标记数据的方法。</p>
+<h2 id="基本思想及分类"><a href="#基本思想及分类" class="headerlink" title="基本思想及分类"></a>基本思想及分类</h2><p><strong>It a time for deep learning algorithms to get rid of human supervision and turn back to data’s selfsupervision.</strong></p>
+<p>自我监督学习的直觉是利用<strong>数据固有的共现关系</strong>作为自我监督，这可能是多种多样的。</p>
+<p>我们可以将self-supervision归结为三个宽泛的类别中：</p>
+<ul>
+<li>Generative: train an encoder to encode input x into an explicit vector z and a decoder to reconstruct x from z (e.g., the cloze test, graph generation) </li>
+<li>Contrastive: train an encoder to encode input x into an explicit vector z to measure similarity (e.g., mutual information maximization, instance discrimination) </li>
+<li>Generative-Contrastive (Adversarial): train an encoderdecoder to generate fake samples and a discriminator to distinguish them from real samples (e.g., GAN)</li>
+</ul>
+<p>他们的区别在于模型结构和目标：<img src="/2023/01/16/Self-supervised-Learning/image-20221023231711831.png" alt="image-20221023231711831"></p>
+<p>区别主要在于：</p>
+<ul>
+<li>For latent distribution $z$: in generative and contrastive methods, $z$ is explicit and is often leveraged by downstream tasks; while in GAN, $z$ is implicitly modeled.</li>
+<li>For discriminator: the generative method does not have a discriminator while GAN and contrastive have. Contrastive discriminator has comparatively fewer parameters (e.g., a multi-layer perceptron with 2-3 layers) than GAN (e.g., a standard ResNet [53]).</li>
+<li>For objectives: the generative methods use a reconstruction loss, the contrastive ones use a contrastive similarity metric (e.g., InfoNCE), and the generative-contrastive ones leverage distributional divergence as the loss (e.g., JS-divergence, Wasserstein Distance).</li>
+</ul>
+<p>与下游任务相关的正确设计的<strong>训练目标</strong>可以将我们随机初始化的模型变成优秀的<strong>预训练特征提取器</strong>。</p>
+<p>The art of self-supervised learning primarily lies in defining proper objectives for unlabeled data.</p>
+<h2 id="Generative-Self-supervised-Learning"><a href="#Generative-Self-supervised-Learning" class="headerlink" title="Generative Self-supervised Learning"></a>Generative Self-supervised Learning</h2><h3 id="Auto-regressive-AR-Model"><a href="#Auto-regressive-AR-Model" class="headerlink" title="Auto-regressive(AR) Model"></a>Auto-regressive(AR) Model</h3><p>AR模型可以被认为是“Bayes net structure”(有向图模型)。联合分布可以分解为条件的乘积：</p>
+<script type="math/tex; mode=display">
+\max_{\theta}p_{\theta}(X) = \sum_{t=1}^T\log p_{\theta}(x_t|X_{1:t-1})</script><p>其中每个变量的概率取决于先前的变量。</p>
+<blockquote>
+<p>这里补充AR模型的基本概念和范式。</p>
+<ul>
+<li><p>回归分析：回归分析是<strong>分析自变量与因变量之间定量的因果关系</strong>，并且用回归方程描述。</p>
+</li>
+<li><p>自回归：因变量和自变量都为同一个变量的回归方法</p>
+</li>
+<li><p>自回归模型</p>
+<ul>
+<li>如果${\epsilon_t}$为白噪声，服从$N(0,\sigma^2)$，$a_0,a_1,…,a_p(a_p\neq0)$为实数，就称$p$阶差分方程<script type="math/tex; mode=display">
+X_t = a_0 + a_1X_{t-1}+a_2X_{t-2}+\cdot \cdot \cdot +a_pX_{t-p} + \epsilon_t,t\in\mathbb{Z}</script>是一个p阶自回归模型，简称$AR(p)$模型，称$\textbf{a} = (a_0,a_1,…,a_p)^T$是模型中的回归系数。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p>在NLP中，AR语言模型的目标通常是最大化在前向自回归分解下的似然性。<strong>Auto-regressive language model （自回归语言模型）</strong>就是根据上文信息预测下文信息（反之亦可)，正是这由于自回归模型的训练方法完美适应于生成任务，因此被广泛应用于例如文本生成和机器翻译等任务。</p>
+<p>即，将下一个词作为标签，将前几个词作为输入，然后建模最大化其对应的似然性的自回归模型。</p>
+<p>与 GPT 不同，GPT-2 去除了不同任务的微调过程。为了学习泛化不同任务的统一表示，GPT-2 对 $p(output|input, task)$ 建模，这意味着给定不同的任务，相同的输入可以有不同的输出。</p>
+<h3 id="Flow-based-Model"><a href="#Flow-based-Model" class="headerlink" title="Flow-based Model"></a>Flow-based Model</h3><blockquote>
+<p>首先补充Flow-based Generative Model的相关知识</p>
+<p><img src="/2023/01/16/Self-supervised-Learning/v2-ec15bcddf873e5c63b58cfa21cfbad5f_b.jpg" alt="img"></p>
+<p>回顾一下之前GAN的相关内容，我们知道GAN的目标就是通过生成器学习得到一个生成分布，并使其尽可能的接近于真实的数据分布。对于该过程我们可以表述为以下的公式：</p>
+<script type="math/tex; mode=display">
+G^* = arg\max_G\sum_{i=1}^m \log P_G(x^i) \{x_1,x_2,..,x_m \ from \ P_{data}\}</script><p>在前面涉及到的 GAN 的相关内容中我们已经知道，目前生成器往往是参数量十分巨大的 NN，所以 $P_G$ 的具体表达式我们很难获得，所以在 GAN 里面需要在生成分布和真实分布中进行<strong>采样</strong>，通过采样尽可能多的数据来近似两个不同的分布，然后引入判别器来衡量两个分布之间的差距，以此来引导 NN 的训练。而在 flow-based 生成模型中，我们将会<strong>对上述的公式直接进行求解</strong>，这就是其与 GAN 存在的最大区别。</p>
+<blockquote>
+<p>这里需要补充一点知识，已知两个概率密度函数 $\pi(z)$和 $p(x)$，这两个概率密度分布存在以下变换关系 $x=f(z)$ ，在两个不同的概率密度函数上对应的部分取 $dz$ 和 $dx$进行积分，根据两个函数对应部分积分的面积相等，可以得到关系式： $p(x)|det(J_f)|=\pi(z)$ ，其中 $J_f$为函数 $f$ 的雅可比矩阵，由于 $\det(J_f)=\frac{1}{\det(J_f^{-1})}$ , 所以有 $p(x)=\pi(z)|det(J_f^{-1})|$。</p>
+</blockquote>
+<p>上面讲到的 $\pi(z)$ 其实就是下图中对应的采样分布，而 $p(x)$就对应生成分布。那么有了以上补充部分的结论便可得到 $P_G(x^i)=\pi(z^i)|det(J_G^{-1})|$ 和 $z^i=G^{-1}(x^i)$ 。</p>
+<p><img src="/2023/01/16/Self-supervised-Learning/v2-518e7588b6b2cbb7daddb3f561037ec2_r.jpg" alt></p>
+<p>那么现在我们便可以把最上面的优化目标 $G^*$ 转化为：</p>
+<script type="math/tex; mode=display">G^*=\arg \max \limits_{G} \sum^{m}_{i=1}log\pi(G^{-1}(x^i))+log|det(J_G^{-1})| \ \ \ \ (2)\\</script><p>要求解以上的表达式就需要先计算出 $G^{-1}$和 $det(J_G^{-1})$，所以显而易见这里的<strong>生成器 $G$ 必须是可逆的</strong>。在这里我们可以通过逆序来训练 $G^{-1}$，在真实分布中采样 $x^i$，生成 Normal Distribution 中的 sample $z^i$ ，maximize 上面的 objective function（这里一般需要保证 $x^i$和 $z^i$具有相同的尺寸）。</p>
+<p><img src="/2023/01/16/Self-supervised-Learning/v2-717a108926ab2a7feee1ed88596b1b85_r.jpg" alt></p>
+<p>由于单个 $G$  受到了较多的约束，所以可能表征能力有限，需要注意的是这里的 $G$ 是可以进行多层扩展的，其对应的关系式只要进行递推便可。</p>
+<p><img src="/2023/01/16/Self-supervised-Learning/v2-1d49f1b8d24bc755e8c1fc4a2b105211_r.jpg" alt></p>
+<p>而对于满足以上这种可逆性质的 $G$ 的一种设计方法便是为 coupling layer，其被应用在 <a href="https://link.zhihu.com/?target=https%3A//arxiv.org/abs/1410.8516">NICE</a> 和 <a href="https://link.zhihu.com/?target=https%3A//arxiv.org/abs/1605.08803">Real NVP</a> 这两篇论文当中。</p>
+<p>coupling layer 采用以下结构，其中 F 和 H 为两个变换函数，其可以是一个神经网络：  </p>
+<p><img src="/2023/01/16/Self-supervised-Learning/v2-067db86c25e2e1fba0ad42c16cb0a2ec_r.jpg" alt></p>
+<p>整个流程可以表述为：</p>
+<p>首先将输入 $z$ 拆分成两个部分（可以是按 channel 进行拆分，也可以还是按照 pixel 的 location 进行拆分），对于上面的部分 $z<em>1,…,z_d$ 直接 copy 得到对应的 output $x_1,…,x_d$, 而对于下面的分支则有如下的变换： $(z</em>{d+1},…,z<em>D)\odot F(z_1,…,z_d)+H(z_1,…,z_d)=x</em>{d+1},…,x<em>D$ 可以简化为： $(z</em>{d+1},…,z<em>D)\odot (\beta_1,…,\beta_d)+ (\gamma_1,…,\gamma_d)=x</em>{d+1},…,x<em>D$ 或 $\beta_i z_i+\gamma_i=x</em>{i&gt;d}$ 。之所以采用以上设计结构的原因在于上述的结构容易进行逆运算。</p>
+<p><img src="/2023/01/16/Self-supervised-Learning/v2-9642b94de841d63f752c3412f2ced928_r.jpg" alt></p>
+<p>在逆向过程中，容易得到 $z<em>{i\leq d}=x_i$ 和$z</em>{i&gt;d}=\frac{x_i-\gamma_i}{\beta_i}$ 。解决完 $G^{-1}$部分，还需要求解生成器对应的雅可比矩阵 $J_G$ 的行列式。我们直接采用李老师的 PPT 中的图片来解释。</p>
+<p><img src="/2023/01/16/Self-supervised-Learning/v2-c395fc7e5d97412001cd965103a5a846_r.jpg" alt></p>
+<p>我们可以将生成器对应的雅克比矩阵分为以上的四个子块，左上角由于是直接 copy 的，所以对应的部分应该是一个单位矩阵，右上角中由于 $x<em>1,…,x_d$ 与 $z</em>{d+1},…,z<em>D$ 没有任何关系，所以是一个零矩阵，而左下角呢，We don’t care，就是这么任性，因为行列式的右上角为 0，所以只需要求解主对角线上的值即可。而右下角呢，由于只有 $x_i$ 和 $z_i$ 之间才会产生联系，所以自然而然右下角应该是一个对角阵，对角线上的元素分别为 $\beta</em>{d+1},…,\beta<em>{D}$。所以上述的 $|det(J_G)|=|\beta</em>{d+1}\beta<em>{d+2}\cdot\cdot\cdot\beta</em>{D}|$ 。那么这么一来 coupling layer 的设计把 $G^{-1}$和 $det(J_G)$这个问题都解决了。</p>
+<p>最后呢，为了进一步的增强 coupling layer 的表征能力，我们还以根据不同的策略利用 Coupling Layer 作为子模块进行 Stacking。</p>
+<p><img src="/2023/01/16/Self-supervised-Learning/v2-c7f0c2407835450b6eb799f1ded512f8_r.jpg" alt></p>
+<p>除了 Coupling Layer 之外呢，还有 <a href="https://link.zhihu.com/?target=https%3A//arxiv.org/abs/1807.03039">GLOW</a> 这个工作采用了 1×1 的卷积来解决上述的问题。</p>
+<p>参考文章：</p>
+<p><a href="https://link.zhihu.com/?target=https%3A//lilianweng.github.io/lil-log/2018/10/13/flow-based-deep-generative-models.html">https://lilianweng.github.io/lil-log/2018/10/13/flow-based-deep-generative-models.html</a></p>
+</blockquote>
+<p>基于<strong>流</strong>的模型的目标是从数据中估计复杂的高维密度 $p(x)$。直观地想，直接形式化密度是困难的。</p>
+<p>为了获得复杂的密度，我们希望通过堆叠一系列分别描述<strong>不同数据特征</strong>的变换函数来“逐步”生成它。</p>
+<p>通常，基于流的模型首先定义一个潜在变量 $z$，它遵循已知分布 $p<em>Z (z)$。然后定义 $z = f</em>{\theta}(x)$，其中 $f<em>{\theta}$ 是一个可逆且可微的函数。目标是学习 $x$ 和 $z$ 之间的转换，以便可以描述 $x$ 的密度。根据积分规则，$p</em>{\theta}(x)dx = p(z)dz$。因此，$x$ 和 $z$ 的密度满足：</p>
+<script type="math/tex; mode=display">
+p_{\theta}(x) = p(f_{\theta}(x))|\frac{\partial f_{\theta}(x)}{\partial x}|</script><p>所以，目标就是最大化似然函数：</p>
+<script type="math/tex; mode=display">
+\max_{\theta}\sum_i\log p_{\theta}(x^{(i)}) = \max_{\theta}\sum_i\log p_{Z}(f_{\theta}(x^{(i)}))+ \log |\frac{\partial f_{\theta}}{\partial x}(x^{(i)})|</script><p>基于流的模型的优点是 $x$ 和 $z$ 之间的映射是可逆的。</p>
+<p>但是，它还要求 $x$ 和 $z$ 必须具有相同的维度。 $f_{\theta}$ 需要仔细设计，因为它应该是可逆的并且是等式中的雅可比行列式并且第一个式子也应该容易计算才行。 </p>
+<p>NICE [35] 和 RealNVP [36] 设计仿射耦合层来参数化 $f_{\theta}$。核心思想是将 $x$ 分成两个块 $(x_1, x_2)$ 并以<strong>自回归</strong>的方式应用从 $(x_1, x_2)$ 到 $(z_1, z_2)$ 的变换，即 $z_1 = x_1$ 和 $z_2 = x_2 + m( x_1)$。</p>
+<p>最近，提出了 Glow [68]，它引入了<strong>可逆的 1×1 卷积</strong>并简化了 RealNVP。</p>
+<h3 id="Auto-encoding-AE-Model"><a href="#Auto-encoding-AE-Model" class="headerlink" title="Auto-encoding(AE) Model"></a>Auto-encoding(AE) Model</h3><p>自动编码模型的目标是从（损坏的）输入重构（部分）输入。由于其灵活性，AE 模型可能是最流行的具有许多变体的生成模型。</p>
+<h4 id="Basic-AE-Model"><a href="#Basic-AE-Model" class="headerlink" title="Basic AE Model"></a>Basic AE Model</h4><p>在自编码器之前，Restricted Boltzmann Machine (RBM)也可以看做是一种特殊的自编码器。</p>
+<blockquote>
+<blockquote>
+<p>结构化概率模型为随机变量之间的直接作用提供了一个正式地建模框架。这种方式大大减少了模型的参数个数，以至于模型只需要更少的数据来进行有效的估计。这些更小的模型大大减少了再模型存储、模型推断以及从模型中采样时的计算开销。</p>
+<p>一种常见的方式是使用图来表示随机变量之间的相互作用。</p>
+<p>其中有向图模型被称为信念网络（belief network）或贝叶斯网络（Bayesian network）</p>
+<p>每个结点代表一个随机变量，从a指向b的边是说我们用一个条件分布来定义b，而a是作为这个条件分布分布符号右边的一个变量。即b的分布依赖于a的取值。正式地说，变量x的有向概率模型是通过有向无环图$\mathcal{G}$（每个结点都是模型中的随机变量）和一系列局部条件概率分布$p(x<em>i|Pa</em>{\mathcal{G}}(x<em>i))$。其中$Pa</em>{\mathcal{G}}(x_i)$代表结点$x_i$的所有父节点。x的概率分布可以表示为：</p>
+<script type="math/tex; mode=display">
+p(\textbf{x}) = \prod_{i}p(x_i|Pa_{\mathcal{G}}(x_i))</script><p>而同样地，还有无向图模型，也被称为马尔可夫随机场(Markov random field,MRF)或马尔可夫网络(Markov network)。当随机变量之间的相互作用并没有本质性的指向，或者是明确的双向相互作用时，使用无向图模型更合适。</p>
+<p>正式地说，一个无向图模型是一个定义在无向模型$\mathcal{G}$上的该绿化模型。对图中的每个团$\mathcal{C}$（图中结点的子集，其中的点是全连接的），一个因子$\phi(\mathcal{C})$被称为团势能，衡量了团中变量每一种可能的联合状态所对应的密切程度。这些因子被限制是非负的，一起定义了未归一化概率函数：</p>
+<script type="math/tex; mode=display">
+\widetilde{p}(\textbf{x}) = \prod_{\mathcal{C}\in \mathcal{G}}\phi(\mathcal{C})</script><p>尽管这个概率是非负的，但是我们无法保证其积分或和为1。为了得到一个有效的概率分布，我们需要使用对应的归一化的概率分布（一个通过归一化团势能乘积定义的分布也被称为<strong>吉布斯分布</strong>）：</p>
+<script type="math/tex; mode=display">
+p(\textbf{x}) = \frac{1}{Z}\widetilde{p}(\textbf{x})</script><p>其中$Z$是是的所有概率之和或者积分为1的常数，并且满足：</p>
+<script type="math/tex; mode=display">
+Z = \int\widetilde{p}(\textbf{x})d\textbf{x}</script><p>当函数$\phi$固定时，我们可以把$Z$当成一个常数。但是如果函数$\phi$带有参数时，那么$Z$是这些参数的一个函数。</p>
+<p>归一化常数$Z$被称为是配分函数。</p>
+<p>由于$Z$通常是对所有可能的$\textbf{x}$状态的联合分布空间求和或者求积分得到的，它通常是很难计算的。</p>
+<p>为了获得一个无向模型的归一化概率分布，模型的结构和函数$\phi$的定义通常需要设计为有助于高效地计算$Z$。</p>
+<p>在深度学习中，$Z$通常是难以处理的。只能使用一些近似的方法来估计。</p>
+<p><strong>基于能量的模型</strong></p>
+<p>无向模型中很多理论结果都依赖于$\forall x, \widetilde{p}(x)&gt;0$这个假设。使这个假设满足的一种简单方式就是基于能量的模型(Energy-based model,EBM)，其中</p>
+<script type="math/tex; mode=display">
+\widetilde{p}(\textbf{x}) = \exp(-E(\textbf{x}))</script><p>其中$E(\textbf{x})$被称为能量函数。 </p>
+<p>由于$\exp(\cdot)$的非负性，我们可以完全自由地选择那些能够简化学习过程的能量函数。可以做个比较，当学习团势能的时候，还需要添加一个非负的限制再去优化。但是在学习能量函数的时候是没有任何限制的。</p>
+<p>服从上面式子形式的任何分布都是<strong>玻尔兹曼分布</strong>的一个实例。由于这个原因，我们把许多基于能量的模型称为<strong>玻尔兹曼机</strong>。</p>
+</blockquote>
+<p>我们在d维二值随机向量$\textbf{x} \in {0,1}^d$上定义玻尔兹曼机。他是一种基于能量的模型，意味着我们可以使用能量函数定义联合概率分布：</p>
+<script type="math/tex; mode=display">
+P(x) = \frac{exp(-E(x))}{Z}</script><p>其中$E(x)$是能量函数，$Z$是确保$\sum_xP(x)=1$的配分函数。玻尔兹曼机的能量函数如下给出：</p>
+<script type="math/tex; mode=display">
+E(x) = -x^\top Ux-b^\top x</script><p>其中$U$是模型参数的”权重”矩阵，$b$是偏置向量。</p>
+<p>本质而言，上述模型的表达能力是有限的，因为能量函数E是2阶多项式。它关于某个具体的$x_i$的边缘分布是LR（比LR多了一个平方项，但是平方项等于自身，因为$x_i$取值是0或1，所以还是只包含一次项）。变量与变量之间的关系是线性关系。</p>
+<p>如果在玻尔兹曼机里加入隐变量，或者说不是所有变量都是可见的，那么其表达能力大大加强，可以逼近<strong>任何的关于可见变量的概率分布函数</strong>。</p>
+<p>在上式中，把变量分为<strong>可见变量v</strong>与<strong>不可见变量h</strong>，则能量函数可以改写成</p>
+<script type="math/tex; mode=display">
+E(v,h) = -v^\top Rv - v^\top Wh-h^\top Sh -b^\top v -c^\top h</script><p>玻尔兹曼机的学习算法通常基于最大似然。但是所有的玻尔兹曼机都有难以处理的分配函数，因此最大似然梯度也需要使用近似方法来估计。</p>
+<p>当基于最大似然的学习规则时，连接两个单元的特定权重的更新仅取决于这两个单元在不同分布下收集的统计信息：$P<em>{model}(v)$和$\hat{P}</em>{data}(v)P_{model}(h|v)$，即学习规则是<strong>局部的</strong>。网络的其余部分虽然参与塑造这些统计信息，但权重可以再完全不知道网络其余部分的条件下更新。</p>
+<p><strong>受限玻尔兹曼机</strong></p>
+<p>RBM是包含一层可观察变量和单层潜变量的无向概率图模型。RBM可以堆叠起来（一个在另一个的顶部）形成更深的模型。RBM本身的结构是一个二分图，观察层或潜层中的任何单元之间不允许存在连接。</p>
+<p>令观察层由一组$n_v$个二值随机变量组成，我们统称为向量$\textbf{v}$。我们将$n_h$个二值随机变量的潜在或隐藏层记为$h$。</p>
+<p>受限玻尔兹曼机也是基于能量的模型，其联合概率也是由能量函数指定：</p>
+<script type="math/tex; mode=display">
+P(\textbf{v}=v,\textbf{h}=h) = \frac{1}{Z}exp(-E(v,h))</script><p>RBM的能量函数由如下给出：</p>
+<script type="math/tex; mode=display">
+E(v,h) = -b^\top v - c^\top h - v^\top Wh</script><p>其中的Z是被称为配分函数的归一化常数：</p>
+<script type="math/tex; mode=display">
+Z = \sum_{v}\sum_{h}exp\{-E(v,h)\}</script><p>已证明，$Z$是难解的。因此，归一化联合概率分布$P(v)$也难以估计。但是，RBM的二分图结构具有非常特殊的性质，其条件分布$P(\textbf{h}|\textbf{v})$和$P(\textbf{v}|\textbf{h})$是<strong>因子的（即条件独立，可以单独计算每个相乘的因子，即可计算最终的条件分布）</strong>，且计算和采样也是相对简单的。</p>
+<p>从联合分布导出条件分布是直观的</p>
+<p><img src="/2023/01/16/Self-supervised-Learning/image-20221025001451606.png" alt="image-20221025001451606"></p>
+<p>由于我们相对可见单元$\textbf{v}$计算条件概率，相对于分布$P(\textbf{h}|\textbf{v})$我们可以将它们视为常数。条件分布$P(\textbf{h}|\textbf{v})$因子相乘的本质，我们可以将向量$\textbf{h}$上的联合概率写成单独元素$h_j$上（未归一化）分布的乘积。现在原问题变成了对单个二值$h_j$上的分布进行归一化的简单问题。</p>
+<p><img src="https://pic4.zhimg.com/v2-aa3bed434b00a6d4091d8328adea054b_b.jpg" alt="img"></p>
+<p>现在我们可以将关于隐藏层的完全条件分布表达为因子形式，另一个条件分布也可以类似地推导和表达。</p>
+<p><img src="/2023/01/16/Self-supervised-Learning/image-20221025001902562.png" alt="image-20221025001902562"></p>
+<blockquote>
+<p>PGM（图概率模型）的典型问题之一就是推断问题。其定义是一致模型中的部分随机变量e，计算其他部分随机变量q的后验概率，即</p>
+<script type="math/tex; mode=display">
+P(\textbf{q}|\textbf{e})</script><p>一般的根据贝叶斯公式直接进行计算：</p>
+<script type="math/tex; mode=display">
+P(\textbf{q}|\textbf{e}) = \frac{P(\textbf{q},\textbf{e})}{P(\textbf{e})}</script><p>但是在模型比较复杂，涉及的变量数量庞大的时候，直接精确计算开销太大。所以一般会采用一些近似计算的方法。</p>
+</blockquote>
+<p>下面讨论RBM参数的基本学习算法</p>
+<p>已知从RBM的观测数据集${v}_S$来估计数据集的概率分布一般采用极大似然函数方法，即最大化似然函数：</p>
+<script type="math/tex; mode=display">
+ln\prod_{s}p(v)=\sum_{S}\left \{ ln\sum_{h}p(v,h)\right \}=\sum_{S}\left \{ ln\sum_{h}e^{-E(v,h)}-ln\sum_{x,h}e^{-E(x,h)} \right \}</script><p>其中v是已经观测的数据，x表示可观测的状态变量取值，大家要注意区分开来，都由v来表示容易搞混，<strong>第二项其实是归一因子，与具体的观测数据v无关</strong>。可以采用梯度下降算法来求取参数。</p>
+<p>似然函数求梯度如下：</p>
+<script type="math/tex; mode=display">
+\frac{\partial lnp(v)}{\partial w_{ij}}=\sum_{h}\left \{ p(h|v)\cdot h_{i}v_{j} \right \}-\sum_{x}\left \{ \sum_{h} p(h|x)\cdot h_{i}x_{j}\right \}
+\\
+\frac{\partial lnp(v)}{\partial b_{j}}=\sum_{h}\left \{ p(h|v)\cdot v_{j} \right \}-\sum_{x}\left \{ \sum_{h} p(h|x)\cdot x_{j}\right \}
+\\
+\frac{\partial lnp(v)}{\partial c_{i}}=\sum_{h}\left \{ p(h|v)\cdot h_{i} \right \}-\sum_{x}\left \{ \sum_{h} p(h|x)\cdot h_{i}\right \}</script><p>而又因为：</p>
+<script type="math/tex; mode=display">
+\sum_{h} p(h|v)\cdot h_{i}v_{j} = \sum_{h_{i}}\left \{ \sum_{h_{-i}}p(h_{i}|v)\cdot p(h_{-i}|v)h_{i}v_{j} \right \}=\sum_{h_{i}}\left \{ p(h_{i}|v)h_{i}v_{j} \sum_{h_{-i}}\cdot p(h_{-i}|v)\right \}=\sum_{h_{i}}p(h_{i}|v)h_{i}v_{j}</script><p>其中，$h_{-i}$表示随机状态h的除第i个分量以外的其他随机分量，所以：</p>
+<script type="math/tex; mode=display">
+\sum_{h_{-i}}p(h_{-i}|v)=1</script><p>因此，我们进一步简化似然函数的梯度：</p>
+<script type="math/tex; mode=display">
+\frac{\partial lnp(v)}{\partial w_{ij}}=\sum_{h_i}p(h_i|v)h_iv_j-\sum_{x}p(x,h)h_iv_j
+\\
+\frac{\partial lnp(v)}{\partial b_{j}}=v_{j}-\sum_{x}p(x)x_{j}
+\\
+\frac{\partial lnp(v)}{\partial c_j}=\sum_{h_i}p(h_i|v)h_i-\sum_{x}p(x,h)h_i</script><p>上面三个式子中第二项的复杂性是随机状态分变量数目的指数函数，直接计算效率太低。这时就需要估计第二项的期望值。</p>
+</blockquote>
+<p>RBM的目标是最小化模型的边际分布和数据分布之间的差异。相比之下，自编码器是有向图模型，可以更有效地进行训练。</p>
+<p>简单来说，RBM是有两层结点，一层可见结点和一层隐藏层结点。两层结点是以二分图的形式连接的（所谓的受限就是同层的结点之间不能连接），且同层结点之间在给定另一层结点状态的条件下是独立的（条件独立的）。而这个模型训练的过程是首先输入X作为可见结点的输入，然后计算隐藏层结点的输出并通过激活函数，然后将激活值再作为输入，再通过可见层结点来还原原本的X。还原值和输入值之间的差距就是模型优化的目标。</p>
+<p>那如何训练并使用模型呢？我们使用推荐系统的例子来进一步理解。</p>
+<p>比如可见层的6个节点代表6首歌曲，然后每个用户是否听过这些歌（听过的话对应位置置1）作为输入向量。然后隐藏层的2个节点可能代表歌曲的类型流派。我们经过对大量用户的喜好分析后，模型具备了分析用户喜好及对应的听过哪些歌曲的能力。（即通过用户听过的歌曲推断其喜好，再从喜好反推听过哪些歌）。这个时候，我们给出一个用户，他听过2首歌，我们可以通过训练好的模型，给出他会去听另外4首没听过的歌的推荐值。基于此，我们可以实现对用户歌曲的推荐功能。</p>
+<h4 id="Context-Prediction-Model-CPM"><a href="#Context-Prediction-Model-CPM" class="headerlink" title="Context Prediction Model(CPM)"></a>Context Prediction Model(CPM)</h4><p>CPM的思想是根据输入预测上下文信息。</p>
+<p>在NLP领域中，在word embedding学习中的自监督学习，CBOW和Skip-Gram是其中的先驱工作。CBOW 旨在根据上下文标记预测输入标记。相比之下，Skip-Gram 旨在根据输入标记预测上下文标记。</p>
+<h4 id="Denoising-AE-Model"><a href="#Denoising-AE-Model" class="headerlink" title="Denoising AE Model"></a>Denoising AE Model</h4><p>去噪自编码器模型的直觉是表示应该对噪声的引入具有鲁棒性。</p>
+<p>MLM是其中最成功的架构之一。</p>
+<p>相较于AR模型，DAE模型在预测时可以结合上下文信息，而不只是单方向的信息。然而，MLM 假设如果<strong>给定未屏蔽的令牌（实际上不成立），则预测的令牌是独立的</strong>这一事实长期以来一直被认为是其固有的缺点。</p>
+<h4 id="Variational-AE-Model"><a href="#Variational-AE-Model" class="headerlink" title="Variational AE Model"></a>Variational AE Model</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># <span class="doctag">TODO:</span> learn from the weekend meeting.</span></span><br></pre></td></tr></table></figure>
+<h3 id="Hybrid-Generative-Model"><a href="#Hybrid-Generative-Model" class="headerlink" title="Hybrid Generative Model"></a>Hybrid Generative Model</h3><h4 id="AR-amp-AE"><a href="#AR-amp-AE" class="headerlink" title="AR &amp; AE"></a>AR &amp; AE</h4><p>MADE为了结合AR和AE的优势，对AE做了一些简单的修改。</p>
+<p>在原始的AE模型中，相邻层的神经元是通过MLP全连接的。但是在MADE中，相邻层之间的一些连接被masked掉来确保每个输入维度仅从其维度重建。</p>
+<p>MADE可以很容易的在条件计算上并行化，并且可以很直接且便宜地通过结合AR和AE得到高维联合分布的估计。</p>
+<p>在NLP中，PLM是将AR和AE的又是结合起来的表示模型。<img src="/2023/01/16/Self-supervised-Learning/image-20221026190346668.png" alt="image-20221026190346668"></p>
+<p>正式地说，令$\mathcal{Z}_\mathcal{T}$代表一个长度为T的索引序列$[1,2,…,T]$的所有可能的排列。则PLM的目标可以表示为：</p>
+<script type="math/tex; mode=display">
+\max_{\theta}\mathbb{E}_{\textbf{z}\sim \mathcal{Z}_{\mathcal{T}}}[\sum_{t=1}^T\log p_{\theta}(x_{z_t}|\textbf{x}_{\textbf{z}<t})]</script><p>实际上，对于每个文本序列，都会对不同的分解顺序进行采样。因此，每个令牌都可以从双方看到其上下文信息。基于排列顺序，XLNet 还对位置进行重新参数化，让模型知道需要预测哪个位置。然后引入了一种特殊的双流自注意力来进行目标感知预测。</p>
+<h4 id="AE-amp-Flow-based-Models"><a href="#AE-amp-Flow-based-Models" class="headerlink" title="AE &amp; Flow-based Models"></a>AE &amp; Flow-based Models</h4><p>在图域中，GraphAF [115] 是一种基于流的自回归模型，用于生成分子图。它可以在迭代过程中生成分子，还可以并行计算确切的可能性。 GraphAF 将分子生成形式化为顺序决策过程。它将详细的领域知识纳入奖励设计，例如效价检查。受基于流模型的最新进展的启发，它定义了从基本分布（例如，多元高斯分布）到分子图结构的可逆变换。此外，反量化技术 [56] 用于将离散数据（包括节点类型和边缘类型）转换为连续数据。</p>
+<h3 id="Pros-and-Cons"><a href="#Pros-and-Cons" class="headerlink" title="Pros and Cons"></a>Pros and Cons</h3><ul>
+<li><p>优点</p>
+<p>生成式自我监督学习在自我监督学习中取得成功的一个原因是它能够在不假设下游任务的情况下恢复原始数据分布，这使得生成式模型能够得到广泛的应用。</p>
+</li>
+<li><p>缺点</p>
+<ul>
+<li><p>尽管生成式自监督学习在生成任务中处于中心地位，但最近发现在某些分类场景中，生成式自我监督学习的竞争力远低于对比自我监督学习，因为<strong>对比学习的目标天然符合分类目标</strong>。包括 MoCo [52]、SimCLR [19]、BYOL [47] 和 SwAV [18] 在内的作品在各种 CV 基准测试中表现出压倒性的表现。尽管如此，在 <strong>NLP 领域</strong>，研究人员仍然依赖<strong>生成语言模型来进行文本分类</strong>。</p>
+</li>
+<li><p>生成目标的逐点性质存在一些固有缺陷。这个目标通常被表述为最大似然函数$ \mathcal{L}_{MLE} = − \sum_x \log p(x|c)$ 其中 $x$ 是我们希望建模的所有样本，$c$ 是条件约束，例如上下文信息。考虑到它的形式，MLE 有两个致命的问题：</p>
+<ul>
+<li><p>Sensitive and Conservative Distribution</p>
+<p>当 p(x|c) → 0 时，$\mathcal{L}_{MLE}$ 非常大，使得生成模型对稀有样本极为敏感。它直接导致保守分布，性能低下。</p>
+</li>
+<li><p>Low-level Abstraction Objective</p>
+<p>在MLE中，表示分布在 $x$ 的级别（即逐点级别）建模，例如图像中的像素、文本中的单词和图中的节点。然而，大多数分类任务都针对高级抽象，例如对象检测、长段落理解和分子分类。</p>
+</li>
+</ul>
+<blockquote>
+<p>MLE是最大似然估计。</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<p>作为一种相反的方法，generative-contrastive自我监督学习<strong>放弃了逐点目标</strong>。它转向更强大且更好地处理数据流形中的<strong>高级抽象</strong>挑战的分布匹配目标。</p>
+<h2 id="Contrastive-Self-supervised-Learning"><a href="#Contrastive-Self-supervised-Learning" class="headerlink" title="Contrastive Self-supervised Learning"></a>Contrastive Self-supervised Learning</h2><p>从统计的角度来看，机器学习可以分为生成模型和判别模型。</p>
+<p>给定输入$X$和目标$Y$的联合分布$P(X,Y)$</p>
+<ul>
+<li>生成模型计算$p(X,Y)$</li>
+<li>判别模型计算$p(Y|X=x)$</li>
+</ul>
+<p>由于表示学习想要的是从X中学到其特征表示，是在挖掘X中的关系。所以，长期以来认为生成模型才是表示学习的唯一选择。</p>
+<p>但是最近对比学习中的突破展示了判别模型在特征学习中的潜力。</p>
+<p>对比模型旨在从Noise Contrastive Estimation(NCE)目标中学习比较（learn to compare）</p>
+<script type="math/tex; mode=display">
+\mathcal{L} = \mathbb{E}_{x,x^+,x^-}[-\log (\frac{e^{f(x)^Tf(x^+)}} {e^{f(x)^Tf(x^+)} + e^{f(x)^Tf(x^-)}})]</script><p>其中$x^+$是和$x$相似的，$x^-$是和$x$不相似的，$f$是编码器（表示方程）。</p>
+<p>由于涉及更多不同的对，我们将 InfoNCE [95] 制定为：</p>
+<script type="math/tex; mode=display">
+\mathcal{L} = \mathbb{E}_{x,x^+,x^k}[-\log (\frac{e^{f(x)^Tf(x^+)}} {e^{f(x)^Tf(x^+)} + \sum_{k=1}^{K} e^{f(x)^Tf(x^k)}})]</script><p>在这里，我们将最近的对比学习框架分为两种类型：</p>
+<ul>
+<li>context-instance</li>
+<li>instance-instance</li>
+</ul>
+<p>它们都在下游任务中取得了惊人的表现，尤其是在<strong>classification problems under the linear protocol</strong>。</p>
+<blockquote>
+<p><strong>实验一：Linear Classification Protocol</strong></p>
+<p>评价一个自监督模型的性能，最关键和最重要的实验莫过于 <strong>Linear Classification Protocol</strong> 了，它也叫做 <strong>Linear Evaluation</strong>，具体做法就是先使用自监督的方法预训练 Encoder，这一过程不使用任何 label。预训练完以后 Encoder 部分的权重也就确定了，这时候把它的权重 freeze 住，同时在 Encoder 的末尾添加Global Average Pooling和一个线性分类器 (具体就是一个FC层+softmax函数)，并在某个数据集上做Fine-tune，这一过程使用全部的 label。</p>
+</blockquote>
+<h3 id="Context-Instance-Contrast"><a href="#Context-Instance-Contrast" class="headerlink" title="Context-Instance Contrast"></a>Context-Instance Contrast</h3><p>Context-instance对比，或所谓的global-local对比，侧重于对样本的局部特征与其全局上下文表示之间的归属关系进行建模。</p>
+<p>当我们学习一个局部特征的时候，我们希望它可以和全局上下文的表示想关联。比如条纹到老虎，句子到它的段落，节点到它的邻居节点。</p>
+<p>Context-Instance Contrast主要分为两类：</p>
+<ul>
+<li><p>Predict Relative Position(PRP)</p>
+<p>PRP 侧重于学习<strong>局部组件之间的相对位置</strong>。全局上下文是预测这些关系的<strong>隐含要求</strong>（例如了解大象的长相对于预测其头部和尾部之间的相对位置至关重要）。</p>
+</li>
+<li><p>Maximize Mutual Information(MI)</p>
+<p>MI专注于学习局部部分和全局上下文之间的<strong>直接归属关系</strong>。局部零件之间的相对位置被忽略。</p>
+</li>
+</ul>
+<h4 id="Predict-Relative-Position"><a href="#Predict-Relative-Position" class="headerlink" title="Predict Relative Position"></a>Predict Relative Position</h4><p>许多数据在其部分之间都有着丰富的空间（spatial）或序列（sequential）关系。</p>
+<blockquote>
+<p>——Nice to meet you.</p>
+<p>——Nice to meet you,too.</p>
+</blockquote>
+<p>这种数据局部的相对关系在很多模型中都作为辅助任务（pretext task）。</p>
+<p>PRP也可以作为工具来生成hard positive samples。</p>
+<blockquote>
+<p><strong>Hard positive samples：</strong>即很容易分类成negative的positive样本。和hard negative samples统称为hard samples。</p>
+</blockquote>
+<p>例如，PIRL [87] 中应用了拼图技术来增加正样本，但 PIRL 并未将解决拼图和恢复空间关系作为其目标。</p>
+<blockquote>
+<p>PIRL 添加了上述提到的”解拼图“的困难正样本（hard positive sample）增强。为了产生一个 pretext-invariant 的表示，PIRL 要求编码器把一个<strong>图像和它的拼图作为相似的对</strong>。</p>
+<p>即一个图像的拼图是它自己的hard positive sample</p>
+</blockquote>
+<p>NSP也是类似，判断是否是序列关系。</p>
+<p>为了取代 NSP，ALBERT [74] 提出了句子顺序预测 (SOP) 任务。这是因为，在 NSP 中，否定的下一句是从可能与当前主题不同的其他段落中采样的，这将 NSP 变成了一个<strong>更容易的主题模型问题</strong>。在 SOP 中，<strong>交换位置的两个句子被视为负样本</strong>，使模型专注于<strong>语义的连贯性</strong>。</p>
+<h4 id="Maximize-Mutual-Information"><a href="#Maximize-Mutual-Information" class="headerlink" title="Maximize Mutual Information"></a>Maximize Mutual Information</h4><p><strong>互信息（mutual information）</strong>的目标是对两个变量之间的关联进行建模，我们的目标是最大化它。一般来说，这种模型优化目标：</p>
+<script type="math/tex; mode=display">
+\max_{g_1\in \mathcal{G},g_2\in \mathcal{G}} I(g_1(x_1),g_2(x_2))</script><p>其中$g_i$是<strong>表示编码器</strong>，$\mathcal{G}_i$是一类有限制的编码器，而$I(\cdot,\cdot)$则是用于准确的互信息的基于样本的估计器。</p>
+<p>在应用程序中，MI 因其复杂的计算而臭名昭著。一种常见的做法是使用 NCE 目标交替最大化 I 的下限。</p>
+<p>Deep InfoMax [55] 是第一个通过对比学习任务显式建模互信息的方法，该任务最大化局部补丁与其全局上下文之间的 MI。对于实际实践，以图像分类为例，我们可以将<strong>猫图像 $x$ 编码为</strong> $f(x) \in \mathbb{R}^{M\times M\times d}$，并取出一个<strong>局部特征向量</strong> $v \in \mathbb{R}^d$。为了在实例和上下文之间进行对比，我们需要另外两件事：</p>
+<ul>
+<li>一个摘要函数$g$：$\mathbb{R}^{M\times M\times d} \rightarrow \mathbb{R}^d$来产生<strong>上下文向量</strong>$s = g(f(x))\in \mathbb{R}^d$</li>
+<li><strong>另一个猫图像</strong>$x^-$和它的<strong>上下文向量</strong>$s^- = g(f(x^-))$</li>
+</ul>
+<p>这样的话，对比目标可以定义为</p>
+<script type="math/tex; mode=display">
+\mathcal{L} = \mathbb{E}_{v,x}[-\log(\frac{e^{v^T\cdot s}}{e^{v^T\cdot s} + e^{v^T\cdot s^-}})]</script><p><img src="/2023/01/16/Self-supervised-Learning/image-20221026215710486.png" alt="image-20221026215710486"></p>
+<blockquote>
+<p>互信息在对比学习中的应用的两个代表。 Deep InfoMax (DIM) [55] 首先将图像编码为特征图，并利用Read out函数（或所谓的摘要函数）生成摘要向量。 AMDIM [7] 通过随机选择<strong>图像的另一个视图</strong>来生成摘要向量来增强 DIM。</p>
+</blockquote>
+<p>AMDIM [7] 增强了局部特征与其上下文之间的正相关（positive association）。它随机采样图像的两个不同视图（截断、变色等），分别生成<strong>局部特征向量</strong>和<strong>上下文向量</strong>。 </p>
+<p>在语言预训练中，InfoWord [72] 提出最大化<strong>句子的全局表示</strong>与其中的 <strong>n-gram</strong> 之间的互信息。上下文是从句子中推断出来的，选择的 n-gram 被屏蔽，负面上下文是从语料库中随机挑选出来的。</p>
+<p>在图学习中，Deep Graph InfoMax(DGI)将一个节点的表示视为局部特征，将随机抽样的2跳邻居节点的平均值作为上下文。但是，它很难从一个单独的图中产生负样本。为了解决这个问题，DGI提出了通过保持子图结构并重新排列节点特征来破坏原始的上下文，产生负样本。</p>
+<p><img src="/2023/01/16/Self-supervised-Learning/image-20221026222739800.png" alt="image-20221026222739800"></p>
+<blockquote>
+<p>Deep Graph InfoMax [136] 使用一个Read out函数生成摘要向量 $s_1$，并将其放入判别器中，节点 1 的嵌入 $x_1$ 和损坏的嵌入 $\widetilde{x}_1$ 分别用于识别哪个嵌入是真正的嵌入。corruption是打乱节点的位置。</p>
+</blockquote>
+<p>DGI之后有很多工作，例如InfoGraph [118]，其目标是学习<strong>图级表示</strong>而不是节点级，最大化图级表示与不同层次子结构之间的互信息。</p>
+<p>作为<strong>统一图预训练</strong>的尝试，在[57]中，作者从属性/结构和节点级/图级两个维度系统地分析了图神经网络的预训练策略。对于节点级别的结构预测，他们提出了上下文预测以最大化 k-hop 邻域的表示与其上下文图之间的 MI。对于化学领域的属性，他们提出了 Attribute Mask 来根据其邻域预测节点的属性，这是一个类似于 BERT 中的令牌掩码的生成目标。</p>
+<p>S2GRL [98] 进一步将上下文图中的节点分离为 k-hop 上下文子图，并分别最大化它们与目标节点的 MI。然而，图预训练的一个基本问题是学习<strong>跨图的归纳偏差</strong>，现有的图预训练工作<strong>仅适用于特定领域</strong>。</p>
+<h3 id="Instance-Instance-Contrast"><a href="#Instance-Instance-Contrast" class="headerlink" title="Instance-Instance Contrast"></a>Instance-Instance Contrast</h3><p>[129] 提供了经验证据，通过表明<strong>上限 MI 估计器会导致病态和较低的性能表示</strong>说明了上述模型的成功只是松散地与 MI 相关。</p>
+<p>相反，更多应该归功于<strong>编码器架构</strong>和与<strong>度量学习</strong>相关的<strong>负采样策略</strong>。</p>
+<blockquote>
+<p>度量学习（metric learning）</p>
+<ul>
+<li><p>度量：</p>
+<p>先说一下关于度量这个概念：在数学中，一个度量（或距离函数）是一个定义集合中元素之间距离的函数。一个具有度量的集合被称为度量空间。</p>
+</li>
+<li><p>度量学习：</p>
+<p>度量学习也叫作<strong>相似度学习</strong>，根据这个叫法作用就很明确了。</p>
+<p>之所以要进行度量学习，一方面在一些算法中需要依赖给定的度量：如Kmeans在进行聚类的时候就用到了欧式距离来计算样本点到中心的距离、KNN算法也用到了欧式距离等。这里计算的度量，就是比较样本点与中心点的相似度。</p>
+<p>这里的度量学习在模式识别领域，尤其是在图像识别这方面，在比较两张图片是否是相同的物体，就通过比较两张图片的<strong>相似度</strong>，相似度大可能性就高。</p>
+<p>因为在研究时间序列这方面的问题，所以想到了在时间序列中度量学习的体现，如果是判断两个区间的相似性，通常用到的度量方式就是采用常用到的欧式或者其他人为定义的距离函数，这样也就局限于了这样一个二维或者多维的空间中，而如果是用到Flood Sung大神提出的方法的话，我们把思路拓宽，能不能也是用神经网络来训练这个度量，这样的好处就是：</p>
+<ul>
+<li>长度不同的片段也可以进行比较。</li>
+<li>可以拓宽维度，从其他维度上寻找关联。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p>度量学习的一个重要重点是在提高<strong>负采样效率</strong>的同时执行<strong>硬正采样</strong>。它们可能在基于 MI 的模型的成功中发挥更关键的作用。</p>
+<p>作为替代方案，Instance-Instance Contrast丢弃 MI，和<strong>metric learnig</strong>那样直接研究不同样本的<strong>实例级局部表示之间的关系</strong>。</p>
+<p>实例级表示，而不是上下文级，对于广泛的分类任务更为重要。比如句子情感分类，主要依靠的还是少数的关键词。</p>
+<p><strong>两个阶段</strong></p>
+<ul>
+<li><p>早期</p>
+<p>研究人员借鉴了半监督学习的思想，通过基于聚类的判别产生伪标签，并在表示上取得了较好的性能。</p>
+</li>
+<li><p>近期</p>
+<p>最近，CMC [126]、MoCo [52]、SimCLR [19] 和 BYOL [47] 通过优于上下文实例对比方法进一步支持上述结论，并在线性分类协议下实现了<strong>与监督方法的竞争结果</strong>。</p>
+</li>
+</ul>
+<h4 id="Cluster-Discrimination"><a href="#Cluster-Discrimination" class="headerlink" title="Cluster Discrimination"></a>Cluster Discrimination</h4><p>图片分类问题要求同一个类别中的图片的表示应该是相似的。因此，动机是将相似图像在embedding空间中的表示要相近。</p>
+<p>在监督学习中，这个拉进的过程是通过标签监督来实现的。而在自监督学习中，我们没有这样的标签。为了解决标签问题，Deep Cluster提出利用<strong>聚类来产生伪标签</strong>，并要求判别器来预测图片的标签。</p>
+<p>训练可以分成两部：</p>
+<ul>
+<li>Deep Cluster使用k-means来对<strong>编码出的representation</strong>进行聚类，并未每个样本<strong>生成伪标签</strong></li>
+<li>判别器预测两个样本<strong>是否来自同一个簇</strong>，并反向传播到<strong>编码器</strong>。</li>
+</ul>
+<p>最近，Local Aggregation (LA) [162] 推进了基于集群的方法的边界。 它指出了DeepCluster 的几个缺点并进行了相应的优化。</p>
+<ul>
+<li>首先，在 DeepCluster 中，样本被分配到互斥集群，但 LA 为每个样本分别识别邻居。</li>
+<li>其次，DeepCluster 优化了交叉熵判别损失，而 LA 采用了直接优化局部软聚类度量的目标函数。这两个变化大大提高了 LA 表示在下游任务上的性能。</li>
+</ul>
+<p>基于聚类的鉴别也可能有助于其他预训练模型的泛化，更好地将模型从<strong>辅助任务</strong>转移到下游任务。</p>
+<p>传统的表示学习模型只有两个阶段：一个用于预训练，另一个用于评估。 ClusterFit [146] 在上述两个阶段之间引入了一个类似于 DeepCluster 的聚类预测微调阶段，提高了表示在下游分类评估中的性能。</p>
+<p>尽管先前基于集群判别的对比学习取得了成功，但与后来的基于实例判别的方法（包括 CMC [126]、MoCo [52] 和 SimCLR [19]）相比，两阶段训练范式<strong>耗时且性能不佳</strong>。这些基于实例区分的方法<strong>摆脱了缓慢的聚类阶段</strong>，并引入了有效的<strong>数据增强（即多视图）策略</strong>来提高性能。鉴于这些问题，SwAV [18] 的作者将在线聚类思想和多视图数据增强策略引入了聚类判别方法。 SwAV 提出了一种交换预测对比目标来处理多视图增强。直觉是，给定一些（clustered）原型，相同图像的不同视图应该分配到相同的原型中。 SwAV 将此“assignment”命名为“codes”。为了加速code计算，SwAV 的作者设计了一种在线计算策略。当模型尺寸较小且计算效率更高时，SwAV 优于基于实例区分的方法。基于 SwAV，在从 Instagram 收集的 10 亿张网络图像上训练了一个 13 亿参数的 SEER [46]。</p>
+<p>在图学习中，M3S [121] 采用类似的思想来执行 DeepCluster 式的<strong>自监督预训练</strong>，以获得更好的<strong>半监督预测</strong>。给定少量标记数据和许多未标记数据，对于每个阶段，M3S 首先预训练自己以在未标记数据上生成伪标签，就像 DeepCluster 所做的那样，然后将这些伪标签与在标记数据上受监督训练的模型预测的伪标签进行比较。只有前 k 个置信度标签被添加到标签集中，用于下一阶段的半监督训练。在[153]中，这个想法被进一步发展为三个预训练任务：拓扑分区（类似于谱聚类）、节点特征聚类和图完成。</p>
+<h4 id="Instance-Discrimination"><a href="#Instance-Discrimination" class="headerlink" title="Instance Discrimination"></a>Instance Discrimination</h4><p>利用实例辨别作为借口任务的原型是 InstDisc [142]。基于 InstDisc，CMC [126] 提出采用图像的多个不同视图作为正样本，并将另一个作为负样本。 CMC 在嵌入空间中接近图像的多个视图，并远离其他样本。然而，它在某种程度上受到 Deep InfoMax 思想的限制，它只对每个正样本<strong>采样一个负样本</strong>。</p>
+<p>在 MoCo [52] 中，研究人员进一步发展了通过<strong>动量对比利用instance discrimination</strong>的想法，这大大<strong>增加了负样本的数量</strong>。例如，给定输入图像 $x$，我们的直觉是通过可以将 $x$ 与任何其他图像区分开来的query encoder $f<em>q(\cdot)$ 学习instinct representation $q = f_q(x)$。因此，对于一组其他图像 $x_i$，我们采用异步更新的key encoder $f_k(\cdot)$ 来产生 $k</em>+ = f_k(x)$ 和 $k_i = f_k(x_i)$​，并优化以下目标</p>
+<script type="math/tex; mode=display">
+\mathcal{L} = -log\frac{exp(q\cdot k_+/\tau)}{\sum_{i=0}^Kexp(q\cdot k_i/\tau)}</script><p>其中$K$是负样本的个数，这个公式是InfoNCE的形式。</p>
+<p>此外，MoCo 在处理负采样效率方面提出了另外两个关键思想。</p>
+<ul>
+<li>首先，它摒弃了传统的端到端训练框架。它设计了具有<strong>两个编码器</strong>（查询和键）的动量对比学习，防止了损失收敛在开始阶段的波动。</li>
+<li>其次，为了扩大负样本的容量，MoCo 采用了一个队列（K 高达 65536）将最近编码的批次保存为负样本。这显着提高了负采样效率。</li>
+</ul>
+<p>还有一些其他辅助技术可以确保训练收敛，例如批量混洗以避免琐碎的解决方案和温度超参数 $\tau$ 来调整规模。</p>
+<p>然而，MoCo 采用了一种过于简单的正样本策略：一对正表示来自同一个样本，没有任何转换或增强，使得<strong>正对非常容易区分</strong>。 PIRL [87] 添加了<strong>拼图增强</strong>，如第 4.1.1 节所述。 PIRL 要求编码器将图像及其拼图视为相似的对，以产生pretext-invariant的表示。</p>
+<p>在 SimCLR [19] 中，作者通过引入 10 种形式的数据增强进一步说明了<strong>硬正样本策略的重要性</strong>。这种数据增强类似于 CMC [126]，它利用几种不同的视图来增强正对。</p>
+<p>SimCLR 遵循端到端训练框架，而不是 MoCo 的动量对比，为了处理大规模负样本问题，SimCLR 选择了 N 的批量大小为8196。</p>
+<p> N 个样本的 minibatch 被扩充为 2N 个样本$ \hat{x}_j(j = 1, 2, …, 2N )$。</p>
+<p>对于一对正样本 $\hat{x}_i$ 和 $\hat{x}_j$ （源自一个原始样本），其他 2(N - 1) 被视为负样本。成对对比损失 NT-Xent 损失 [21] 定义为</p>
+<script type="math/tex; mode=display">
+l_{i,j} = -\log \frac{exp(sim(\hat{x}_i,\hat{x}_j)/\tau)}{\sum_{k=1}^{2N} \mathbb{I}_{[k\neq i]}exp(sim(\hat{x}_i,\hat{x}_k)/\tau)}</script><p>注意$l_{i,j}$​是不对称的。这里的 sim(·,·) 函数是一个余弦相似度函数，可以对表示进行归一化。总损失为</p>
+<script type="math/tex; mode=display">
+\mathcal{L} = \frac{1}{2N}\sum_{k=1}^N[l_{2i-1,2i}+l_{2i,2i-1}]</script><p>SimCLR 还提供了一些其他实用技术，包括表示和对比损失之间的可学习非线性变换、更多的训练步骤和更深的神经网络。 [23] 进行消融研究以表明 SimCLR 中的技术还可以进一步提高 MoCo 的性能。</p>
+<p>InfoMin [127] 对增加正样本进行了更多调查。作者声称我们应该选择那些<strong>相互信息较少的视图</strong>，以便在对比学习中获得<strong>更好的增强视图</strong>。在最佳情况下，视图应该<strong>只共享标签信息</strong>。为了产生这样的最佳视图，作者首先提出了一种无监督方法来<strong>最小化视图之间的互信息</strong>。但是，这可能会导致预测标签的信息丢失（例如纯空白视图）。因此，提出了一种半监督方法来查找仅共享标签信息的视图。与 MoCo v2 相比，该技术提高了约 2%。</p>
+<p>BYOL [47] 迈出了更激进的一步，它<strong>丢弃了自监督学习中的负采样</strong>，但比 InfoMin 取得了更好的结果。对于我们上面提到的对比学习方法，它们通过预测同一图像的不同视图来学习表示，并将预测问题直接投射到表示空间中。然而，直接在表示空间中进行预测可能会导致表示崩溃，因为多视图通常对彼此来说是too predictive。如果没有负样本，神经网络就很容易区分这些正视图。</p>
+<p>在 BYOL 中，研究人员认为在这个过程中可能不需要负样本。结果表明，如果我们使用一个固定的随机初始化网络(它不会崩溃，因为它没有被训练)作为key编码器，query编码器产生的表示仍然会在训练过程中得到改善。</p>
+<p>如果然后我们将<strong>目标编码器</strong>设置为经过训练的<strong>query编码器</strong>并迭代此过程，我们将逐步获得更好的性能。因此，BYOL 提出了一种具有指数移动平均策略的架构（图 14）来更新目标编码器，就像 MoCo 所做的那样。此外，他们没有使用交叉熵损失，而是遵循回归范式，其中均方误差用作：</p>
+<p><img src="/2023/01/16/Self-supervised-Learning/image-20221027003350538.png" alt="image-20221027003350538"></p>
+<p>在 SimSiam [24] 中，研究人员进一步研究了<strong>负采样的必要性</strong>，甚至是对比表示学习中的批量归一化。他们表明，BYOL 中最关键的组件是停止梯度操作，它使目标表示稳定。事实证明，SimSiam 的收敛速度比 MoCo、SimCLR 和 BYOL 更快，批量更小，而性能仅略有下降。</p>
+<p>其他一些作品的灵感来自对对比目标的理论分析。 ReLIC [88] 认为对比预训练教会编码器有原因地(causally)解开图像中不变的内容（即主要对象）和风格（即环境）。为了在数据增强中更好地执行这一观察，他们建议在图像不同视图的预测 logits 之间添加一个额外的 KL-divergence 正则化器。结果表明，这可以增强模型的泛化能力和鲁棒性，提高性能。</p>
+<p>在图学习中，图对比编码（GCC）[101]是利用实例判别作为结构信息预训练的借口任务的先驱。对于每个节点，我们通过重新启动的随机游走独立地对两个子图进行采样，并使用它们的归一化图拉普拉斯矩阵中的顶部特征向量作为节点的初始表示。然后我们使用 GNN 对它们进行编码并计算 InfoNCE 损失，就像 MoCo 和 SimCLR 所做的那样，其中来自同一节点（在不同子图中）的 nod 13 嵌入被视为相似。结果表明，GCC 比以前的工作如 struc2vec [110]、GraphWave [40] 和 ProNE [155] 学习了更好的可转移结构知识。 GraphCL [152] 研究图学习中的数据增强策略。他们提出了四种基于边缘扰动和节点丢弃的不同增强方法。它进一步表明，这些策略的适当组合可以产生更好的性能。</p>
+<h3 id="Self-supervised-Contrastive-Pre-training-for-Semisupervised-Self-training"><a href="#Self-supervised-Contrastive-Pre-training-for-Semisupervised-Self-training" class="headerlink" title="Self-supervised Contrastive Pre-training for Semisupervised Self-training"></a>Self-supervised Contrastive Pre-training for Semisupervised Self-training</h3><p>虽然基于对比学习的自我监督学习继续推动各种基准的界限，但标签仍然很重要，因为自我监督学习和监督学习的训练目标之间存在差距。换句话说，无论自监督学习模型如何改进，它们仍然只是强大的特征提取器，而要转移到下游任务，我们或多或少仍然需要标签。因此，为了弥合自我监督预训练和下游任务之间的差距，我们正在寻找半监督学习。</p>
+<p>回想一下在 ImageNet 排行榜上名列前茅的 MoCo [52]。尽管它被证明对许多其他下游视觉任务有益，但它未能改进 COCO 对象检测任务。随后的一些工作 [90]、[163] 研究了这个问题，并将其归因于<strong>实例识别和对象检测之间的差距</strong>。在这种情况下，虽然纯粹的自我监督预训练无法提供帮助，但基于半监督的自我训练可以对此做出很大贡献。</p>
+<p>首先，我们将阐明<strong>半监督学习（semi-supervised）</strong>和<strong>自我训练（self-training）</strong>的定义。半监督学习是一种机器学习方法，它在训练期间将<strong>少量标记数据与许多未标记数据相结合</strong>。各种方法源自对数据分布所做的几种不同假设，其中自我训练（或自我标记）是最古老的。在自我训练中，模型在少量标记数据上进行训练，然后在未标记数据上生成标签。只有那些<strong>具有高度置信度标签的数据</strong>才能与<strong>原始标记数据相结合</strong>去训练新模型。我们迭代此过程以找到最佳模型。</p>
+<p>ImageNet 上当前最先进的监督模型 [143] 遵循自我训练范式，我们首先在标记的 ImageNet 图像上训练 EfficientNet 模型，并将其用作教师在 300M 未标记图像上生成伪标签。然后，我们基于标记和伪标记图像训练更大的 EfficientNet 作为学生模型。我们通过将学生放回老师来重复这个过程。在<strong>伪标签生成过程中，教师没有噪声</strong>，因此伪标签尽可能准确。然而，在<strong>学生的学习过程中，我们通过 RandAugment 向学生注入了 dropout、随机深度和数据增强等噪声</strong>，以便比教师更好地概括。</p>
+<p>鉴于半监督自我训练的成功，很自然地重新思考其与自监督方法的关系，尤其是与成功的对比预训练方法的关系。在 4.2.1 节中，我们介绍了 M3S [120]，它试图将<strong>基于集群的对比预训练</strong>和下游<strong>半监督学习</strong>结合起来。对于计算机视觉任务，Zoph 等人。 [163] 研究 MoCo <strong>预训练</strong>和<strong>自我训练</strong>方法，其中教师首先在下游数据集（例如 COCO）上进行训练，然后在未标记的数据（例如 ImageNet）上生成伪标签，最后让学生学习联合在下游数据集上的真实标签和未标记数据上的伪标签。他们惊讶地发现，预训练的表现会受到负面影响，而自我训练仍然受益于强大的数据增强。此外，更多的标记数据会降低预训练的价值，而半监督自我训练总是会提高。他们还发现预训练和自我训练的改进是相互正交的，即从不同的角度对性能做出贡献。联合预训练和自我训练的模型是最好的。</p>
+<p>陈等人[20] 的 SimCLR v2 支持上述结论，表明<strong>仅使用 10% 的原始 ImageNet 标签</strong>，ResNet-50 可以通过<strong>联合预训练和自训练超过有监督的标签</strong>。他们提出了一个 3 步框架：</p>
+<ul>
+<li>像 SimCLR v1 一样进行自我监督预训练，并进行一些小的架构修改和更深的 ResNet。 </li>
+<li>只用原始 ImageNet 标签的 1% 或 10% 微调最后几层。 </li>
+<li>使用微调网络作为教师，在未标记的数据上产生标签，以训练较小的学生 ResNet-50。</li>
+</ul>
+<p>将自我监督对比预训练和半监督自我训练相结合的成功为我们打开了未来数据高效深度学习范式的视野。预计会有更多工作来研究它们的潜在机制。</p>
+<h3 id="Pros-and-Cons-1"><a href="#Pros-and-Cons-1" class="headerlink" title="Pros and Cons"></a>Pros and Cons</h3><p>因为对比学习假设下游应用是<strong>分类</strong>，与生成模型相比，它只使用编码器并丢弃架构中的解码器。因此，对比模型通常是<strong>轻量级</strong>的，并且<strong>在判别性下游应用中表现更好</strong>。</p>
+<p>对比学习与度量学习密切相关，这是一门研究已久的学科。然而，自监督对比学习仍然是一个新兴领域，还有许多问题有待解决，包括：</p>
+<ul>
+<li><p>Scale to natural language pre-training</p>
+<p>尽管它在计算机视觉方面取得了成功，但对比预训练并没有在 NLP 基准测试中呈现出令人信服的结果。 NLP 中的大多数对比学习现在都在于 BERT 的监督微调，例如改进 BERT 的句子级表示 [109]、信息检索 [65]。很少有算法被提出在<strong>预训练阶段应用对比学习</strong>。由于大多数语言理解任务都是分类，因此对比语言预训练方法应该比当前的生成语言模型更好。</p>
+</li>
+<li><p>Sampling efficiency</p>
+<p>对于大多数对比学习来说，负抽样是必须的，但这个过程通常很棘手、有偏见且耗时。 BYOL [47] 和 SimSiam [24] 是对比学习摆脱负样本的先驱，但它可以改进。 同时我们还不清楚负抽样在对比学习中的作用。</p>
+</li>
+<li><p>Data augmentation</p>
+<p>研究人员已经证明，数据增强可以提高对比学习的表现，但关于它为什么以及如何帮助的理论仍然很模糊。这阻碍了它在<strong>数据是离散和抽象的其他领域的应用，例如 NLP 和图学习。</strong></p>
+</li>
+</ul>
+<h2 id="Contrastive-Self-supervised-Representation-Learning"><a href="#Contrastive-Self-supervised-Representation-Learning" class="headerlink" title="Contrastive Self-supervised Representation Learning"></a>Contrastive Self-supervised Representation Learning</h2><h3 id="Relationship-with-Supervised-Learning"><a href="#Relationship-with-Supervised-Learning" class="headerlink" title="Relationship with Supervised Learning"></a>Relationship with Supervised Learning</h3><p>自监督学习遵循监督学习模式。经验表明用于预训练任务的对比学习对下游的分类任务特别有效。我们想知道对比性预训练如何使监督学习受益，尤其是关于自我监督学习是否可以比监督学习学习更多，至少在准确性方面。</p>
+<p><img src="/2023/01/16/Self-supervised-Learning/image-20221027093910961.png" alt="image-20221027093910961"></p>
+<blockquote>
+<p>关于监督预训练vs从头开始监督训练的三个可能假设。</p>
+</blockquote>
+<p>关于预训练任务对监督学习的提升作用，这里有三个假设：</p>
+<ul>
+<li>总是带来提升</li>
+<li>以更少的标签达到更高的准确度，但稳定到与基线相同的准确度</li>
+<li>在精度达到稳定水平之前收敛到基线性能</li>
+</ul>
+<p>他们通过渲染对可以提供任意多标签的合成 COCO 进行实验，发现自监督预训练遵循 (c) 中的模式。</p>
+<p>表明自监督学习不能比监督学习学习更多，但可以用很少的标签做到这一点。</p>
+<p>尽管自监督学习不能帮助提高准确性，但它可以在许多其他方面学习更多，例如模型的<strong>鲁棒性和稳定性</strong>。亨德利克斯等人。 [54] 发现自我监督训练的神经网络对对抗性示例、标签损坏和常见输入损坏具有很强的鲁棒性。更重要的是，它极大地有利于对<strong>困难的、接近分布的异常值进行分布外检测（out-of-distribution detection on difficult, near-distribution outliers）</strong>，以至于它超过了完全监督方法的性能。</p>
+<blockquote>
+<p>在开放世界中分类是验证模型安全性的重要方式，也是一个真正能够商用落地的模型不可避免要面对的问题。传统的分类模型都是在一个封闭的世界中进行训练，即假设测试数据和训练数据都来自同样的分布（称作“分布内”，in-distribution）。例如我们利用一组猫狗照片训练一个猫狗分类器。然而，部署的模型在实际使用中总是会遇到一些不属于封闭世界类别的图片，例如老虎。或者也会遇到一些和训练图片视觉上大相径庭的照片，例如卡通猫。模型应当如何去处理这些不属于训练分布的图片（即分布外样本，out-of-distribution），是开放世界领域所关注的问题。</p>
+<ul>
+<li>OD: Outlier Detection, “离群检测”</li>
+<li>AD: Anomaly Detection, “异常检测”</li>
+<li>ND: Novelty Detection, “新类检测”</li>
+<li>OSR: Open Set Recognition, “开集识别” </li>
+<li>OOD Detection: Out-of-Distribution Detection, “分布外检测”</li>
+</ul>
+</blockquote>
+<h3 id="Understand-Contrastive-Loss"><a href="#Understand-Contrastive-Loss" class="headerlink" title="Understand Contrastive Loss"></a>Understand Contrastive Loss</h3><p>在 [139] 中，Wang 等人。对对比损失函数进行有趣的理论分析，并将其分为两个术语：</p>
+<script type="math/tex; mode=display">
+\mathcal{L}_{contrast} = \mathbb{E}[-\log \frac{e^{f^T_xf_y/\tau}}{e^{f^T_xf_y/\tau} + \sum_i e^{f^T_xf_{y_i^-}/\tau}} ]
+\\
+=\mathbb{E}[-f^T_xf_y/\tau] + \mathbb{E}[log(e^{f^T_xf_y/\tau} + \sum_i e^{f^T_xf_{y_i^-}/\tau})]</script><p>其中，第一项称为alignment，第二项称为uniformity。其中第一项旨在“对齐”，第二项旨在给定标准化条件下球体上样本向量的“均匀性”。</p>
+<p>实验表明，这两个术语与下游任务有很大的一致性。此外，作者探索直接优化alignment和uniformity损失：<img src="/2023/01/16/Self-supervised-Learning/image-20221027101547987.png" alt="image-20221027101547987"></p>
+<p>他们在广泛的场景中进行实验，包括在计算机视觉或自然语言处理任务中使用 CNN 或 RNN，并发现<strong>直接优化始终优于对比损失</strong>。此外，对齐和均匀性对于良好的表示<strong>都是必要的</strong>。当这两个损失的权重之一太大时，表示会崩溃。</p>
+<p>然而，alignment和uniformity是否必然以上两个损失的形式存在疑问，因为在 BYOL [47] 中，作者展示了一个没有直接负采样但优于所有先前对比学习预训练的框架。这向我们表明，我们仍然可以通过指数移动平均、批量归一化、正则化和随机初始化等其他技术来实现uniformity。</p>
+<h3 id="Generalization"><a href="#Generalization" class="headerlink" title="Generalization"></a>Generalization</h3><p>似乎很直观，最小化上述损失函数应该可以使表示更好地捕捉不同实体之间的“相似性”，但尚不清楚为什么学习的表示也应该在下游任务（例如线性分类任务）上带来更好的性能。</p>
+<p>直观地说，自监督表示学习框架必须捕获<strong>未标记数据中的特征</strong>以及<strong>与下游任务中隐含的语义信息的相似性</strong>。 [5] 提出了一个概念框架来分析平均分类任务的对比学习。</p>
+<p>对比学习假设相似的数据对$(x,x^+)$来自一个分布$\mathcal{D}<em>{sim}$，而负样本$(x_1^-,x_2^-,…,x_k^-)$来自一个可能与$x$无关的分布$\mathcal{D}</em>{neg}$</p>
+<p>在语义相似的点是从同一个潜在类中采样的假设下，无监督损失可以表示为：</p>
+<p><img src="/2023/01/16/Self-supervised-Learning/image-20221027102903911.png" alt="image-20221027102903911"></p>
+<p>自监督学习目的是发现一个在所用编码器的容量范围内最小化经验无监督损失的$\hat{f} \in \arg \min<em>f\hat{L}</em>{un}(f)$。</p>
+<p>由于负点是从数据集中以相同方式独立采样的，因此可以根据从中抽取负样本的潜在类别将$\mathcal{L}<em>{un}$分解为 $\tau\mathcal{L}</em>{un}^=$ 和 $(1 - \tau )\mathcal{L}_{un}^\neq$。</p>
+<p>类内偏差 $s(f ) \geq c′(\mathcal{L}<em>{un}(f ) − 1)$ 控制了 $\mathcal{L}</em>{un}(f )$ 并暗示由负采样策略引起的意外损失是与我们的优化目标相矛盾的。</p>
+<p>在只有 1 个负样本的情况下，证明优化无监督损失有利于下游分类任务：</p>
+<script type="math/tex; mode=display">
+\mathcal{L}_{sup}(\hat{f})\leq\mathcal{L}_{sup}^\mu(\hat{f})\leq\mathcal{L}_{un}^\neq(f) + \beta s(f) + \eta Gen_M</script><p>概率至少为 $1 - \delta$，$f$ 是编码器可以捕获的特征映射函数，$Gen<em>M$ 是泛化误差。当采样对 $M \rightarrow inf$ 和潜在类的数目 $|C| \rightarrow inf, Gen_M$ 和 $\delta \rightarrow 0$。如果编码器足够强大并且使用足够多的样本进行训练，那么 $\mathcal{L}</em>{un}^\neq$ 和 $\beta<em>s(f)$ 低的学习函数 $f$ 将在监督任务上具有良好的性能（低$\mathcal{L}</em>{sup}(\hat{f}))$。</p>
+<p>对比学习也有局限性。事实上，对比学习并不总是选择最好的监督表示函数 $f$。最小化无监督损失以获得低 $\mathcal{L}<em>{sup}( \hat{f} )$ 并不意味着 $\hat{f}≈ \widetilde{f}= \arg \min_f \mathcal{L}</em>{sup}$ 因为高 $\mathcal{L}<em>{un}^\neq$ 和高 $s(f)$ 并不意味着高 $\mathcal{L}</em>{sup}$，导致算法失败。</p>
+<p>在平均分类器损失 $\mathcal{L}<em>{sup}^\mu$的条件下进一步探索 $\mathcal{L}</em>{sup}( f )$ 和$\mathcal{L}<em>{sup}( \hat{f} )$之间的关系，其中 $\mu$ 表示一个标签 $c$ 只对应一个嵌入向量 $\mu_c := \mathbb{E}</em>{x∼D<em>c}\sim [f (x)]$.如果存在一个在强意义上具有类内集中度的函数 $f$，并且可以用均值分类器将具有高边距（平均）的潜在类分开，则 $\mathcal{L}</em>{sup}^\mu(\hat{f})$ 将较低。如果 $f (X)$ 对于每个类在每个方向上都是$ \sigma^2 - sub - Gaussian$ 并且具有最大范数 $\textbf{R} =\max<em>{x\ in\mathcal{X}} ||f (x)||$，则 $\mathcal{L}</em>{sup}^\mu ( \hat{f})$ 可以由 $\mathcal{L}_{sup}^\mu(f) $控制。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Self-Supervised-Learning/" rel="tag"># Self-Supervised Learning</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/01/16/VariationalInference/" rel="prev" title="VariationalInference">
+      <i class="fa fa-chevron-left"></i> VariationalInference
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Self-supervised-Learning-Generative-or-Contrastive"><span class="nav-number">1.</span> <span class="nav-text">Self-supervised Learning: Generative or Contrastive</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-number">1.1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%80%9D%E6%83%B3%E5%8F%8A%E5%88%86%E7%B1%BB"><span class="nav-number">1.2.</span> <span class="nav-text">基本思想及分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Generative-Self-supervised-Learning"><span class="nav-number">1.3.</span> <span class="nav-text">Generative Self-supervised Learning</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Auto-regressive-AR-Model"><span class="nav-number">1.3.1.</span> <span class="nav-text">Auto-regressive(AR) Model</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Flow-based-Model"><span class="nav-number">1.3.2.</span> <span class="nav-text">Flow-based Model</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Auto-encoding-AE-Model"><span class="nav-number">1.3.3.</span> <span class="nav-text">Auto-encoding(AE) Model</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Basic-AE-Model"><span class="nav-number">1.3.3.1.</span> <span class="nav-text">Basic AE Model</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Context-Prediction-Model-CPM"><span class="nav-number">1.3.3.2.</span> <span class="nav-text">Context Prediction Model(CPM)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Denoising-AE-Model"><span class="nav-number">1.3.3.3.</span> <span class="nav-text">Denoising AE Model</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Variational-AE-Model"><span class="nav-number">1.3.3.4.</span> <span class="nav-text">Variational AE Model</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Hybrid-Generative-Model"><span class="nav-number">1.3.4.</span> <span class="nav-text">Hybrid Generative Model</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#AR-amp-AE"><span class="nav-number">1.3.4.1.</span> <span class="nav-text">AR &amp; AE</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#AE-amp-Flow-based-Models"><span class="nav-number">1.3.4.2.</span> <span class="nav-text">AE &amp; Flow-based Models</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Pros-and-Cons"><span class="nav-number">1.3.5.</span> <span class="nav-text">Pros and Cons</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Contrastive-Self-supervised-Learning"><span class="nav-number">1.4.</span> <span class="nav-text">Contrastive Self-supervised Learning</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Context-Instance-Contrast"><span class="nav-number">1.4.1.</span> <span class="nav-text">Context-Instance Contrast</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Predict-Relative-Position"><span class="nav-number">1.4.1.1.</span> <span class="nav-text">Predict Relative Position</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Maximize-Mutual-Information"><span class="nav-number">1.4.1.2.</span> <span class="nav-text">Maximize Mutual Information</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Instance-Instance-Contrast"><span class="nav-number">1.4.2.</span> <span class="nav-text">Instance-Instance Contrast</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Cluster-Discrimination"><span class="nav-number">1.4.2.1.</span> <span class="nav-text">Cluster Discrimination</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Instance-Discrimination"><span class="nav-number">1.4.2.2.</span> <span class="nav-text">Instance Discrimination</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Self-supervised-Contrastive-Pre-training-for-Semisupervised-Self-training"><span class="nav-number">1.4.3.</span> <span class="nav-text">Self-supervised Contrastive Pre-training for Semisupervised Self-training</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Pros-and-Cons-1"><span class="nav-number">1.4.4.</span> <span class="nav-text">Pros and Cons</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Contrastive-Self-supervised-Representation-Learning"><span class="nav-number">1.5.</span> <span class="nav-text">Contrastive Self-supervised Representation Learning</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Relationship-with-Supervised-Learning"><span class="nav-number">1.5.1.</span> <span class="nav-text">Relationship with Supervised Learning</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Understand-Contrastive-Loss"><span class="nav-number">1.5.2.</span> <span class="nav-text">Understand Contrastive Loss</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Generalization"><span class="nav-number">1.5.3.</span> <span class="nav-text">Generalization</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Haoran Li</p>
+  <div class="site-description" itemprop="description">Blog of Whyynnot</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Haoran Li</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'c2AnFNAFnFrReTpruCM2RWMV-gzGzoHsz',
+      appKey     : 'rMWSQ6KHYU6DHK01uJS0Mvmg',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
