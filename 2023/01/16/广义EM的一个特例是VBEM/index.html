@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="EM2  这里是理解EM算法的几重境界的后续部分。对于以EM算法为线，串联重要的数学基础很重要。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="广义EM的一个特例是VBEM">
+<meta property="og:url" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/index.html">
+<meta property="og:site_name" content="Whyynnot">
+<meta property="og:description" content="EM2  这里是理解EM算法的几重境界的后续部分。对于以EM算法为线，串联重要的数学基础很重要。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/17-2.png">
+<meta property="og:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20220918170426070-16738440550722.png">
+<meta property="og:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20220918172005928-16738440550711.png">
+<meta property="og:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20220918172922802-16738440550723.png">
+<meta property="og:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20220918211648082-16738440550724.png">
+<meta property="og:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20220918213649385-16738440550725.png">
+<meta property="og:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20220918230311979-16738440550726.png">
+<meta property="og:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20220918230411724-16738440550727.png">
+<meta property="og:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20220918230642299-16738440550729.png">
+<meta property="og:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20221026163129064-16738440550728.png">
+<meta property="og:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20221026164342352-167384405507310.png">
+<meta property="article:published_time" content="2023-01-16T04:39:41.000Z">
+<meta property="article:modified_time" content="2023-01-16T04:43:31.134Z">
+<meta property="article:author" content="Haoran Li">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/17-2.png">
+
+<link rel="canonical" href="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>广义EM的一个特例是VBEM | Whyynnot</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Whyynnot</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Haoran Li">
+      <meta itemprop="description" content="Blog of Whyynnot">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Whyynnot">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          广义EM的一个特例是VBEM
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-01-16 12:39:41 / 修改时间：12:43:31" itemprop="dateCreated datePublished" datetime="2023-01-16T12:39:41+08:00">2023-01-16</time>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="em2">EM2</h1>
+<blockquote>
+<p>这里是理解EM算法的几重境界的后续部分。对于以EM算法为线，串联重要的数学基础很重要。</p>
+<span id="more"></span>
+</blockquote>
+<h3 id="广义em的一个特例是vbem">广义EM的一个特例是VBEM</h3>
+<h4 id="lsalatent-semantic-analysis">LSA(latent semantic analysis)</h4>
+<ul>
+<li><p>单词向量空间</p>
+<blockquote>
+<p>给定一个含有n个文本的集合<span class="math inline">\(D =
+{d_1,d_2,...,d_n}\)</span>，以及在所有文本中出现的m个单词的集合<span class="math inline">\(W =
+{w_1,w_2,...,w_m}\)</span>。将单词在文本中出现的数据用一个<strong>单词-文本矩阵(word-document
+matrix)</strong>表示，记作X(mxn矩阵)。元素<span class="math inline">\(x_{ij}\)</span>表示单词<span class="math inline">\(w_i\)</span>在文本<span class="math inline">\(d_j\)</span>中出现的频数或权值。</p>
+<p>单词种类多，单个文档中单词种类少，所以通常是一个稀疏矩阵。</p>
+<p>权值常用<strong>单词频率-逆文本频率(term frequency-inverse document
+frequency)</strong>表示 <span class="math display">\[
+TFIDF_{ij} = \frac{tf_{ij}}{tf_{·j}}\log\frac{df}{df_i},\quad i =
+1,2,...,m;\quad j = 1,2,...,n
+\]</span> 其中<span class="math inline">\(tf_{ij}\)</span>是单词<span class="math inline">\(w_i\)</span>出现在文本<span class="math inline">\(d_j\)</span>中的频数，<span class="math inline">\(df_i\)</span>是所有含有单词<span class="math inline">\(w_i\)</span>的文本数，<span class="math inline">\(df\)</span>是文本集D全部的文档数。</p>
+<p>单词-文本矩阵X每一列代表一个文本，<span class="math inline">\(X =
+[x_1,x_2,...,x_n]\)</span>即表示本的单词向量。</p>
+<p>使用内积/标准化内积（余弦）表示文本相似度。</p>
+</blockquote>
+<ul>
+<li>优点：简单，效率高</li>
+<li>缺点：无法解决<strong>一词多义</strong>及<strong>多词一义</strong>问题</li>
+</ul></li>
+<li><p>话题向量空间</p>
+<ul>
+<li><p>对一词多义和多词一义问题的解决</p>
+<blockquote>
+<p>一词多义的词可以对应多个话题，多词一义的词可以对应同一个话题</p>
+</blockquote></li>
+</ul>
+<blockquote>
+<p>假设所有文本共含有k个话题。假设每个话题由一个定义在单词集合W上的m维向量表示，称为话题向量。</p>
+<p>T是单词-话题矩阵(mxk)，其中<span class="math inline">\(t_{il}\)</span>是单词<span class="math inline">\(w_i\)</span>在话题<span class="math inline">\(t_l\)</span>中的权值，权值越大，单词在该话题中的重要度就越大。</p>
+</blockquote>
+<blockquote>
+<p>单词向量空间中一个文本对应的向量<span class="math inline">\(x_j\)</span>投影到T中可以得到话题向量空间中一个向量<span class="math inline">\(y_j\)</span>,是一个k维向量。</p>
+<p>其中<span class="math inline">\(y_{lj}\)</span>是文本<span class="math inline">\(d_j\)</span>在话题<span class="math inline">\(t_l\)</span>的权值，l=1,2,...,k,权值越大，该话题该文本中的重要程度就越高。</p>
+<p>Y称为话题-文本矩阵，<span class="math inline">\(Y =
+[y_1,y_2,...,y_n]\)</span></p>
+</blockquote>
+<ul>
+<li><p>从单词向量空间到话题向量空间的<strong>线性变换</strong></p>
+<blockquote>
+<p>单词向量空间的文本向量<span class="math inline">\(x_j\)</span>可以通过它在话题空间中的向量<span class="math inline">\(y_j\)</span>近似表示，具体地由k个话题向量以<span class="math inline">\(y_j\)</span>为系数的线性组合<strong>近似</strong>表示
+<span class="math display">\[
+x_j \approx y_{1j}t_1 + y_{2j}t_2 + ··· + y_{kj}t_k
+\]</span> 即 <span class="math inline">\(X \approx
+TY\)</span>(这里之所以是约等于，是因为话题个数k往往小于单词个数，导致其表达能力在单词之下，所以可能造成信息损失)
+<span class="math display">\[
+x_j \Rightarrow y_j
+\]</span> 即将m维的单词向量空间压缩到了k维的话题向量空间。</p>
+<figure>
+<img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/17-2.png" alt="17-1">
+<figcaption aria-hidden="true">17-1</figcaption>
+</figure>
+</blockquote></li>
+</ul></li>
+<li><p>潜在语义分析算法</p>
+<ul>
+<li><p>矩阵奇异值分解算法</p>
+<ul>
+<li>截断奇异值分解至k维 <span class="math display">\[
+X \approx U_k\Sigma_kV_k^T
+\]</span> 话题空间<span class="math inline">\(U_k\)</span>,以及文本在话题空间的表示<span class="math inline">\((\Sigma_kV_k^T)\)</span></li>
+</ul></li>
+<li><p>非负矩阵分解算法</p>
+<blockquote>
+<p>若一个矩阵所有元素非负，则称该矩阵为非负矩阵，若X是非负矩阵，则记作<span class="math inline">\(X \geq 0\)</span></p>
+<p>给定一个非负矩阵X，找到两个非负矩阵W和H。使得 <span class="math display">\[
+X \approx WH
+\]</span>
+X可以看成基W和系数H的线性组合。非负矩阵分解旨在用较少的基向量，系数向量来表示较大的数据矩阵。</p>
+<p>非负矩阵分解有很直观的解释，话题向量和文本向量都非负，对应着“伪概率分布”，向量的线性组合表示局部叠加构成整体。</p>
+<p>即，单词向量是总的概率分布，有k个小的话题向量的分布组合而成。</p>
+</blockquote>
+<ul>
+<li><p>算法</p>
+<ul>
+<li><p>初始化</p>
+<blockquote>
+<p><span class="math inline">\(W\geq
+0\)</span>且对W的每一列数据归一化</p>
+<p><span class="math inline">\(H\geq 0\)</span></p>
+</blockquote></li>
+<li><p>迭代</p>
+<blockquote>
+<p>对迭代次数由1到t执行一下步骤</p>
+<ul>
+<li><p>更新W元素 <span class="math display">\[
+W_{il} = W_{il}\frac{(XH^T)_{il}}{(WHH^T)_{il}},\quad
+i=1,2,...,m;l=1,2,...,k
+\]</span></p></li>
+<li><p>更新H元素 <span class="math display">\[
+H_{lj} = H_{lj}\frac{(W^TX)_{lj}}{(W^TWH)_{lj}},\quad
+l=1,2,...,k;j=1,2,...,n
+\]</span></p></li>
+</ul>
+</blockquote></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+<h4 id="plsaprobabilistic-latent-semantic-analysis">PLSA(probabilistic
+latent semantic analysis)</h4>
+<ul>
+<li><p>生成模型</p>
+<blockquote>
+<p>每个文本拥有自己的话题概率分布<span class="math inline">\(P(z|d)\)</span>，每个话题有自己的单词概率分布<span class="math inline">\(P(w|z)\)</span>。即一个文本由其话题决定，一个话题由其单词决定</p>
+</blockquote>
+<ul>
+<li><p>生成模型生成文本-单词共现数据的步骤：</p>
+<ul>
+<li><p>根据P(d)，从文本（指标）集合中随机选取一个文本d，共生成N个文本；针对每个文本执行以下操作。</p></li>
+<li><p>在文本d给定条件下，依据P(z|d)从话题集合中随机选取一个话题z,共生成L个话题，这里L是文本长度</p></li>
+<li><p>在话题z给定条件下，根据P(w|z)从单词集合中随机选择一个单词w</p>
+<blockquote>
+<p>w和d是观测变量，z是隐变量</p>
+</blockquote></li>
+</ul>
+<blockquote>
+<p>从数据生成过程可知，文本-单词共现数据T的生成概率为所有单词-文本对(w,d)的生成概率的乘积
+<span class="math display">\[
+P(T) = \prod_{(w,d)}P(w,d)^{n(w,d)}
+\]</span> 这里n(w,d)表示(w,d)的出现次数单词-文本对出现的总次数是NxL。
+<span class="math display">\[
+P(w,d) = P(d)P(w|d)
+\newline
+=P(d)\sum_{z}P(w,z|d)
+\newline
+=P(d)\sum_{z}P(z|d)P(w|z)
+\]</span>
+倒数第二步到最后一步基于一个假设：给定话题z的条件下，单词w和文本d条件独立:即给定d确定z之后，w就可以完全由z决定，而不需要再考虑d这个条件。
+<span class="math display">\[
+P(w,z|d) = P(z|d)P(w|d,z)
+\newline
+=P(z|d)P(w|z)
+\]</span></p>
+</blockquote>
+<p>生成模型属于概率有向图模型，可以用有向图表示<img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20220918170426070-16738440550722.png" alt="image-20220918170426070"></p></li>
+</ul></li>
+<li><p>共现模型</p>
+<blockquote>
+<p><span class="math display">\[
+P(w,d) = \sum_{z\in Z}P(z)P(w|z)P(d|z)
+\]</span></p>
+<p>同样假设话题z给定的情况下，单词w和文本d是条件独立的 <span class="math display">\[
+P(w,d|z) = P(w|z)P(d|z)
+\]</span></p>
+</blockquote></li>
+</ul>
+<p>​ 从公式上而言共现模型和生成模型两者等价。<img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20220918172005928-16738440550711.png" alt="image-20220918172005928"></p>
+<ul>
+<li><p>模型性质</p>
+<ul>
+<li>如果直接定义单词文本的贡献概率P(w,d)，模型参数个数<span class="math inline">\(O(M·N)\)</span>。而引入隐变量之后，参数个数成为<span class="math inline">\(O(M·K+N·K)\)</span>，其中K是话题数。现实中<span class="math inline">\(K \ll
+M\)</span>。所以，模型更加简洁，减少过拟合的可能性。<img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20220918172922802-16738440550723.png" alt="image-20220918172922802"></li>
+</ul></li>
+<li><p>模型的几何解释</p>
+<blockquote>
+<p>单纯形：<a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/wiki/几何学">几何学</a>上，<strong>单纯形</strong>或者<strong>n-单纯形</strong>是和<a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/wiki/三角形">三角形</a>类似的<em>n</em>维<a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/wiki/几何形状">几何体</a>。精确的讲，单纯形是某个n维以上的<a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/wiki/欧几里得空间">欧几里得空间</a>中的（<em>n</em>+1）个<a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/wiki/仿射变换">仿射无关</a>（也就是没有<em>m-1</em>维<a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/wiki/平面_(数学)">平面</a>包含<em>m</em>+1个点；这样的点集被称为处于<a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/wiki/一般位置">一般位置</a>）的<a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/wiki/点">点</a>的集合的<a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/wiki/凸包">凸包</a>。</p>
+<p>例如，0-单纯形就是<a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/wiki/点">点</a>，1-单纯形就是<a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/wiki/线段">线段</a>，2-单纯形就是<a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/wiki/三角形">三角形</a>，3-单纯形就是<a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/wiki/四面體">四面体</a>，而4-单纯形是一个<a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/wiki/正五胞体">五胞体</a>（每种情况都包含内部）。</p>
+</blockquote>
+<p>概率分布<span class="math inline">\(P(w|d)\)</span>表示文本d生成单词w的概率 <span class="math display">\[
+\sum_{i=1}^{M}P(w_i|d) = 1,\quad 0 \leq P(w_i|d)\leq1,i=1,2,...,M
+\]</span> 可以由M维空间的(M-1)单纯形中的点表示。<img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20220918211648082-16738440550724.png" alt="image-20220918211648082"></p>
+<p>PLSA(生成模型)中文本概率分布有如下关系成立： <span class="math display">\[
+P(w|d) = \sum_{z}P(z|d)P(w|z)
+\]</span> 概率分布<span class="math inline">\(P(w|z)\)</span>也存在于M维空间中的(M-1)单纯形中(系数和是1，向量的线性表出在一个面上，则每个向量都在这个面上)。如果有K个话题，则对应(M-1)单纯形中的K个点。以这K个点为顶点，构成一个(K-1)单纯形，称为话题单纯形，是单词单纯形的子单纯形。图中所示是K=3,M=3。当K=2时，参数向量在空间中缩为线段。K=1缩为点。</p>
+<p>即参数空间相对变小。</p></li>
+<li><p>PLSA与LSA的关系</p>
+<ul>
+<li><p>对LSA而言，单词-文本矩阵进行奇异值分解得到<span class="math inline">\(X = U\Sigma
+V^T\)</span>，其中U和V为正交矩阵，<span class="math inline">\(\Sigma\)</span>为非负降序对角矩阵。<img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20220918213649385-16738440550725.png" alt="image-20220918213649385"></p></li>
+<li><p>对PLSA而言，共现模型也可以表示为三个矩阵乘积的形式： <span class="math display">\[
+X&#39; = U&#39;\Sigma &#39;V&#39;^T
+\newline
+X&#39; = [P(w,d)]_{M\times N}
+\newline
+U&#39;=[P(w|z)]_{M\times K}
+\newline
+\Sigma&#39; = [P&#39;(z)]_{K\times K}
+\newline
+V&#39; = [P(d|z)]_{N\times K}
+\]</span></p></li>
+<li><p>两组矩阵的区别</p>
+<ul>
+<li>U’和 V'是非负的，规范化的，表示条件概率分布</li>
+<li>U和V是正交的，未必非负，不表示概率分布</li>
+</ul></li>
+</ul></li>
+<li><p>PLSA求解算法</p>
+<figure>
+<img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20220918230311979-16738440550726.png" alt="image-20220918230311979">
+<figcaption aria-hidden="true">image-20220918230311979</figcaption>
+</figure>
+<figure>
+<img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20220918230411724-16738440550727.png" alt="image-20220918230411724">
+<figcaption aria-hidden="true">image-20220918230411724</figcaption>
+</figure>
+<figure>
+<img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20220918230642299-16738440550729.png" alt="image-20220918230642299">
+<figcaption aria-hidden="true">image-20220918230642299</figcaption>
+</figure></li>
+</ul>
+<h4 id="马尔可夫链蒙特卡洛法">马尔可夫链蒙特卡洛法</h4>
+<p>蒙特卡洛方法是从概率模型的随机抽样进行近似数值计算的方法。</p>
+<p>马尔可夫链蒙特卡洛法则是以马尔可夫链为概率模型的蒙特卡洛法。构建一个马尔可夫链，使其分布就是要抽样的分布，首先基于该马尔可夫链进行随机游走，产生样本的序列，之后使用该平稳分布的样本进行近似数值计算。</p>
+<ul>
+<li><p>蒙特卡洛法</p>
+<ul>
+<li><p>随机抽样</p>
+<p>接受-拒绝法一般流程：</p>
+<ul>
+<li>从[0,1]均匀分布抽样随机数<span class="math inline">\(u_0\)</span>，然后计算<span class="math inline">\(x =
+F^{-1}(u_0)\)</span>得到建议分布的随机样本<span class="math inline">\(x\)</span>。(其中<span class="math inline">\(F(\cdot)\)</span>是建议分布的累积分布函数，<span class="math inline">\(F^{-1}(\cdot)\)</span>则是其逆函数)</li>
+<li>再从[0,1]均匀分布中抽样随机数<span class="math inline">\(u_1\)</span>，和<span class="math inline">\(A(x) =
+\frac{p(x)}{M\cdot q(x)}\)</span>比较，大于则拒绝；小于则接受。</li>
+<li>得到抽样<span class="math inline">\(x\)</span>。</li>
+</ul></li>
+<li><p>数学期望估计</p>
+<p>对概率密度函数<span class="math inline">\(p(x)\)</span>独立抽取n个样本<span class="math inline">\(x_1,x_2,...,x_n\)</span>，之后计算函数<span class="math inline">\(f(x)\)</span>的样本均值<span class="math inline">\(\hat{f}_n\)</span>: <span class="math display">\[
+\hat{f}_n = \frac{1}{n}\sum_{i=1}^nf(x_i)
+\]</span> 作为数学期望<span class="math inline">\(E_{p(x)}[f(x)]\)</span>的估计值。（由大数定律可得到）</p></li>
+<li><p>积分计算 <span class="math display">\[
+\int_{\mathcal{X}}h(x)dx = \int_{\mathcal{X}}g(x)f(x)dx=E_{p(x)}[f(x)]
+\]</span></p></li>
+</ul></li>
+</ul>
+<h4 id="马尔可夫链">马尔可夫链</h4>
+<ul>
+<li><p>遍历定理</p>
+<p>设有马尔可夫链 <span class="math inline">\(X =
+\{X_0,X_1,...,X_t,...\}\)</span>，状态空间为<span class="math inline">\(S\)</span>，若马尔可夫链是不可约、非周期且正常返的，则该马尔可夫链有唯一平稳分布<span class="math inline">\(\pi =
+(\pi_1,\pi_2,...)^T\)</span>，并且转移概率的极限分布是马尔可夫链的平稳分布
+<span class="math display">\[
+\lim_{t\rightarrow\infty}P(X_t=i|X_0=j) = \pi_i,i=1,2,...;j=1,2,...
+\]</span> 若<span class="math inline">\(f(X)\)</span>是定义在状态空间上的函数，<span class="math inline">\(E_{\pi}[|f(X)|]&lt;\infty\)</span>，则 <span class="math display">\[
+P\{\hat{f}_t\rightarrow E_\pi[f(X)] \} = 1,t\rightarrow \infty
+\\
+\hat{f}_t = \frac{1}{t}\sum_{s=1}^t f(x_s)
+\\
+E_\pi[f(X)] = \sum_if(i)\pi_i
+\]</span>
+样本均值是一次次时间步骤产生的，是时间均值。期望是同一时间状态空间不同状态和对应概率的积的和，是空间均值。遍历定理其实是证明了当时间趋于无穷的时候，时间均值就等于空间均值。</p></li>
+<li><p>可逆马尔可夫链</p>
+<p>设有马尔可夫链<span class="math inline">\(X =
+\{X_0,X_1,...,X_t,...\}\)</span>，状态空间为<span class="math inline">\(S\)</span>，转移概率矩阵为<span class="math inline">\(P\)</span>，如果状态分布<span class="math inline">\(\pi =
+(\pi_1,\pi_2,\cdot\cdot\cdot)^T\)</span>，对于任意状态<span class="math inline">\(i,j\in S\)</span>，对任意一个时刻<span class="math inline">\(t\)</span>满足: <span class="math display">\[
+P(X_t = i|X_{t-1} = j)\pi_j = P(X_{t-1}=j|X_t = i)\pi_i,i,j=1,2,...
+\]</span> 或简写为 <span class="math display">\[
+p_{ij}\pi_j = p_{ji}\pi_i,i,j=1,2,...
+\]</span> 则称此马尔可夫链<span class="math inline">\(X\)</span>为可逆马尔科夫链，上式称为<strong>细致平衡方程</strong>。</p>
+<p>直观上，对一个可逆马尔可夫链而言，以该马尔可夫链的平稳分布作为初始分布，进行随机状态转移，无论是面向未来还是面向过去，任何一个时刻的状态分布都是该平稳分布。</p>
+<p><strong>定理</strong>：满足细致平衡方程的状态分布<span class="math inline">\(\pi\)</span>就是该马尔可夫链的平稳分布，即 <span class="math display">\[
+P\pi = \pi
+\]</span></p></li>
+</ul>
+<h4 id="马尔可夫链蒙特卡罗法">马尔可夫链蒙特卡罗法</h4>
+<ul>
+<li><p>基本思想</p>
+<ul>
+<li><p>目标</p>
+<ul>
+<li>对一个概率分布进行随机抽样</li>
+<li>求函数关于该概率分布的数学期望</li>
+</ul></li>
+<li><p>手段</p>
+<ul>
+<li>传统的蒙特卡罗法：接受-拒绝法，重要性抽样法</li>
+<li>马尔可夫链蒙特卡罗法：更适合随机变量是多元的，密度函数是非标准形式的，随机变量各分量不独立等情况</li>
+</ul></li>
+<li><p>Pipeline</p>
+<p>假设多元随机变量<span class="math inline">\(x \in
+\mathcal{X}\)</span>，其概率密度函数为<span class="math inline">\(p(x)\)</span>，<span class="math inline">\(f(x)\)</span>为定义在<span class="math inline">\(x\in
+\mathcal{X}\)</span>上的函数，目标是获得概率分布<span class="math inline">\(p(x)\)</span>的样本集合，以及求函数<span class="math inline">\(f(x)\)</span>的数学期望<span class="math inline">\(E_{p(x)}[f(x)]\)</span>。</p>
+<ul>
+<li><p>在随机变量<span class="math inline">\(x\)</span>的状态空间<span class="math inline">\(S\)</span>上构造一个满足遍历定理的马尔可夫链，使其平稳分布为目标分布<span class="math inline">\(p(x)\)</span></p>
+<blockquote>
+<p>连续变量的时候需要定义转移核函数；离散变量的时候需要定义转移矩阵。</p>
+<p>一个方法是定义特殊的转移核函数或转移矩阵，构建可逆马尔可夫链。这样可以保证（充分条件：可逆马尔科夫连一定有唯一平稳分布）遍历定理成立。</p>
+</blockquote></li>
+<li><p>从状态空间某一点<span class="math inline">\(x_0\)</span>出发，用构造的马尔可夫链进行随机游走，产生样本序列<span class="math inline">\(x_0,x_1,...,x_t,...\)</span></p></li>
+<li><p>应用马尔可夫链的遍历定理，确定正整数m和n，(m&lt;n)，得到样本集合<span class="math inline">\(\{x_{m+1},x_{m+2},...,x_n\}\)</span>，求得函数<span class="math inline">\(f(x)\)</span>的遍历均值 <span class="math display">\[
+\hat{E}f = \frac{1}{n-m}\sum_{i=m+1}^nf(x_i)
+\]</span> 就是马尔可夫链蒙特卡洛法的计算公式</p></li>
+</ul></li>
+</ul></li>
+</ul>
+<h4 id="马尔可夫链蒙特卡罗法与统计学习">马尔可夫链蒙特卡罗法与统计学习</h4>
+<p>在贝叶斯学习中起着重要作用：它可以用于概率模型的学习和推理上。</p>
+<p>假设观测数据有随机变量<span class="math inline">\(y\in
+\mathcal{Y}\)</span>表示，模型由随机变量<span class="math inline">\(x\in
+\mathcal{X}\)</span>表示，贝叶斯学习通过贝叶斯定理计算给定数据条件下的模型的后验概率，并选择后验概率最大的模型。</p>
+<p>后验概率 <span class="math display">\[
+p(x|y) =
+\frac{p(x)p(y|x)}{\int_{\mathcal{X}}p(y|x&#39;)p(x&#39;)dx&#39;}
+\]</span> 贝叶斯经常需要三种积分运算：</p>
+<ul>
+<li><p>规范化：后验概率计算中需要的： <span class="math display">\[
+\int_{\mathcal{X}}p(y|x&#39;)p(x&#39;)dx&#39;
+\]</span></p></li>
+<li><p>边缘化：如果有隐变量<span class="math inline">\(z\in\mathcal{Z}\)</span>，后验概率的计算需要边缘化计算
+<span class="math display">\[
+p(x|y)=\int_{\mathcal{Z}}p(x,z|y)dz
+\]</span></p></li>
+<li><p>数学期望：如果有一个函数<span class="math inline">\(f(x)\)</span>，可以计算该函数关于后验概率分布的数学期望
+<span class="math display">\[
+E_{p(x)}[f(x)] = \int_{\mathcal{X}}f(x)p(x|y)dx
+\]</span></p></li>
+</ul>
+<h4 id="metropolis-hastings算法">Metropolis-Hastings算法</h4>
+<p>假设要抽样的概率分布为<span class="math inline">\(p(x)\)</span>。Metropolis-Hastings算法采用的转移核为<span class="math inline">\(p(x,x&#39;)\)</span>的马尔可夫链： <span class="math display">\[
+p(x,x&#39;) = q(x,x&#39;)\alpha(x,x&#39;)
+\]</span> 其中<span class="math inline">\(q(x,x&#39;)\)</span>和<span class="math inline">\(\alpha(x,x&#39;)\)</span>分别被称为建议分布和接受分布。</p>
+<ul>
+<li><p>建议分布</p>
+<ul>
+<li>是另一个马尔可夫链的转移核</li>
+<li>是不可约的，即概率值恒不为0</li>
+<li>是一个容易抽样的分布</li>
+<li>常见的两种形式
+<ul>
+<li>假设建议分布是对称的：q(x,x') = q(x',x)
+<ul>
+<li>比如选择条件概率分布<span class="math inline">\(p(x&#39;|x)\)</span>，<strong>定义为</strong>以<span class="math inline">\(x\)</span>为均值的多元正态分布，协方差矩阵是常数矩阵（在知道当前的x后，就可以从正态分布中抽取下一步的x'）</li>
+</ul></li>
+<li>独立抽样。假设q(x,x')与当前状态x无关，即q(x,x') = q(x')</li>
+</ul></li>
+</ul></li>
+<li><p>接受分布</p>
+<ul>
+<li>公式定义 <span class="math display">\[
+\alpha(x,x&#39;) = min\{1,\frac{p(x&#39;)q(x&#39;,x)}{p(x)q(x,x&#39;)}\}
+\]</span></li>
+</ul></li>
+<li></li>
+<li><p>满条件分布</p>
+<ul>
+<li><p>定义</p>
+<p>多元联合概率分布<span class="math inline">\(p(x)=p(x_1,x_2,...,x_k)\)</span>，其中<span class="math inline">\(x =
+(x_1,x_2,...,x_k)^T\)</span>是k维随机变量。如果条件概率分布<span class="math inline">\(p(x_I|x_{-I})\)</span>中所有k个变量全部出现，其中<span class="math inline">\(x_I = \{x_i,i\in I\},x_{-I}=\{x_i,i\notin
+I\},I\subset K = \{1,2,...,k\}\)</span></p></li>
+<li><p>性质</p>
+<p>对任意的<span class="math inline">\(x\in
+\mathcal{X}\)</span>和任意的<span class="math inline">\(I \subset
+K\)</span>，有 <span class="math display">\[
+p(x_I|x_{-I}) = \frac{p(x)}{\int p(x)dx_I} \propto p(x)
+\]</span> 而且对任意的<span class="math inline">\(x,x&#39;\in
+\mathcal{X}\)</span>和任意的<span class="math inline">\(I \subset
+K\)</span>，有 <span class="math display">\[
+\frac{p(x_I&#39;|x_{-I}&#39;)}{p(x_I|x_{-I})} = \frac{p(x&#39;)}{p(x)}
+\]</span>
+利用这个性质，可以通过满条件分布概率的比来计算联合概率的比，计算更加简单。</p></li>
+</ul></li>
+<li><p>Pipeline</p>
+<ul>
+<li>输入：抽样的目标分布的密度函数<span class="math inline">\(p(x)\)</span>，函数<span class="math inline">\(f(x)\)</span></li>
+<li>输出：<span class="math inline">\(p(x)\)</span>的随机样本<span class="math inline">\(x_{m+1},x_{m+2},...,x_n\)</span>，函数样本均值<span class="math inline">\(f_{mn}\)</span></li>
+<li>参数：收敛步数m，迭代步数n</li>
+</ul>
+<p>(1)任选初始值<span class="math inline">\(x_0\)</span></p>
+<p>(2)对i=1,2,...,n循环执行</p>
+<ul>
+<li>设状态<span class="math inline">\(x_{i-1} =
+x\)</span>，按照<strong>建议分布</strong><span class="math inline">\(q(x,x&#39;)\)</span>随机抽取一个候选状态<span class="math inline">\(x&#39;\)</span></li>
+<li>计算接受概率<span class="math inline">\(\alpha(x,x&#39;)\)</span></li>
+<li>从区间(0,1)中按均匀分布抽取<span class="math inline">\(u\)</span>
+<ul>
+<li>若<span class="math inline">\(u\leq
+\alpha(x,x&#39;)\)</span>，则状态<span class="math inline">\(x_i=x&#39;\)</span></li>
+<li>否则，<span class="math inline">\(x_i = x\)</span></li>
+</ul></li>
+</ul>
+<p>得到<strong>样本集合</strong>并计算<strong>函数样本均值</strong>并返回·</p></li>
+<li><p>单分量Metropolis-Hastings算法</p>
+<p>在Metropolis-Hastings算法中，通常需要对多元变量分布进行抽样，有时对多元变量分布进行抽样是困难的。</p>
+<p>可以对多元变量的每一变量的条件分布一次进行抽样，从而实现对整个多元变量的一次抽样。</p></li>
+</ul>
+<h4 id="lda">LDA</h4>
+<ul>
+<li></li>
+</ul>
+<h3 id="广义em的另一个特例是ws算法">广义EM的另一个特例是WS算法</h3>
+<h4 id="bp算法">BP算法</h4>
+<h4 id="wake-sleep算法">Wake-Sleep算法</h4>
+<h3 id="广义em的再一个特例是gibbs-sampling">广义EM的再一个特例是Gibbs
+Sampling</h3>
+<h4 id="gibbs-sampling">Gibbs Sampling</h4>
+<p>吉布斯抽样是单分量Metropolis-Hastings算法的特殊情况。前者抽样会在样本点见移动，但可能会由于被拒绝而有停留；后者会在样本点之间持续移动。前者适合于满条件概率分布不容易计算的情况，使用更容易抽样的条件概率分布做建议分布。后者适合于满条件概率分布容易计算的情况。</p>
+<p>定义建议分布是当前变量<span class="math inline">\(x_j,j=1,2,...,k\)</span>的满条件概率分布 <span class="math display">\[
+q(x,x&#39;) = p(x&#39;_j|x_{-j})
+\]</span>
+这时，接受概率很容易得到是1。因此，转移核函数也是满条件概率分布： <span class="math display">\[
+p(x,x&#39;) = p(x&#39;_j|x_{-j})
+\]</span></p>
+<ul>
+<li><p>输入：目标概率分布的密度函数<span class="math inline">\(p(x)\)</span>，函数<span class="math inline">\(f(x)\)</span></p></li>
+<li><p>输出：<span class="math inline">\(p(x)\)</span>的随机样本<span class="math inline">\(x_{m+1},x_{m+2},...,x_n\)</span>，函数样本均值<span class="math inline">\(f_{mn}\)</span></p></li>
+<li><p>参数：收敛步数m，迭代步数n</p></li>
+<li><p>具体步骤：</p>
+<figure>
+<img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20221026163129064-16738440550728.png" alt="image-20221026163129064">
+<figcaption aria-hidden="true">image-20221026163129064</figcaption>
+</figure></li>
+<li><p>抽样计算</p>
+<p>可以利用概率分布的性质提高抽样的效率。</p>
+<figure>
+<img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20221026164342352-167384405507310.png" alt="image-20221026164342352">
+<figcaption aria-hidden="true">image-20221026164342352</figcaption>
+</figure>
+<p>也就是说，直接算看上去是和所有变量都有关的（都出现在了式子左边部分）但是实际上通过式子右边部分计算，只需要用到部分变量即可进行计算，更加简单。</p></li>
+</ul>
+<h3 id="ws算法是vae和gan组合的简化版">WS算法是VAE和GAN组合的简化版</h3>
+<h4 id="vae">VAE</h4>
+<h4 id="gan">GAN</h4>
+<h3 id="kl距离的统一">KL距离的统一</h3>
+<ul>
+<li>TODO</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/01/16/GNN4NLP/" rel="prev" title="GNN4NLP">
+      <i class="fa fa-chevron-left"></i> GNN4NLP
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#em2"><span class="nav-number">1.</span> <span class="nav-text">EM2</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B9%BF%E4%B9%89em%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFvbem"><span class="nav-number">1.0.1.</span> <span class="nav-text">广义EM的一个特例是VBEM</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#lsalatent-semantic-analysis"><span class="nav-number">1.0.1.1.</span> <span class="nav-text">LSA(latent semantic analysis)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#plsaprobabilistic-latent-semantic-analysis"><span class="nav-number">1.0.1.2.</span> <span class="nav-text">PLSA(probabilistic
+latent semantic analysis)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E9%93%BE%E8%92%99%E7%89%B9%E5%8D%A1%E6%B4%9B%E6%B3%95"><span class="nav-number">1.0.1.3.</span> <span class="nav-text">马尔可夫链蒙特卡洛法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E9%93%BE"><span class="nav-number">1.0.1.4.</span> <span class="nav-text">马尔可夫链</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E9%93%BE%E8%92%99%E7%89%B9%E5%8D%A1%E7%BD%97%E6%B3%95"><span class="nav-number">1.0.1.5.</span> <span class="nav-text">马尔可夫链蒙特卡罗法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E9%93%BE%E8%92%99%E7%89%B9%E5%8D%A1%E7%BD%97%E6%B3%95%E4%B8%8E%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0"><span class="nav-number">1.0.1.6.</span> <span class="nav-text">马尔可夫链蒙特卡罗法与统计学习</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#metropolis-hastings%E7%AE%97%E6%B3%95"><span class="nav-number">1.0.1.7.</span> <span class="nav-text">Metropolis-Hastings算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#lda"><span class="nav-number">1.0.1.8.</span> <span class="nav-text">LDA</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B9%BF%E4%B9%89em%E7%9A%84%E5%8F%A6%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFws%E7%AE%97%E6%B3%95"><span class="nav-number">1.0.2.</span> <span class="nav-text">广义EM的另一个特例是WS算法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#bp%E7%AE%97%E6%B3%95"><span class="nav-number">1.0.2.1.</span> <span class="nav-text">BP算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#wake-sleep%E7%AE%97%E6%B3%95"><span class="nav-number">1.0.2.2.</span> <span class="nav-text">Wake-Sleep算法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B9%BF%E4%B9%89em%E7%9A%84%E5%86%8D%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFgibbs-sampling"><span class="nav-number">1.0.3.</span> <span class="nav-text">广义EM的再一个特例是Gibbs
+Sampling</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#gibbs-sampling"><span class="nav-number">1.0.3.1.</span> <span class="nav-text">Gibbs Sampling</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ws%E7%AE%97%E6%B3%95%E6%98%AFvae%E5%92%8Cgan%E7%BB%84%E5%90%88%E7%9A%84%E7%AE%80%E5%8C%96%E7%89%88"><span class="nav-number">1.0.4.</span> <span class="nav-text">WS算法是VAE和GAN组合的简化版</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#vae"><span class="nav-number">1.0.4.1.</span> <span class="nav-text">VAE</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#gan"><span class="nav-number">1.0.4.2.</span> <span class="nav-text">GAN</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#kl%E8%B7%9D%E7%A6%BB%E7%9A%84%E7%BB%9F%E4%B8%80"><span class="nav-number">1.0.5.</span> <span class="nav-text">KL距离的统一</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Haoran Li</p>
+  <div class="site-description" itemprop="description">Blog of Whyynnot</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Haoran Li</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'c2AnFNAFnFrReTpruCM2RWMV-gzGzoHsz',
+      appKey     : 'rMWSQ6KHYU6DHK01uJS0Mvmg',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
