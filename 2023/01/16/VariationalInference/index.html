@@ -20,17 +20,17 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
-  <meta name="description" content="Variational Inference  本文主要介绍变分推断的相关数学基础，并和与其功能类似的吉布斯采样进行深入的比较和总结。">
+  <meta name="description" content="Variational Inference 本文主要介绍变分推断的相关数学基础，并和与其功能类似的吉布斯采样进行深入的比较和总结。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="VariationalInference">
 <meta property="og:url" content="http://example.com/2023/01/16/VariationalInference/index.html">
 <meta property="og:site_name" content="Whyynnot">
-<meta property="og:description" content="Variational Inference  本文主要介绍变分推断的相关数学基础，并和与其功能类似的吉布斯采样进行深入的比较和总结。">
+<meta property="og:description" content="Variational Inference 本文主要介绍变分推断的相关数学基础，并和与其功能类似的吉布斯采样进行深入的比较和总结。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/2023/01/16/VariationalInference/image-20221103192156434.png">
 <meta property="og:image" content="http://example.com/2023/01/16/VariationalInference/image-20221103195504051.png">
 <meta property="article:published_time" content="2023-01-16T05:03:24.000Z">
-<meta property="article:modified_time" content="2023-01-17T13:03:36.885Z">
+<meta property="article:modified_time" content="2023-01-17T14:12:08.848Z">
 <meta property="article:author" content="Haoran Li">
 <meta property="article:tag" content="变分">
 <meta name="twitter:card" content="summary">
@@ -212,7 +212,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-01-17 21:03:36" itemprop="dateModified" datetime="2023-01-17T21:03:36+08:00">2023-01-17</time>
+                <time title="修改时间：2023-01-17 22:12:08" itemprop="dateModified" datetime="2023-01-17T22:12:08+08:00">2023-01-17</time>
               </span>
 
           
@@ -247,37 +247,29 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="variational-inference">Variational Inference</h1>
-<blockquote>
+        <h1 id="Variational-Inference"><a href="#Variational-Inference" class="headerlink" title="Variational Inference"></a>Variational Inference</h1><blockquote>
 <p>本文主要介绍变分推断的相关数学基础，并和与其功能类似的吉布斯采样进行深入的比较和总结。</p>
 <span id="more"></span>
 </blockquote>
-<h2 id="background">Background</h2>
-<p>在贝叶斯模型中，隐变量帮助掌握数据的分布。 <span class="math display">\[
+<h2 id="Background"><a href="#Background" class="headerlink" title="Background"></a>Background</h2><p>在贝叶斯模型中，隐变量帮助掌握数据的分布。</p>
+<script type="math/tex; mode=display">
 p(\textbf{z},\textbf{x}) = p(\textbf{z})p(\textbf{x}|\textbf{z})
 \\
-p(\textbf{z}|\textbf{x}) =
-\frac{p(\textbf{z},\textbf{x})}{p(\textbf{x})}
-\]</span> 其中，贝叶斯模型中的<strong>推理</strong>指的是<span class="math inline">\(p(\textbf{z}|\textbf{x})\)</span>。</p>
-<p>假设观测数据有随机变量<span class="math inline">\(y\in
-\mathcal{Y}\)</span>表示，模型由随机变量<span class="math inline">\(x\in
-\mathcal{X}\)</span>表示，贝叶斯学习通过贝叶斯定理计算给定数据条件下的模型的<strong>后验概率</strong>，并选择后验概率最大的模型。</p>
-<p>后验概率 <span class="math display">\[
-p(x|y) =
-\frac{p(x)p(y|x)}{\int_{\mathcal{X}}p(y|x&#39;)p(x&#39;)dx&#39;}
-\]</span> 贝叶斯经常需要三种积分运算：</p>
+p(\textbf{z}|\textbf{x}) = \frac{p(\textbf{z},\textbf{x})}{p(\textbf{x})}</script><p>其中，贝叶斯模型中的<strong>推理</strong>指的是$p(\textbf{z}|\textbf{x})$。</p>
+<p>假设观测数据有随机变量$y\in \mathcal{Y}$表示，模型由随机变量$x\in \mathcal{X}$表示，贝叶斯学习通过贝叶斯定理计算给定数据条件下的模型的<strong>后验概率</strong>，并选择后验概率最大的模型。</p>
+<p>后验概率</p>
+<script type="math/tex; mode=display">
+p(x|y) = \frac{p(x)p(y|x)}{\int_{\mathcal{X}}p(y|x')p(x')dx'}</script><p>贝叶斯经常需要三种积分运算：</p>
 <ul>
-<li><p>规范化：后验概率计算中需要的： <span class="math display">\[
-\int_{\mathcal{X}}p(y|x&#39;)p(x&#39;)dx&#39;
-\]</span></p></li>
-<li><p>边缘化：如果有隐变量<span class="math inline">\(z\in\mathcal{Z}\)</span>，后验概率的计算需要边缘化计算
-<span class="math display">\[
-p(x|y)=\int_{\mathcal{Z}}p(x,z|y)dz
-\]</span></p></li>
-<li><p>数学期望：如果有一个函数<span class="math inline">\(f(x)\)</span>，可以计算该函数关于后验概率分布的数学期望
-<span class="math display">\[
-E_{p(x)}[f(x)] = \int_{\mathcal{X}}f(x)p(x|y)dx
-\]</span></p></li>
+<li><p>规范化：后验概率计算中需要的：</p>
+<script type="math/tex; mode=display">
+\int_{\mathcal{X}}p(y|x')p(x')dx'</script></li>
+<li><p>边缘化：如果有隐变量$z\in\mathcal{Z}$，后验概率的计算需要边缘化计算</p>
+<script type="math/tex; mode=display">
+p(x|y)=\int_{\mathcal{Z}}p(x,z|y)dz</script></li>
+<li><p>数学期望：如果有一个函数$f(x)$，可以计算该函数关于后验概率分布的数学期望</p>
+<script type="math/tex; mode=display">
+E_{p(x)}[f(x)] = \int_{\mathcal{X}}f(x)p(x|y)dx</script></li>
 </ul>
 <p>当观测数据和模型都很复杂的时候，以上积分变得困难，需要对其进行估计，主要由两种近似的计算方法：</p>
 <ul>
@@ -287,155 +279,84 @@ E_{p(x)}[f(x)] = \int_{\mathcal{X}}f(x)p(x|y)dx
 <p>MCMC目前作为贝叶斯统计中的重要的工具，已经被广泛地研究和使用。但是，当数据集很大或模型非常复杂时，如果我们需要比MCMC更快速地估计近似条件时，就需要VI来提供一种替代方案。</p>
 <p>不是使用采样，VI背后的主要思想是使用<strong>最优化</strong>：</p>
 <ul>
-<li><p>假设一族近似密度分布<span class="math inline">\(\mathscr{Q}\)</span>，这是一个隐变量上概率密度的集合</p></li>
-<li><p>我们尝试从这族密度中找到最小化和后验分布的KL散度的密度： <span class="math display">\[
-q^*(\textbf{z}) = \arg \min_{q(\textbf{z})\in
-\mathscr{Q}}KL(q(\textbf{z})||p(\textbf{z}|\textbf{x}))
-\]</span></p></li>
-<li><p>我们用密度族中的优化成员 <span class="math inline">\(q^∗(\cdot)\)</span> 来近似后验</p></li>
+<li><p>假设一族近似密度分布$\mathscr{Q}$，这是一个隐变量上概率密度的集合</p>
+</li>
+<li><p>我们尝试从这族密度中找到最小化和后验分布的KL散度的密度：</p>
+<script type="math/tex; mode=display">
+q^*(\textbf{z}) = \arg \min_{q(\textbf{z})\in \mathscr{Q}}KL(q(\textbf{z})||p(\textbf{z}|\textbf{x}))</script></li>
+<li><p>我们用密度族中的优化成员 $q^∗(\cdot)$ 来近似后验</p>
+</li>
 </ul>
-<p>因此，VI将推理问题转换成了优化问题，并且<span class="math inline">\(\mathscr{Q}\)</span>的范围管理了优化的复杂度。VI背后的关键点之一就是选择能够捕获一个接近后验概率密度的足够灵活的<span class="math inline">\(\mathscr{Q}\)</span>，同时它又足够简单进行高效的优化。</p>
-<p>MCMC 和变分推理是解决同一问题的不同方法。</p>
+<p>因此，VI将<strong>推理问题</strong>转换成了<strong>优化问题</strong>，并且$\mathscr{Q}$的范围管理了优化的复杂度。VI背后的关键点之一就是选择能够捕获一个接近后验概率密度的足够灵活的$\mathscr{Q}$，同时它又足够简单进行高效的优化。</p>
+<p>MCMC 和变分推理是解决同一问题的不同方法。 </p>
 <ul>
 <li>MCMC 算法对马尔可夫链进行采样；变分算法解决优化问题。</li>
 <li>MCMC 算法用来自链的样本近似后验；变分算法用优化的结果逼近后验。</li>
 </ul>
 <p>那两种方法什么时候适用呢？</p>
-<p>MCMC
-方法往往比变分推理的计算密集度更高，但它们也提供了从目标密度产生（渐近）精确样本的保证。</p>
-<p>变分推理不享有这样的保证——它只能找到接近目标的密度——但往往比 MCMC
-更快。因为它依赖于优化，所以变分推理很容易利用随机优化和分布式优化（尽管一些
-MCMC 方法也可以利用这些创新）。</p>
-<p>因此，变分推理适用于我们想要<strong>快速探索许多模型的大型数据集和场景</strong>；
-MCMC
-适用于<strong>较小的数据集和场景，我们很乐意为更精确的样本支付更高的计算成本。</strong></p>
+<p>MCMC 方法往往比变分推理的计算密集度更高，但它们也提供了从目标密度产生（渐近）精确样本的保证。</p>
+<p>变分推理不享有这样的保证——它只能找到接近目标的密度——但往往比 MCMC  更快。因为它依赖于优化，所以变分推理很容易利用随机优化和分布式优化（尽管一些 MCMC 方法也可以利用这些创新）。</p>
+<p>因此，变分推理适用于我们想要<strong>快速探索许多模型的大型数据集和场景</strong>； MCMC 适用于<strong>较小的数据集和场景，我们很乐意为更精确的样本支付更高的计算成本。</strong></p>
 <blockquote>
-<p>例如，我们可能会在一个环境中使用 MCMC，我们花了 20
-年时间收集一个小而昂贵的数据集，我们确信我们的模型是合适的，并且我们需要精确的推理。</p>
+<p>例如，我们可能会在一个环境中使用 MCMC，我们花了 20 年时间收集一个小而昂贵的数据集，我们确信我们的模型是合适的，并且我们需要精确的推理。</p>
 <p>在将文本概率模型拟合到十亿个文本文档时，我们可能会使用变分推理，并且推理将用于为大量用户提供搜索结果。在这种情况下，我们可以使用分布式计算和随机优化来扩展和加速推理，我们可以轻松探索许多不同的数据模型。</p>
 </blockquote>
 <p>数据集大小不是唯一的考虑因素。另一个因素是<strong>后验分布的几何形状</strong>。</p>
-<p>例如，混合模型的后验允许多个模式，每个对应于组件的标签排列。如果模型允许，吉布斯抽样是一种从此类目标分布中抽样的有效方法；它很快专注于其中一种模式。对于不能选择
-Gibbs 采样的混合模型，变分推理可能比更通用的 MCMC 技术（例如 Hamiltonian
-Monte Carlo）表现更好，即使对于小型数据集也是如此。</p>
+<p>例如，混合模型的后验允许多个模式，每个对应于组件的标签排列。如果模型允许，吉布斯抽样是一种从此类目标分布中抽样的有效方法；它很快专注于其中一种模式。对于不能选择 Gibbs 采样的混合模型，变分推理可能比更通用的 MCMC 技术（例如 Hamiltonian Monte Carlo）表现更好，即使对于小型数据集也是如此。</p>
 <p>变分推理和 MCMC 的相对准确性仍然未知。</p>
-<p>我们确实知道变分推理通常会低估后验密度的方差。这是其目标函数的结果。但是，根据手头的任务，低估方差可能是可以接受的。几条实证研究表明，变分推理不一定会影响准确性；其他研究侧重于变分推理不足的地方，尤其是后验方差，并试图更接近地匹配
-MCMC 的推理。</p>
-<h2 id="variational-inference-1">Variational inference</h2>
-<p>VI的目标是估计给定观测变量后隐变量的条件密度。</p>
-<h3 id="the-problem-of-approximate-inference">The problem of approximate
-inference</h3>
-<p>令<span class="math inline">\(\textbf{x} =
-x_{1:n}\)</span>是观测变量的集合，而<span class="math inline">\(\textbf{z} =
-z_{1:m}\)</span>是隐变量的集合，其联合概率是<span class="math inline">\(p(\textbf{z},\textbf{x})\)</span>。这里我们没有在符号中写出常量，如超参数。</p>
-<p>推理问题是给定观测变量来计算隐变量的条件密度，<span class="math inline">\(p(\textbf{z}|\textbf{x})\)</span>。此条件可用于生成潜在变量的点或区间估计，形成新数据的预测密度等。
-<span class="math display">\[
-p(\textbf{z}|\textbf{x}) =
-\frac{p(\textbf{z},\textbf{x})}{p(\textbf{x})}
-\]</span>
-分母包含观察的<strong>边际密度</strong>，也称为<strong>evidence</strong>。我们通过从<strong>联合密度</strong>中<strong>边缘化隐变量</strong>来计算它：
-<span class="math display">\[
-p(\textbf{x}) = \int p(\textbf{z},\textbf{x})d\textbf{z}
-\]</span>
-对于许多模型，这种evidence积分在封闭形式中是不可用的，或者需要指数时间来计算。evidence是我们从联合计算条件密度所必须的；这就是在此类模型中进行推理很困难的原因。</p>
+<p>我们确实知道变分推理通常会低估后验密度的方差。这是其目标函数的结果。但是，根据手头的任务，低估方差可能是可以接受的。几条实证研究表明，变分推理不一定会影响准确性；其他研究侧重于变分推理不足的地方，尤其是后验方差，并试图更接近地匹配 MCMC 的推理。</p>
+<h2 id="Variational-inference"><a href="#Variational-inference" class="headerlink" title="Variational inference"></a>Variational inference</h2><p>VI的目标是估计给定观测变量后隐变量的条件密度。</p>
+<h3 id="The-problem-of-approximate-inference"><a href="#The-problem-of-approximate-inference" class="headerlink" title="The problem of approximate inference"></a>The problem of approximate inference</h3><p>令$\textbf{x} = x<em>{1:n}$是观测变量的集合，而$\textbf{z} = z</em>{1:m}$是隐变量的集合，其联合概率是$p(\textbf{z},\textbf{x})$。这里我们没有在符号中写出常量，如超参数。</p>
+<p>推理问题是给定观测变量来计算隐变量的条件密度，$p(\textbf{z}|\textbf{x})$。此条件可用于生成潜在变量的点或区间估计，形成新数据的预测密度等。</p>
+<script type="math/tex; mode=display">
+p(\textbf{z}|\textbf{x}) = \frac{p(\textbf{z},\textbf{x})}{p(\textbf{x})}</script><p>分母包含观察的<strong>边际密度</strong>，也称为<strong>evidence</strong>。我们通过从<strong>联合密度</strong>中<strong>边缘化隐变量</strong>来计算它：</p>
+<script type="math/tex; mode=display">
+p(\textbf{x}) = \int p(\textbf{z},\textbf{x})d\textbf{z}</script><p>对于许多模型，这种evidence积分在封闭形式中是不可用的，或者需要指数时间来计算。evidence是我们从联合计算条件密度所必须的；这就是在此类模型中进行推理很困难的原因。</p>
 <p>请注意，我们假设<strong>所有未知的感兴趣量都表示为隐随机变量</strong>。这包括可能控制所有数据的<strong>参数</strong>，如在贝叶斯模型中发现的，以及对单个数据点“局部”的隐变量。</p>
-<h3 id="the-evidence-lower-bound">The evidence lower bound</h3>
-<p>在VI中，我们选择一个隐变量上的密度族<span class="math inline">\(\mathscr{Q}\)</span>。每个<span class="math inline">\(q(\textbf{z})\in\mathscr{Q}\)</span>都是精确条件密度的候选近似估计。我们的目标是：
-<span class="math display">\[
-q^*(\textbf{z}) = \arg\min_{q(\textbf{z})\in
-\mathscr{Q}}KL(q(\textbf{z})||p(\textbf{z}|\textbf{x}))
-\]</span> 这个候选密度族的复杂度决定了优化的复杂度。</p>
-<p>然而这个指标是不能计算的，因为它需要计算evidence <span class="math inline">\(\log p(\textbf{x})\)</span>​。 <span class="math display">\[
-K L ( q ( \textbf{z} ) | | p ( \textbf{z} | \textbf{x} ) )
-= \mathbb{E} [ \log q ( \textbf{z} ) ] - \mathbb{E} [ \log p (
-\textbf{z} | \textbf{x} ) ]
+<h3 id="The-evidence-lower-bound"><a href="#The-evidence-lower-bound" class="headerlink" title="The evidence lower bound"></a>The evidence lower bound</h3><p>在VI中，我们选择一个隐变量上的密度族$\mathscr{Q}$。每个$q(\textbf{z})\in\mathscr{Q}$都是精确条件密度的候选近似估计。我们的目标是：</p>
+<script type="math/tex; mode=display">
+q^*(\textbf{z}) = \arg\min_{q(\textbf{z})\in \mathscr{Q}}KL(q(\textbf{z})||p(\textbf{z}|\textbf{x}))</script><p>这个候选密度族的复杂度决定了优化的复杂度。</p>
+<p>然而这个指标是不能计算的，因为它需要计算evidence $\log p(\textbf{x})$​。</p>
+<script type="math/tex; mode=display">
+K L ( q ( \textbf{z} ) | | p ( \textbf{z} | \textbf{x} ) ) 
+= \mathbb{E} [ \log q ( \textbf{z} ) ] - \mathbb{E} [ \log p ( \textbf{z} | \textbf{x} ) ]
 \\
-= \mathbb{E} [ \log q ( \textbf{z} ) ] - \mathbb{E} [ \log p (
-\textbf{z},\textbf{x} ) ] + \log p(\textbf{x})
-\]</span> 因为我们无法计算 KL，所以我们优化了一个增加一个常量后等效于 KL
-的替代目标， <span class="math display">\[
-ELBO(q) = \mathbb{E}[\log p(\textbf{z},\textbf{x})] - \mathbb{E}[\log
-q(\textbf{z})]
-\]</span> 这个函数称为evidence lower bound(ELBO)。 ELBO 是负 KL 散度加上
-log p(x)，它是关于 q(z) 的常数。最大化 ELBO 等效于最小化 KL 散度。</p>
-<p>检查 ELBO 可以直观地了解最佳变分密度。我们将 ELBO
-重写为数据的预期对数似然和先验 <span class="math inline">\(p(\textbf{z})\)</span> 和 <span class="math inline">\(q(\textbf{z})\)</span> 之间的 KL 散度之和 <span class="math display">\[
-ELBO(q) = \mathbb{E}[\log p(\textbf{z})]+\mathbb{E}[\log
-p(\textbf{x}|\textbf{z})] - \mathbb{E}[\log q(\textbf{z})]
+= \mathbb{E} [ \log q ( \textbf{z} ) ] - \mathbb{E} [ \log p ( \textbf{z},\textbf{x} ) ] + \log p(\textbf{x})</script><p>因为我们无法计算 KL，所以我们优化了一个增加一个常量后等效于 KL 的替代目标，</p>
+<script type="math/tex; mode=display">
+ELBO(q) = \mathbb{E}[\log p(\textbf{z},\textbf{x})] - \mathbb{E}[\log q(\textbf{z})]</script><p>这个函数称为evidence lower bound(ELBO)。 ELBO 是负 KL 散度加上 log p(x)，它是关于 q(z) 的常数。最大化 ELBO 等效于最小化 KL 散度。</p>
+<p>检查 ELBO 可以直观地了解最佳变分密度。我们将 ELBO 重写为数据的预期对数似然和先验 $p(\textbf{z})$ 和 $q(\textbf{z})$ 之间的 KL 散度之和</p>
+<script type="math/tex; mode=display">
+ELBO(q) = \mathbb{E}[\log p(\textbf{z})]+\mathbb{E}[\log p(\textbf{x}|\textbf{z})] - \mathbb{E}[\log q(\textbf{z})]
 \\
-=\mathbb{E}[\log
-p(\textbf{x}|\textbf{z})]-KL(q(\textbf{z})||p(\textbf{z}))
-\]</span> 这个目标会鼓励 <span class="math inline">\(q(\textbf{z})\)</span> 将其质量放在哪个 z
-值上？</p>
+=\mathbb{E}[\log p(\textbf{x}|\textbf{z})]-KL(q(\textbf{z})||p(\textbf{z}))</script><p>这个目标会鼓励 $q(\textbf{z})$ 将其质量放在哪个 z 值上？</p>
 <ul>
 <li>第一项是预期的可能性；它鼓励将它们的质量置于<strong>解释观测数据的隐变量的配置</strong>上的密度。</li>
 <li>第二项是变密度与先验的负散度；它鼓励<strong>接近先前的密度</strong>。</li>
 </ul>
 <p>因此，变分目标反映了<strong>可能性</strong>和<strong>先验</strong>之间的通常平衡。</p>
-<p>ELBO 的另一个特性是它降低了（log）evidence的下限，对于任何 <span class="math inline">\(q(\textbf{z})，\log p(\textbf{x}) \geq
-ELBO(q)\)</span>。这解释了名称的由来。可以由下式看出： <span class="math display">\[
-\log p(\textbf{x}) = KL( q ( \textbf{z} ) | | p ( \textbf{z} |
-\textbf{x} ) ) + ELBO(q)
-\]</span>
-由于KL散度是非负的，所以显然看出ELBO是下限。在关于变分推理的原始文献中，这是通过
-Jensen 不等式得出的。</p>
-<h4 id="vi-vs-em">VI vs EM</h4>
-<p><span class="math display">\[
-ELBO(q) = \mathbb{E}[\log p(\textbf{z},\textbf{x})] - \mathbb{E}[\log
-q(\textbf{z})]
-\]</span></p>
-<p>上式中ELBO的第一项是预期的完全对数似然，由EM算法优化。EM
-算法是被设计用于在具有隐变量的模型中寻找<strong>最大似然估计</strong>。它使用了当
-<span class="math inline">\(q(\textbf{z}) = p(\textbf{z} |
-\textbf{x})\)</span> 时 ELBO 等于对数似然 <span class="math inline">\(\log
-p(\textbf{x})\)</span>（即对数evidence）这一事实。 EM 在根据 <span class="math inline">\(p(\textbf{z} | \textbf{x})\)</span>（E
-步骤）计算预期的完整对数似然度和针对模型参数（M
-步骤）进行优化之间交替进行。与变分推理不同，EM 假设 <span class="math inline">\(p(\textbf{z}| \textbf{x})\)</span>
-下的期望是可计算的，并将其用于其他困难的参数估计问题。与 EM
-不同，变分推理不估计固定的模型参数——它通常用于贝叶斯设置，其中经典参数被视为潜在变量。变分推理适用于我们<strong>无法计算潜在变量的确切条件的模型</strong>。</p>
-<h3 id="the-mean-field-variational-family">The mean-field variational
-family</h3>
-<p>平均场变分族(mean-field variational
-family)，其中隐变量是相互独立的，并且每个变量都由变分密度中的不同因素控制。平均场变分族的一个通用成员是：
-<span class="math display">\[
-q(\textbf{z}) = \prod_{j=1}^m q_j(z_j)
-\]</span> 每个隐变量 <span class="math inline">\(z_j\)</span>
-由其自身的变分因子——密度 <span class="math inline">\(q_j(z_j)\)</span>
-控制。在优化中，选择合适的变分因子以最大化ELBO。</p>
-<p>我们强调变分族不是观测数据的模型——事实上，数据 x
-没有出现在上式中。相反，是 ELBO 和相应的 KL
-最小化问题将<strong>拟合的变分密度</strong>与<strong>数据和模型</strong>联系起来的。</p>
-<p>请注意，我们没有指定单个变分因子的<strong>参数形式</strong>。原则上，每个都可以采用适合于相应随机变量的任何参数形式。例如，一个连续变量可能有一个高斯因子；分类变量通常具有分类因子。有许多<strong>模型的属性</strong>决定了平均场变分因子
-<span class="math inline">\(q_j(z_j)\)</span>
-的<strong>最佳形式</strong>。</p>
-<h4 id="expressive-but-cannot-capture-correlation">Expressive but cannot
-capture correlation</h4>
-<p>平均场族是富有表现力的，因为它可以捕获隐变量的任何边际密度。但是，它无法捕获它们之间的相关性。</p>
-<figure>
-<img src="/2023/01/16/VariationalInference/image-20221103192156434.png" alt="image-20221103192156434">
-<figcaption aria-hidden="true">image-20221103192156434</figcaption>
-</figure>
+<p>ELBO 的另一个特性是它降低了（log）evidence的下限，对于任何 $q(\textbf{z})，\log p(\textbf{x}) \geq ELBO(q)$。这解释了名称的由来。可以由下式看出：</p>
+<script type="math/tex; mode=display">
+\log p(\textbf{x}) = KL( q ( \textbf{z} ) | | p ( \textbf{z} | \textbf{x} ) ) + ELBO(q)</script><p>由于KL散度是非负的，所以显然看出ELBO是下限。在关于变分推理的原始文献中，这是通过 Jensen 不等式得出的。因此，变分推理也可以从另一个角度理解：目标是通过证据$\log p(x)$的最大化，估计联合概率分布$p(x,z)$。但是由于含有隐变量$z$，直接对证据进行最大化困难，转而根据证据下界(ELBO)进行最大化。这个最大化得到的结果，既能得到推断所需的$p(z|x)$，又能尽可能使证据最大化。</p>
+<h4 id="VI-vs-EM"><a href="#VI-vs-EM" class="headerlink" title="VI vs EM"></a>VI vs EM</h4><script type="math/tex; mode=display">
+ELBO(q) = \mathbb{E}[\log p(\textbf{z},\textbf{x})] - \mathbb{E}[\log q(\textbf{z})]</script><p>上式中ELBO的第一项是预期的完全对数似然，由EM算法优化。EM 算法是被设计用于在具有隐变量的模型中寻找<strong>最大似然估计</strong>。它使用了当 $q(\textbf{z}) = p(\textbf{z} | \textbf{x})$ 时 ELBO 等于对数似然 $\log p(\textbf{x})$（即对数evidence）这一事实。 EM 在根据 $p(\textbf{z} | \textbf{x})$（E 步骤）计算预期的完整对数似然度和针对模型参数（M 步骤）进行优化之间交替进行。与变分推理不同，EM 假设 $p(\textbf{z}| \textbf{x})$ 下的期望是可计算的，并将其用于其他困难的参数估计问题。与 EM 不同，变分推理不估计固定的模型参数——它通常用于贝叶斯设置，其中经典参数被视为潜在变量。变分推理适用于我们<strong>无法计算潜在变量的确切条件的模型</strong>。</p>
+<p>当EM算法的假设，即$p(\textbf{z}| \textbf{x})$的期望是可计算的不成立时，可以引入变分的思想，产生变分EM算法。它的目标从最大化$\log(x)$转变为了最大化ELBO，通过迭代，分别以ELBO中的$q$和$\theta$作为变量对证据下界进行最大化，就得到了变分EM算法。</p>
+<h3 id="The-mean-field-variational-family"><a href="#The-mean-field-variational-family" class="headerlink" title="The mean-field variational family"></a>The mean-field variational family</h3><p>平均场变分族(mean-field variational family)，其中隐变量是相互独立的，并且每个变量都由变分密度中的不同因素控制。平均场变分族的一个通用成员是：</p>
+<script type="math/tex; mode=display">
+q(\textbf{z}) = \prod_{j=1}^m q_j(z_j)</script><p>每个隐变量 $z_j$ 由其自身的变分因子——密度 $q_j(z_j)$ 控制。在优化中，选择合适的变分因子以最大化ELBO。</p>
+<p>我们强调变分族不是观测数据的模型——事实上，数据 x 没有出现在上式中。相反，是 ELBO 和相应的 KL 最小化问题将<strong>拟合的变分密度</strong>与<strong>数据和模型</strong>联系起来的。</p>
+<p>请注意，我们没有指定单个变分因子的<strong>参数形式</strong>。原则上，每个都可以采用适合于相应随机变量的任何参数形式。例如，一个连续变量可能有一个高斯因子；分类变量通常具有分类因子。有许多<strong>模型的属性</strong>决定了平均场变分因子 $q_j(z_j)$ 的<strong>最佳形式</strong>。</p>
+<h4 id="Expressive-but-cannot-capture-correlation"><a href="#Expressive-but-cannot-capture-correlation" class="headerlink" title="Expressive but cannot capture correlation"></a>Expressive but cannot capture correlation</h4><p>平均场族是富有表现力的，因为它可以捕获隐变量的任何边际密度。但是，它无法捕获它们之间的相关性。</p>
+<p><img src="/2023/01/16/VariationalInference/image-20221103192156434.png" alt="image-20221103192156434"></p>
 <blockquote>
-<p>将平均场近似二维高斯后验进行可视化。椭圆显示平均场分解的效果。
-（椭圆是高斯分布的 2σ 等值线。）</p>
+<p>将平均场近似二维高斯后验进行可视化。椭圆显示平均场分解的效果。 （椭圆是高斯分布的 2σ 等值线。）</p>
 </blockquote>
 <p>我们考虑一个两维高斯分布，这种密度是高度相关的，这定义了它的细长形状。</p>
 <p>针对这个后验分布的最佳的平均场变分估计是两个高斯分布的乘积。尽管变分估计和初始的密度有相同的mean,它的协方差结构，通过建设，是解耦的。</p>
-<p>此外，近似的边际方差低估了目标的边际方差，这是平均场变分推断的常见效应。我们可以看到，从近似到后验的
-KL 散度如下： <span class="math display">\[
-K L ( q ( \textbf{z} ) | | p ( \textbf{z} | \textbf{x} ) )
-= \mathbb{E} [ \log q ( \textbf{z} ) ] - \mathbb{E} [ \log p (
-\textbf{z} | \textbf{x} ) ]
-\]</span> 在 <span class="math inline">\(p
-(\cdot)\)</span>质量很小的区域，在 <span class="math inline">\(q
-(\cdot)\)</span>中放置质量会受到惩罚，反之则会受到较小的惩罚。在这个例子中，为了成功地匹配边际方差,环形
-<span class="math inline">\(q(\cdot)\)</span>必须扩展到 <span class="math inline">\(p (\cdot)\)</span>质量很小的区域。</p>
-<h3 id="coordinate-ascent-mean-field-variational-inference">Coordinate
-ascent mean-field variational inference</h3>
-<figure>
-<img src="/2023/01/16/VariationalInference/image-20221103195504051.png" alt="image-20221103195504051">
-<figcaption aria-hidden="true">image-20221103195504051</figcaption>
-</figure>
+<p>此外，近似的边际方差低估了目标的边际方差，这是平均场变分推断的常见效应。我们可以看到，从近似到后验的 KL 散度如下：</p>
+<script type="math/tex; mode=display">
+K L ( q ( \textbf{z} ) | | p ( \textbf{z} | \textbf{x} ) ) 
+= \mathbb{E} [ \log q ( \textbf{z} ) ] - \mathbb{E} [ \log p ( \textbf{z} | \textbf{x} ) ]</script><p>在 $p (\cdot)$质量很小的区域，在 $q (\cdot)$中放置质量会受到惩罚，反之则会受到较小的惩罚。在这个例子中，为了成功地匹配边际方差,环形 $q(\cdot)$必须扩展到 $p (\cdot)$质量很小的区域。</p>
+<h3 id="Coordinate-ascent-mean-field-variational-inference"><a href="#Coordinate-ascent-mean-field-variational-inference" class="headerlink" title="Coordinate ascent mean-field variational inference"></a>Coordinate ascent mean-field variational inference</h3><p><img src="/2023/01/16/VariationalInference/image-20221103195504051.png" alt="image-20221103195504051"></p>
 <blockquote>
 <p>TODO</p>
 <ul>
@@ -527,11 +448,7 @@ ascent mean-field variational inference</h3>
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#variational-inference"><span class="nav-number">1.</span> <span class="nav-text">Variational Inference</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#background"><span class="nav-number">1.1.</span> <span class="nav-text">Background</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#variational-inference-1"><span class="nav-number">1.2.</span> <span class="nav-text">Variational inference</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#the-problem-of-approximate-inference"><span class="nav-number">1.2.1.</span> <span class="nav-text">The problem of approximate
-inference</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#the-evidence-lower-bound"><span class="nav-number">1.2.2.</span> <span class="nav-text">The evidence lower bound</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#vi-vs-em"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">VI vs EM</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#the-mean-field-variational-family"><span class="nav-number">1.2.3.</span> <span class="nav-text">The mean-field variational
-family</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#expressive-but-cannot-capture-correlation"><span class="nav-number">1.2.3.1.</span> <span class="nav-text">Expressive but cannot
-capture correlation</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#coordinate-ascent-mean-field-variational-inference"><span class="nav-number">1.2.4.</span> <span class="nav-text">Coordinate
-ascent mean-field variational inference</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Variational-Inference"><span class="nav-number">1.</span> <span class="nav-text">Variational Inference</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Background"><span class="nav-number">1.1.</span> <span class="nav-text">Background</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Variational-inference"><span class="nav-number">1.2.</span> <span class="nav-text">Variational inference</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#The-problem-of-approximate-inference"><span class="nav-number">1.2.1.</span> <span class="nav-text">The problem of approximate inference</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#The-evidence-lower-bound"><span class="nav-number">1.2.2.</span> <span class="nav-text">The evidence lower bound</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#VI-vs-EM"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">VI vs EM</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#The-mean-field-variational-family"><span class="nav-number">1.2.3.</span> <span class="nav-text">The mean-field variational family</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Expressive-but-cannot-capture-correlation"><span class="nav-number">1.2.3.1.</span> <span class="nav-text">Expressive but cannot capture correlation</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Coordinate-ascent-mean-field-variational-inference"><span class="nav-number">1.2.4.</span> <span class="nav-text">Coordinate ascent mean-field variational inference</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
