@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="深度学习中的结构化概率模型  简要介绍深度学习中的常见的结构化概率模型，及学习模型需要的数学知识和策略。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="结构化概率模型">
+<meta property="og:url" content="http://example.com/2023/01/18/%E7%BB%93%E6%9E%84%E5%8C%96%E6%A6%82%E7%8E%87%E6%A8%A1%E5%9E%8B/index.html">
+<meta property="og:site_name" content="Whyynnot">
+<meta property="og:description" content="深度学习中的结构化概率模型  简要介绍深度学习中的常见的结构化概率模型，及学习模型需要的数学知识和策略。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2023/01/18/%E7%BB%93%E6%9E%84%E5%8C%96%E6%A6%82%E7%8E%87%E6%A8%A1%E5%9E%8B/image-20230118194045344.png">
+<meta property="og:image" content="http://example.com/2023/01/18/%E7%BB%93%E6%9E%84%E5%8C%96%E6%A6%82%E7%8E%87%E6%A8%A1%E5%9E%8B/image-20230118215813825.png">
+<meta property="og:image" content="http://example.com/2023/01/18/%E7%BB%93%E6%9E%84%E5%8C%96%E6%A6%82%E7%8E%87%E6%A8%A1%E5%9E%8B/image-20230118223411791.png">
+<meta property="article:published_time" content="2023-01-18T11:05:55.000Z">
+<meta property="article:modified_time" content="2023-01-18T14:47:44.110Z">
+<meta property="article:author" content="Haoran Li">
+<meta property="article:tag" content="深度学习">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2023/01/18/%E7%BB%93%E6%9E%84%E5%8C%96%E6%A6%82%E7%8E%87%E6%A8%A1%E5%9E%8B/image-20230118194045344.png">
+
+<link rel="canonical" href="http://example.com/2023/01/18/%E7%BB%93%E6%9E%84%E5%8C%96%E6%A6%82%E7%8E%87%E6%A8%A1%E5%9E%8B/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>结构化概率模型 | Whyynnot</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Whyynnot</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/01/18/%E7%BB%93%E6%9E%84%E5%8C%96%E6%A6%82%E7%8E%87%E6%A8%A1%E5%9E%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Haoran Li">
+      <meta itemprop="description" content="Blog of Whyynnot">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Whyynnot">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          结构化概率模型
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-01-18 19:05:55 / 修改时间：22:47:44" itemprop="dateCreated datePublished" datetime="2023-01-18T19:05:55+08:00">2023-01-18</time>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2023/01/18/%E7%BB%93%E6%9E%84%E5%8C%96%E6%A6%82%E7%8E%87%E6%A8%A1%E5%9E%8B/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2023/01/18/%E7%BB%93%E6%9E%84%E5%8C%96%E6%A6%82%E7%8E%87%E6%A8%A1%E5%9E%8B/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="深度学习中的结构化概率模型">深度学习中的结构化概率模型</h1>
+<blockquote>
+<p>简要介绍深度学习中的常见的结构化概率模型，及学习模型需要的数学知识和策略。</p>
+<span id="more"></span>
+</blockquote>
+<p>结构化概率模型使用<strong>图</strong>来描述概率分布中<strong>随机变量</strong>之间的<strong>直接相互作用</strong>，从而描述一个<strong>概率分布</strong>。</p>
+<blockquote>
+<p>这里我们使用图论（一系列结点通过一系列边来连接）中“图”的概念，由于模型结构是由图定义的，所以这些模型也通常被称为<strong>图模型</strong>（graphical
+model）。</p>
+</blockquote>
+<p>结构化概率模型为随机变量之间的直接作用提供了一个正式的建模框架。这种方式大大<strong>减少了模型的参数个数</strong>，以至于模型只需要更少的数据来进行有效的估计。这些更小的模型大大减小了在模型存储、模型推断以及从模型中采样时的<strong>计算开销</strong>。</p>
+<h2 id="使用图描述模型结构">使用图描述模型结构</h2>
+<h3 id="有向模型">有向模型</h3>
+<p>有向图模型（directed graphical
+model）是一种结构化概率模型，也被称为信念网络（belief
+network）或者贝叶斯网络（Bayesian network）</p>
+<p>之所以命名为有向图模型，是因为所有的边都是有方向的，即从一个结点指向另一个结点。这个方向可以通过画一个箭头来表示。<strong>箭头所指的方向</strong>表示了<strong>这个随机变量的概率分布是由其他变量的概率分布所定义的</strong>。画一个从结点a到结点b的箭头表示了我们用一个条件分布来定义b，而a是作为这个条件分布符号右边的一个变量。换句话说，b的概率分布依赖于a的取值。</p>
+<p>正式地说，变量<span class="math inline">\(\mathbf{x}\)</span>的有向概率模型是通过有向无环图<span class="math inline">\(\mathcal{G}\)</span>（每个结点都是模型中的随机变量）和一系列<strong>局部条件概率分布</strong><span class="math inline">\(p(\mathbf{x}_i|P_{a\mathcal{G}}(\mathbf{x}_i))\)</span>来定义的，其中<span class="math inline">\(P_{a\mathcal{G}}(\mathbf{x}_i)\)</span>表示结点<span class="math inline">\(\mathbf{x}_i\)</span>的所有父结点。则<span class="math inline">\(\mathbf{x}\)</span>的概率分布可以表示为： <span class="math display">\[
+p(\mathbf{x}) = \prod_i p(\mathbf{x}_i|P_{a\mathcal{G}}(\mathbf{x}_i))
+\]</span>
+只要图中的每个变量都只有<strong>少量的父结点</strong>，那么这个分布就可以用较少的参数来表示。图结构上的一些限制条件，比如说要求这个图为一棵树，也可以保证一些操作（例如求一小部分变量的边缘或者条件分布）更加地高效。</p>
+<h3 id="无向模型">无向模型</h3>
+<p>无向模型（undirected model），也被称为马尔可夫随机场（Markov random
+field，MRF）或者是马尔可夫网络（Markov network）。</p>
+<p>如果在无向模型中的两个结点通过一条边相连接，那么对应这些结点的随机变量相互之间是<strong>直接作用</strong>的。不同于有向模型，在无向模型中的边是没有方向的，<strong>并不与一个条件分布相关联</strong>。</p>
+<p>正式地说，一个无向模型是一个定义在无向模型<span class="math inline">\(\mathcal{G}\)</span>上的结构化概率模型。对于图中每一个<strong>团</strong><span class="math inline">\(\mathcal{C}\)</span>，一个<strong>因子</strong><span class="math inline">\(\phi(\mathcal{C})\)</span>(也称为<strong>团势能</strong>)，衡量了团中变量每一种可能的<strong>联合状态</strong>所对应的密切程度。这些因子都被限制为是非负的。它们一起定义了<strong>未归一化概率函数</strong>：
+<span class="math display">\[
+\widetilde{p}(\mathbf{x}) = \prod_{\mathcal{C} \in
+\mathcal{G}}\phi(\mathcal{C})
+\]</span>
+只要团中的结点数都不大，我们就可以高效地处理这些未归一化的函数。</p>
+<figure>
+<img src="/2023/01/18/%E7%BB%93%E6%9E%84%E5%8C%96%E6%A6%82%E7%8E%87%E6%A8%A1%E5%9E%8B/image-20230118194045344.png" alt="image-20230118194045344">
+<figcaption aria-hidden="true">image-20230118194045344</figcaption>
+</figure>
+<p>这个图说明通过选择适当的<span class="math inline">\(\phi\)</span>，函数p(a,b,c,d,e,f)可以写作： <span class="math display">\[
+\frac{1}{Z}\phi_{a,b}(a,b)\phi_{a,d}(a,d)\phi_{c,b}(c,b)\phi_{e,b}(e,b)\phi_{e,f}(e,f)
+\]</span></p>
+<h3 id="配分函数">配分函数</h3>
+<p>尽管这个未归一化概率函数处处不为零，我们仍然无法保证它的概率之和或者积分为1。为了得到一个有效的概率分布，我们需要使用对应的归一化的概率分布：
+<span class="math display">\[
+p(\mathbf{x}) = \frac{1}{Z}\widetilde{p}(\mathbf{x})
+\]</span> 其中，<span class="math inline">\(Z = \int
+\widetilde{p}(\mathbf{x}) d\mathbf{x}\)</span></p>
+<blockquote>
+<p>当函数<span class="math inline">\(\phi\)</span>固定时，我们可以把Z当成是一个常数。值得注意的是，如果函数<span class="math inline">\(\phi\)</span>带有参数时，那么Z是这些参数的一个函数。</p>
+</blockquote>
+<p>由于Z通常是由对所有可能的x状态的<strong>联合分布空间</strong>求和或者求积分得到的，它通常是很难计算的。为了获得一个无向模型的归一化概率分布，模型的结构和函数<span class="math inline">\(\phi\)</span>的定义通常需要设计为有助于高效地计算Z。</p>
+<p>深度学习中<span class="math inline">\(Z\)</span>常常使用近似的方法进行估计。</p>
+<p><strong>提升点</strong>：</p>
+<ul>
+<li><p>设定一些使得Z不存在的因子也是有可能的。</p></li>
+<li><p>每一个变量的定义域对于一系列给定的<span class="math inline">\(\phi\)</span>函数所对应的概率分布有着重要的影响。</p></li>
+</ul>
+<h3 id="基于能量的模型">基于能量的模型</h3>
+<p>满足无向模型要求的一种简单方式就是使用<strong>基于能量的模型(EBM)</strong>:
+<span class="math display">\[
+\widetilde{p}(\mathbf{x}) = \exp(-E(\mathbf{x}))
+\]</span> 其中<span class="math inline">\(E(\mathbf{x})\)</span>被称为能量函数。</p>
+<p>服从上式形式的任意分布都是玻尔兹曼分布（Boltzmann
+distribution）的一个实例。许多基于能量的模型也被称为<strong>玻尔兹曼机</strong>。</p>
+<p>通过exp(a＋b)＝exp(a)exp(b)，我们发现无向模型中的不同<strong>团</strong>对应于<strong>能量函数</strong>的不同<strong>项</strong>。换句话说，基于能量的模型只是一种特殊的马尔可夫网络：求幂使能量函数中的每个<strong>项</strong>对应于不同团的一个<strong>因子</strong>。</p>
+<figure>
+<img src="/2023/01/18/%E7%BB%93%E6%9E%84%E5%8C%96%E6%A6%82%E7%8E%87%E6%A8%A1%E5%9E%8B/image-20230118215813825.png" alt="image-20230118215813825">
+<figcaption aria-hidden="true">image-20230118215813825</figcaption>
+</figure>
+<p>这个图说明通过为每个团选择适当的能量函数E(a,b,c,d,e,f)可以写作Ea，b（a,b）＋Eb,c(b,c)＋Ea,d(a,d)＋Eb,e(b,e)＋Ee,f(e,f)。而我们令<span class="math inline">\(\phi\)</span>等于对应负能量的指数，可以获得无向图部分的概率函数。</p>
+<blockquote>
+<p>基于能量的模型定义的一部分无法用机器学习观点来解释：即基于能量模型的概率定义中的“-”符号。这个“-”符号可以被包含在E的定义之中。对于很多E函数的选择来说，学习算法可以自由地决定能量的符号。这个负号的存在主要是为了保持机器学习文献和物理学文献之间的<strong>兼容性</strong>。概率建模的许多研究最初都是由统计物理学家做出的，其中E是指实际的、物理概念的能量，没有任何符号。诸如“能量”和“配分函数”这类术语仍然与这些技术相关联，尽管它们的数学适用性比在物理中更宽。</p>
+<p>对于许多概率模型进行操作的算法不需要计算<span class="math inline">\(p_{model}(\mathbf{x})\)</span>，而是只需要计算<span class="math inline">\(\log
+\widetilde{p}_{model}(\mathbf{x})\)</span>。对于具有潜变量<span class="math inline">\(\mathbf{h}\)</span>的基于能量的模型，这些算法将该量的复数称为<strong>自由能</strong>：
+<span class="math display">\[
+\mathcal{F}(\mathbf{x}) = -\log\sum_{h}\exp (-E(x,h))
+\]</span></p>
+</blockquote>
+<h2 id="直面配分函数">直面配分函数</h2>
+<p>许多概率模型（通常是无向图模型）由一个未归一化的概率分布定义。我们必须通过除以配分函数Z(θ)来归一化，以获得一个有效的概率分布。
+配分函数是未归一化概率所有状态的积分（对于连续变量）或求和（对于离散变量）。
+对于很多有趣的模型而言，以上积分或求和难以计算。</p>
+<h3 id="对数似然梯度">对数似然梯度</h3>
+<p>最大似然学习无向图模型困难的原因在于配分函数依赖于参数。对数似然相对于参数的梯度具有一项对应于配分函数的梯度：
+<span class="math display">\[
+\nabla_{\theta}\log p(\mathbf{x};\theta) =\nabla_{\theta} \log
+\widetilde{p}(\mathbf{x};\theta) - \nabla _{\theta}\log Z(\theta)
+\]</span> 这是机器学习著名的<strong>正相（positive
+phase）</strong>和<strong>负相（negative phase）</strong>的分解。</p>
+<p>对于大多数感兴趣的无向模型而言，负相是困难的，我们这里主要讨论负相的计算问题。
+<span class="math display">\[
+\nabla _{\theta}\log Z(\theta) \\
+= \frac{\nabla _{\theta} Z(\theta)}{Z} \\
+= \frac{\nabla _{\theta} \sum_\mathbf{x}\widetilde{p}(\mathbf{x})}{Z} \\
+= \frac{ \sum_\mathbf{x}\nabla _{\theta}\widetilde{p}(\mathbf{x})}{Z}
+\]</span> 对于保证所有的<span class="math inline">\(\mathbf{x}\)</span>都有<span class="math inline">\(p(\mathbf{x})&gt;0\)</span>的模型，我们可以用<span class="math inline">\(\exp(\log )\)</span>代替<span class="math inline">\(\widetilde{p}(\mathbf{x})\)</span> <span class="math display">\[
+\frac{ \sum_\mathbf{x}\nabla _{\theta}\widetilde{p}(\mathbf{x})}{Z} \\
+= \frac{ \sum_\mathbf{x}\nabla
+_{\theta}\exp(\log\widetilde{p}(\mathbf{x}))}{Z} \\
+\frac{ \sum_\mathbf{x}\exp(\log\widetilde{p}(\mathbf{x}))\nabla
+_{\theta}\log \widetilde{p}(\mathbf{x})}{Z} \\
+=\frac{ \sum_\mathbf{x}\widetilde{p}(\mathbf{x})\nabla _{\theta}\log
+\widetilde{p}(\mathbf{x})}{Z} \\
+= \sum_\mathbf{x}{p}(\mathbf{x})\nabla _{\theta}\log
+\widetilde{p}(\mathbf{x}) \\
+= \mathbb{E}_{\mathbf{x}\sim p(\mathbf{x})}\log
+\widetilde{p}(\mathbf{x})
+\]</span> 上述推导对离散的<span class="math inline">\(\mathbf{x}\)</span>求和，对连续的<span class="math inline">\(\mathbf{x}\)</span>进行求和也能得到类似的结果（当满足写机器学习模型大多具有的条件的时候，有等式<span class="math inline">\(\nabla_{\theta}\int \widetilde{p}(\mathbf{x})dx =
+\int\nabla_{\theta} \widetilde{p}(\mathbf{x})dx\)</span>成立）。</p>
+<p>总而言之，负相等于<span class="math inline">\(\mathbb{E}_{\mathbf{x}\sim p(\mathbf{x})}\log
+\widetilde{p}(\mathbf{x})\)</span>是使用各种蒙特卡罗方法近似最大化（具有难计算配分函数模型的）似然的基础。</p>
+<blockquote>
+<p>马尔科夫蒙特卡罗方法可以很方便地解决对函数在一个概率分布下求期望的问题。</p>
+</blockquote>
+<figure>
+<img src="/2023/01/18/%E7%BB%93%E6%9E%84%E5%8C%96%E6%A6%82%E7%8E%87%E6%A8%A1%E5%9E%8B/image-20230118223411791.png" alt="image-20230118223411791">
+<figcaption aria-hidden="true">image-20230118223411791</figcaption>
+</figure>
+<p>（左）在正相中，我们从数据分布中采样，然后推高它们未归一化的概率。这意味着概率越高的数据点，未归一化的概率被推高得越多。（右）在负相中，我们从模型分布中采样，然后压低它们未归一化的概率。这与正相的倾向相反，给未归一化的概率处处添加了一个大常数。当数据分布和模型分布相等时，正相推高数据点和负相压低数据点的机会相等。此时，不再有任何的梯度（期望上说），训练也必须停止。</p>
+<blockquote>
+<p>因为负相涉及从模型分布中抽样，所以我们可以认为它在找模型信任度很高的点。因为负相减少了这些点的概率，它们一般被认为代表了模型不正确的信念。</p>
+<p>在文献中，它们经常被称为“幻觉”或“幻想粒子”。事实上，负相已经被作为人类和其他动物做梦的一种可能解释：大脑维持着世界的概率模型，并且在醒着经历真实事件时会遵循的梯度，在睡觉时会遵循的负梯度最小化log
+Z，其经历的样本采样自当前的模型。</p>
+<p>在机器学习模型中，通常有必要<strong>同时使用</strong>正相和负相，而不是按不同时间阶段分为清醒和REM睡眠时期。</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" rel="tag"># 深度学习</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/01/16/Self-supervised-Learning/" rel="prev" title="Self-supervised_Learning">
+      <i class="fa fa-chevron-left"></i> Self-supervised_Learning
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E4%B8%AD%E7%9A%84%E7%BB%93%E6%9E%84%E5%8C%96%E6%A6%82%E7%8E%87%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.</span> <span class="nav-text">深度学习中的结构化概率模型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%9B%BE%E6%8F%8F%E8%BF%B0%E6%A8%A1%E5%9E%8B%E7%BB%93%E6%9E%84"><span class="nav-number">1.1.</span> <span class="nav-text">使用图描述模型结构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%89%E5%90%91%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.1.1.</span> <span class="nav-text">有向模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A0%E5%90%91%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.1.2.</span> <span class="nav-text">无向模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E5%88%86%E5%87%BD%E6%95%B0"><span class="nav-number">1.1.3.</span> <span class="nav-text">配分函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E8%83%BD%E9%87%8F%E7%9A%84%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.1.4.</span> <span class="nav-text">基于能量的模型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B4%E9%9D%A2%E9%85%8D%E5%88%86%E5%87%BD%E6%95%B0"><span class="nav-number">1.2.</span> <span class="nav-text">直面配分函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%B9%E6%95%B0%E4%BC%BC%E7%84%B6%E6%A2%AF%E5%BA%A6"><span class="nav-number">1.2.1.</span> <span class="nav-text">对数似然梯度</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Haoran Li</p>
+  <div class="site-description" itemprop="description">Blog of Whyynnot</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Haoran Li</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'c2AnFNAFnFrReTpruCM2RWMV-gzGzoHsz',
+      appKey     : 'rMWSQ6KHYU6DHK01uJS0Mvmg',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

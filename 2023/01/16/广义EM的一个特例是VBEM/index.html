@@ -41,12 +41,17 @@
 <meta property="og:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/v2-f9f283ed1adc265c6b54b5b7fd1dcbc1_720w.jpg">
 <meta property="og:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/v2-d3ae8be76ce5f2e4f5bc7b85a926b0de_720w.jpg">
 <meta property="og:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/v2-d2fe741002136a34980ee5188a5f4a74_720w.jpg">
+<meta property="og:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20230118152805093-16740268877022.png">
+<meta property="og:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20230118153012736.png">
+<meta property="og:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20230118153034668.png">
+<meta property="og:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/2018050922212487.png">
+<meta property="og:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/2018050922230279.png">
 <meta property="og:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20221026163129064-16738440550728.png">
 <meta property="og:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20221026164342352-167384405507310.png">
 <meta property="og:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20230116155936453.png">
 <meta property="og:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20230116160702485.png">
 <meta property="article:published_time" content="2023-01-16T04:39:41.000Z">
-<meta property="article:modified_time" content="2023-01-17T14:00:05.973Z">
+<meta property="article:modified_time" content="2023-01-18T11:06:18.085Z">
 <meta property="article:author" content="Haoran Li">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/17-2.png">
@@ -227,7 +232,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-01-17 22:00:05" itemprop="dateModified" datetime="2023-01-17T22:00:05+08:00">2023-01-17</time>
+                <time title="修改时间：2023-01-18 19:06:18" itemprop="dateModified" datetime="2023-01-18T19:06:18+08:00">2023-01-18</time>
               </span>
 
           
@@ -773,7 +778,82 @@ P(w,d) =\sum_zP(x,d,z) = \sum_zP(z)P(w,d|z)
 <p>当然，对于某个难以计算的分布进行估计除了使用变分的思想，还可以使用吉布斯采样进行估计。下面也会进一步讨论。</p>
 <h2 id="广义em的另一个特例是ws算法">广义EM的另一个特例是WS算法</h2>
 <h3 id="bp算法">BP算法</h3>
+<p><strong>前向传播</strong>：使用前馈神经网络接收输入<span class="math inline">\(x\)</span>并产生输出<span class="math inline">\(\hat{y}\)</span>时，信息通过网络向前流动。输入<span class="math inline">\(x\)</span>提供初始信息，然后传播到每一层的隐藏单元，最终产生输出<span class="math inline">\(\hat{y}\)</span>。在<strong>训练过程</strong>中，前向传播可以持续向前直到产生标量代价函数<span class="math inline">\(J(\theta)\)</span>。</p>
+<p><strong>反向传播</strong>：允许来自代价函数的信息向后流动，以便计算梯度。</p>
+<blockquote>
+<p>反向传播算法使用简单和廉价的程序来实现梯度的数值化求解。它不是多层神经网络的学习算法，仅仅是计算梯度的工具，服务于另一种算法（如随机梯度下降）使用该梯度进行学习。</p>
+<p>作为计算导数的工具，反向传播算法原则上可以用于任意函数的导数的计算中。</p>
+</blockquote>
+<p><strong>计算图</strong></p>
+<ul>
+<li>操作(operation)：一个或多个变量的简单函数。
+<ul>
+<li>不失一般性，我们定义一个操作仅返回单个输出变量。</li>
+<li>如果变量<span class="math inline">\(y\)</span>是变量<span class="math inline">\(x\)</span>通过一个操作计算得到的，那么我们画一条从<span class="math inline">\(x\)</span>到<span class="math inline">\(y\)</span>的有向边。</li>
+</ul></li>
+<li>例子
+<ul>
+<li>以逻辑回归预测为例：<span class="math inline">\(\hat{y} =
+\sigma(x^\top w + b)\)</span></li>
+<li>其计算图为：<img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20230118152805093-16740268877022.png" alt="image-20230118152805093"></li>
+</ul></li>
+</ul>
+<p><strong>微积分链式法则</strong></p>
+<p>假设<span class="math inline">\(x\in \mathbb{R}^m,y\in
+\mathbb{R}^n\)</span> <span class="math inline">\(,g\)</span>是从<span class="math inline">\(\mathbb{R}^m\)</span>到<span class="math inline">\(\mathbb{R}^n\)</span>的映射，<span class="math inline">\(f\)</span>是从<span class="math inline">\(\mathbb{R}^n\)</span>到<span class="math inline">\(\mathbb{R}\)</span>的映射。如果<span class="math inline">\(y = g(x)\)</span>且<span class="math inline">\(z =
+f(y)\)</span>，则有 <span class="math display">\[
+\frac{\partial z}{\partial x_i} = \sum_j \frac{\partial z}{\partial y_j}
+\frac{\partial y_j}{\partial x_i}
+\]</span> 使用向量标记法可以写成： <span class="math display">\[
+\nabla_xz = (\frac{\partial y}{\partial x})^\top\nabla_yz
+\]</span> 扩展到张量则写为： <span class="math display">\[
+\nabla_Xz = \sum_j(\nabla_XY_j)\frac{\partial z}{\partial Y_j}
+\]</span> <strong>递归使用链式法则实现反向传播</strong></p>
+<p>使用链式法则，我们可以直接写出某个标量关于计算图中任何产生该标量的节点之间的梯度的代数表达式。但是其中的许多子表达式会重复出现若干次，造成指数多的重复计算。</p>
+<figure>
+<img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20230118153012736.png" alt="image-20230118153012736">
+<figcaption aria-hidden="true">image-20230118153012736</figcaption>
+</figure>
+<figure>
+<img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20230118153034668.png" alt="image-20230118153034668">
+<figcaption aria-hidden="true">image-20230118153034668</figcaption>
+</figure>
+<p>为了解决这个问题，可以考虑对一些子结果进行存储，以避免重复计算。</p>
+<p>上面倒数第二个式子的建议是，仅计算<span class="math inline">\(f(w)\)</span>的值一次并存储在变量<span class="math inline">\(x\)</span>中，这是反向传播算法采用的方法。而最后一个式子则提出一种替代方法，其中子表达式<span class="math inline">\(f(w)\)</span>不止出现了一次，每次只在需要时重新计算<span class="math inline">\(f(w)\)</span>。</p>
+<p>当存储<span class="math inline">\(f(w)\)</span>需要的存储较小时，前者占优，节省时间；而当存储受限时，后者也是链式法则的有效实现。</p>
+<p><strong>总结</strong></p>
+<figure>
+<img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/2018050922212487.png" alt="img">
+<figcaption aria-hidden="true">img</figcaption>
+</figure>
+<figure>
+<img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/2018050922230279.png" alt="img">
+<figcaption aria-hidden="true">img</figcaption>
+</figure>
+<p>以上对BP算法进行简单回顾，下面进入正题。</p>
 <h3 id="wake-sleep算法">Wake-Sleep算法</h3>
+<blockquote>
+<p><strong>背景介绍</strong></p>
+<ul>
+<li><p>玻尔兹曼机</p>
+<p>玻尔兹曼机最初作为一种广义的“联结主义”引入，用来学习二值向量上的任意概率分布。</p>
+<p>我们在d维二值随机向量<span class="math inline">\(x \in
+\{0,1\}^d\)</span>上定义玻尔兹曼机。他是一种基于能量的模型，我们可以使用能量函数定义联合概率分布
+<span class="math display">\[
+P(x) = \frac{exp(-E(x))}{Z}
+\]</span> 其中<span class="math inline">\(E(x)\)</span>是能量函数，<span class="math inline">\(Z\)</span>是用于确保<span class="math inline">\(\sum_x P(x) = 1\)</span>的配分函数。</p>
+<p>其中<span class="math inline">\(E(x) = -x^\top Ux - b^\top
+x\)</span></p>
+<p>其中<span class="math inline">\(U\)</span>是模型参数的权重矩阵，<span class="math inline">\(b\)</span>是偏置向量。</p>
+<p>类似于隐藏单元将逻辑回归转换为MLP，称为函数的万能近似器，具有隐藏单元的玻尔兹曼机不再局限于建模变量之间的线性关系，相反，它成为了离散变量上概率质量函数的万能近似器。</p>
+<p>我们将<span class="math inline">\(x\)</span>拆分为可见单元<span class="math inline">\(v\)</span>和隐藏单元<span class="math inline">\(h\)</span>，则能量函数变为： <span class="math display">\[
+E(v,h)=-v^\top Rv - v^\top Wh-h^\top Sh-b^\top v -c^\top h
+\]</span>
+玻尔兹曼机的学习算法通常基于最大似然。所有玻尔兹曼机都具有难以处理的配分函数，因此最大似然梯度必须使用特定技术来近似。</p>
+<p>玻尔兹曼机有一个有趣的性质，当基于最大似然的学习规则训练时，连接两个单元的特定权重的更新仅取决于这两个单元在不同分布下收集的统计信息：<span class="math inline">\(P_{model}(v)\)</span>和<span class="math inline">\(\hat{P}_{data}(v)P_{model}(h|v)\)</span>。</p>
+<p>对于玻尔兹曼机而言，训练任一连接两个单元的权重参数，只需用到对应的这两个单元的数据，而与其他单元的数据无关。即玻尔兹曼机的训练规则是局部的（local）。这种性质相较于传统的MLP反向传播来更新参数需要更少的生物学假设。</p></li>
+</ul>
+</blockquote>
 <h2 id="广义em的再一个特例是gibbs-sampling">广义EM的再一个特例是Gibbs
 Sampling</h2>
 <h3 id="gibbs-sampling">Gibbs Sampling</h3>
@@ -954,12 +1034,12 @@ Sampling</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a cla
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-count">8</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">5</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>
@@ -1069,59 +1149,6 @@ Sampling</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a cla
   
 
   
-      
-
-<script>
-  if (typeof MathJax === 'undefined') {
-    window.MathJax = {
-      loader: {
-        source: {
-          '[tex]/amsCd': '[tex]/amscd',
-          '[tex]/AMScd': '[tex]/amscd'
-        }
-      },
-      tex: {
-        inlineMath: {'[+]': [['$', '$']]},
-        tags: 'ams'
-      },
-      options: {
-        renderActions: {
-          findScript: [10, doc => {
-            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-              const display = !!node.type.match(/; *mode=display/);
-              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-              const text = document.createTextNode('');
-              node.parentNode.replaceChild(text, node);
-              math.start = {node: text, delim: '', n: 0};
-              math.end = {node: text, delim: '', n: 0};
-              doc.math.push(math);
-            });
-          }, '', false],
-          insertedScript: [200, () => {
-            document.querySelectorAll('mjx-container').forEach(node => {
-              let target = node.parentNode;
-              if (target.nodeName.toLowerCase() === 'li') {
-                target.parentNode.classList.add('has-jax');
-              }
-            });
-          }, '', false]
-        }
-      }
-    };
-    (function () {
-      var script = document.createElement('script');
-      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
-      script.defer = true;
-      document.head.appendChild(script);
-    })();
-  } else {
-    MathJax.startup.document.state(0);
-    MathJax.texReset();
-    MathJax.typeset();
-  }
-</script>
-
-    
 
   
 
