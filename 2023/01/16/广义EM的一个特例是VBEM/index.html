@@ -20,12 +20,12 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
-  <meta name="description" content="EM2  这里是理解EM算法的几重境界的后续部分。对于以EM算法为线，串联重要的数学基础很重要。">
+  <meta name="description" content="EM2 这里是理解EM算法的几重境界的后续部分。对于以EM算法为线，串联重要的数学基础很重要。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="广义EM的一个特例是VBEM">
 <meta property="og:url" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/index.html">
 <meta property="og:site_name" content="Whyynnot">
-<meta property="og:description" content="EM2  这里是理解EM算法的几重境界的后续部分。对于以EM算法为线，串联重要的数学基础很重要。">
+<meta property="og:description" content="EM2 这里是理解EM算法的几重境界的后续部分。对于以EM算法为线，串联重要的数学基础很重要。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/17-2.png">
 <meta property="og:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20220918170426070-16738440550722.png">
@@ -46,12 +46,34 @@
 <meta property="og:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20230118153034668.png">
 <meta property="og:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/2018050922212487.png">
 <meta property="og:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/2018050922230279.png">
+<meta property="og:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20230119142734031.png">
+<meta property="og:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20230119160734718.png">
+<meta property="og:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20230119162114113.png">
+<meta property="og:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20230119162137597.png">
+<meta property="og:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20230119162154540.png">
+<meta property="og:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/901086-20160720142047560-1297816644.jpg">
+<meta property="og:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/v2-92b26582f981e8c5065069a5181d29dc_b.jpg">
+<meta property="og:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/901086-20160720142412138-634396373.jpg">
+<meta property="og:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20230120142411174.png">
+<meta property="og:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20230120142930815.png">
+<meta property="og:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NDM3ODgzNQ==,size_16,color_FFFFFF,t_70.png">
+<meta property="og:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/v2-3cedb136d8aa7808071ffccb0ae18217_720w.jpg">
+<meta property="og:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/v2-ae5fcf55ed247450ce8084ea43b8bc3b_720w.jpg">
+<meta property="og:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/v2-468b515b4d26ebc4765f82bf3ed1c3bf_720w.jpg">
 <meta property="og:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20221026163129064-16738440550728.png">
 <meta property="og:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20221026164342352-167384405507310.png">
+<meta property="og:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/v2-bb16f97e3b82fb113b8ba475b6e51164_720w.jpg">
+<meta property="og:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/v2-891a8c795f084923d7d913936af335ed_720w.jpg">
+<meta property="og:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/v2-6e39522a095e0d417634fd9d84253531_720w.jpg">
+<meta property="og:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/v2-934635b34223baace727b634aa50c13f_720w.jpg">
+<meta property="og:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/v2-58cb1338ae2e5dee38cce4b2ef44e4e8_720w.jpg">
+<meta property="og:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/v2-c09456c8096cf7625b6292e2142dbfd3_720w.jpg">
+<meta property="og:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/v2-c2e9aabea1d26cb927d553dd8e16b339_720w.jpg">
+<meta property="og:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/v2-de39e478652bd2fd7231e33722bd153f_720w.jpg">
 <meta property="og:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20230116155936453.png">
 <meta property="og:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20230116160702485.png">
 <meta property="article:published_time" content="2023-01-16T04:39:41.000Z">
-<meta property="article:modified_time" content="2023-01-18T11:06:18.085Z">
+<meta property="article:modified_time" content="2023-01-20T13:41:29.681Z">
 <meta property="article:author" content="Haoran Li">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://example.com/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/17-2.png">
@@ -232,7 +254,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-01-18 19:06:18" itemprop="dateModified" datetime="2023-01-18T19:06:18+08:00">2023-01-18</time>
+                <time title="修改时间：2023-01-20 21:41:29" itemprop="dateModified" datetime="2023-01-20T21:41:29+08:00">2023-01-20</time>
               </span>
 
           
@@ -267,83 +289,68 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="em2">EM2</h1>
-<blockquote>
+        <h1 id="EM2"><a href="#EM2" class="headerlink" title="EM2"></a>EM2</h1><blockquote>
 <p>这里是理解EM算法的几重境界的后续部分。对于以EM算法为线，串联重要的数学基础很重要。</p>
 <span id="more"></span>
 </blockquote>
-<h2 id="广义em的一个特例是vbem">广义EM的一个特例是VBEM</h2>
-<h3 id="lsalatent-semantic-analysis">LSA(latent semantic analysis)</h3>
-<ul>
+<h2 id="广义EM的一个特例是VBEM"><a href="#广义EM的一个特例是VBEM" class="headerlink" title="广义EM的一个特例是VBEM"></a>广义EM的一个特例是VBEM</h2><h3 id="LSA-latent-semantic-analysis"><a href="#LSA-latent-semantic-analysis" class="headerlink" title="LSA(latent semantic analysis)"></a>LSA(latent semantic analysis)</h3><ul>
 <li><p>单词向量空间</p>
 <blockquote>
-<p>给定一个含有n个文本的集合<span class="math inline">\(D =
-{d_1,d_2,...,d_n}\)</span>，以及在所有文本中出现的m个单词的集合<span class="math inline">\(W =
-{w_1,w_2,...,w_m}\)</span>。将单词在文本中出现的数据用一个<strong>单词-文本矩阵(word-document
-matrix)</strong>表示，记作X(mxn矩阵)。元素<span class="math inline">\(x_{ij}\)</span>表示单词<span class="math inline">\(w_i\)</span>在文本<span class="math inline">\(d_j\)</span>中出现的频数或权值。</p>
+<p>给定一个含有n个文本的集合$D = {d<em>1,d_2,…,d_n}$，以及在所有文本中出现的m个单词的集合$W = {w_1,w_2,…,w_m}$。将单词在文本中出现的数据用一个<strong>单词-文本矩阵(word-document matrix)</strong>表示，记作X(mxn矩阵)。元素$x</em>{ij}$表示单词$w_i$在文本$d_j$中出现的频数或权值。</p>
 <p>单词种类多，单个文档中单词种类少，所以通常是一个稀疏矩阵。</p>
-<p>权值常用<strong>单词频率-逆文本频率(term frequency-inverse document
-frequency)</strong>表示 <span class="math display">\[
-TFIDF_{ij} = \frac{tf_{ij}}{tf_{·j}}\log\frac{df}{df_i},\quad i =
-1,2,...,m;\quad j = 1,2,...,n
-\]</span> 其中<span class="math inline">\(tf_{ij}\)</span>是单词<span class="math inline">\(w_i\)</span>出现在文本<span class="math inline">\(d_j\)</span>中的频数，<span class="math inline">\(df_i\)</span>是所有含有单词<span class="math inline">\(w_i\)</span>的文本数，<span class="math inline">\(df\)</span>是文本集D全部的文档数。</p>
-<p>单词-文本矩阵X每一列代表一个文本，<span class="math inline">\(X =
-[x_1,x_2,...,x_n]\)</span>即表示本的单词向量。</p>
+<p>权值常用<strong>单词频率-逆文本频率(term frequency-inverse document frequency)</strong>表示</p>
+<script type="math/tex; mode=display">
+TFIDF_{ij} = \frac{tf_{ij}}{tf_{·j}}\log\frac{df}{df_i},\quad i = 1,2,...,m;\quad j = 1,2,...,n</script><p>其中$tf_{ij}$是单词$w_i$出现在文本$d_j$中的频数，$df_i$是所有含有单词$w_i$的文本数，$df$是文本集D全部的文档数。</p>
+<p>单词-文本矩阵X每一列代表一个文本，$X = [x_1,x_2,…,x_n]$即表示本的单词向量。</p>
 <p>使用内积/标准化内积（余弦）表示文本相似度。</p>
 </blockquote>
 <ul>
 <li>优点：简单，效率高</li>
 <li>缺点：无法解决<strong>一词多义</strong>及<strong>多词一义</strong>问题</li>
-</ul></li>
+</ul>
+</li>
 <li><p>话题向量空间</p>
 <ul>
 <li><p>对一词多义和多词一义问题的解决</p>
 <blockquote>
 <p>一词多义的词可以对应多个话题，多词一义的词可以对应同一个话题</p>
-</blockquote></li>
+</blockquote>
+</li>
 </ul>
 <blockquote>
 <p>假设所有文本共含有k个话题。假设每个话题由一个定义在单词集合W上的m维向量表示，称为话题向量。</p>
-<p>T是单词-话题矩阵(mxk)，其中<span class="math inline">\(t_{il}\)</span>是单词<span class="math inline">\(w_i\)</span>在话题<span class="math inline">\(t_l\)</span>中的权值，权值越大，单词在该话题中的重要度就越大。</p>
-</blockquote>
-<blockquote>
-<p>单词向量空间中一个文本对应的向量<span class="math inline">\(x_j\)</span>投影到T中可以得到话题向量空间中一个向量<span class="math inline">\(y_j\)</span>,是一个k维向量。</p>
-<p>其中<span class="math inline">\(y_{lj}\)</span>是文本<span class="math inline">\(d_j\)</span>在话题<span class="math inline">\(t_l\)</span>的权值，l=1,2,...,k,权值越大，该话题该文本中的重要程度就越高。</p>
-<p>Y称为话题-文本矩阵，<span class="math inline">\(Y =
-[y_1,y_2,...,y_n]\)</span></p>
+<p>T是单词-话题矩阵(mxk)，其中$t_{il}$是单词$w_i$在话题$t_l$中的权值，权值越大，单词在该话题中的重要度就越大。</p>
+<p>单词向量空间中一个文本对应的向量$x_j$投影到T中可以得到话题向量空间中一个向量$y_j$,是一个k维向量。</p>
+<p>其中$y_{lj}$是文本$d_j$在话题$t_l$的权值，l=1,2,…,k,权值越大，该话题该文本中的重要程度就越高。</p>
+<p>Y称为话题-文本矩阵，$Y = [y_1,y_2,…,y_n]$</p>
 </blockquote>
 <ul>
 <li><p>从单词向量空间到话题向量空间的<strong>线性变换</strong></p>
 <blockquote>
-<p>单词向量空间的文本向量<span class="math inline">\(x_j\)</span>可以通过它在话题空间中的向量<span class="math inline">\(y_j\)</span>近似表示，具体地由k个话题向量以<span class="math inline">\(y_j\)</span>为系数的线性组合<strong>近似</strong>表示
-<span class="math display">\[
-x_j \approx y_{1j}t_1 + y_{2j}t_2 + ··· + y_{kj}t_k
-\]</span> 即 <span class="math inline">\(X \approx
-TY\)</span>(这里之所以是约等于，是因为话题个数k往往小于单词个数，导致其表达能力在单词之下，所以可能造成信息损失)
-<span class="math display">\[
-x_j \Rightarrow y_j
-\]</span> 即将m维的单词向量空间压缩到了k维的话题向量空间。</p>
-<figure>
-<img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/17-2.png" alt="17-1">
-<figcaption aria-hidden="true">17-1</figcaption>
-</figure>
-</blockquote></li>
-</ul></li>
+<p>单词向量空间的文本向量$x_j$可以通过它在话题空间中的向量$y_j$近似表示，具体地由k个话题向量以$y_j$为系数的线性组合<strong>近似</strong>表示</p>
+<script type="math/tex; mode=display">
+x_j \approx y_{1j}t_1 + y_{2j}t_2 + ··· + y_{kj}t_k</script><p>即 $X \approx TY$(这里之所以是约等于，是因为话题个数k往往小于单词个数，导致其表达能力在单词之下，所以可能造成信息损失)</p>
+<script type="math/tex; mode=display">
+x_j \Rightarrow y_j</script><p>即将m维的单词向量空间压缩到了k维的话题向量空间。</p>
+<p><img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/17-2.png" alt="17-1"></p>
+</blockquote>
+</li>
+</ul>
+</li>
 <li><p>潜在语义分析算法</p>
 <ul>
 <li><p>矩阵奇异值分解算法</p>
 <ul>
-<li>截断奇异值分解至k维 <span class="math display">\[
-X \approx U_k\Sigma_kV_k^T
-\]</span> 话题空间<span class="math inline">\(U_k\)</span>,以及文本在话题空间的表示<span class="math inline">\((\Sigma_kV_k^T)\)</span></li>
-</ul></li>
+<li>截断奇异值分解至k维<script type="math/tex; mode=display">
+X \approx U_k\Sigma_kV_k^T</script>话题空间$U_k$,以及文本在话题空间的表示$(\Sigma_kV_k^T)$</li>
+</ul>
+</li>
 <li><p>非负矩阵分解算法</p>
 <blockquote>
-<p>若一个矩阵所有元素非负，则称该矩阵为非负矩阵，若X是非负矩阵，则记作<span class="math inline">\(X \geq 0\)</span></p>
-<p>给定一个非负矩阵X，找到两个非负矩阵W和H。使得 <span class="math display">\[
-X \approx WH
-\]</span>
-X可以看成基W和系数H的线性组合。非负矩阵分解旨在用较少的基向量，系数向量来表示较大的数据矩阵。</p>
+<p>若一个矩阵所有元素非负，则称该矩阵为非负矩阵，若X是非负矩阵，则记作$X \geq 0$</p>
+<p>给定一个非负矩阵X，找到两个非负矩阵W和H。使得</p>
+<script type="math/tex; mode=display">
+X \approx WH</script><p>X可以看成基W和系数H的线性组合。非负矩阵分解旨在用较少的基向量，系数向量来表示较大的数据矩阵。</p>
 <p>非负矩阵分解有很直观的解释，话题向量和文本向量都非负，对应着“伪概率分布”，向量的线性组合表示局部叠加构成整体。</p>
 <p>即，单词向量是总的概率分布，有k个小的话题向量的分布组合而成。</p>
 </blockquote>
@@ -352,92 +359,90 @@ X可以看成基W和系数H的线性组合。非负矩阵分解旨在用较少�
 <ul>
 <li><p>初始化</p>
 <blockquote>
-<p><span class="math inline">\(W\geq
-0\)</span>且对W的每一列数据归一化</p>
-<p><span class="math inline">\(H\geq 0\)</span></p>
-</blockquote></li>
+<p>$W\geq 0$且对W的每一列数据归一化</p>
+<p>$H\geq 0$</p>
+</blockquote>
+</li>
 <li><p>迭代</p>
 <blockquote>
 <p>对迭代次数由1到t执行一下步骤</p>
 <ul>
-<li><p>更新W元素 <span class="math display">\[
-W_{il} = W_{il}\frac{(XH^T)_{il}}{(WHH^T)_{il}},\quad
-i=1,2,...,m;l=1,2,...,k
-\]</span></p></li>
-<li><p>更新H元素 <span class="math display">\[
-H_{lj} = H_{lj}\frac{(W^TX)_{lj}}{(W^TWH)_{lj}},\quad
-l=1,2,...,k;j=1,2,...,n
-\]</span></p></li>
+<li>更新W元素<script type="math/tex; mode=display">
+W_{il} = W_{il}\frac{(XH^T)_{il}}{(WHH^T)_{il}},\quad i=1,2,...,m;l=1,2,...,k</script></li>
 </ul>
-</blockquote></li>
-</ul></li>
-</ul></li>
-</ul></li>
-</ul>
-<h3 id="plsaprobabilistic-latent-semantic-analysis">PLSA(probabilistic
-latent semantic analysis)</h3>
 <ul>
+<li>更新H元素<script type="math/tex; mode=display">
+H_{lj} = H_{lj}\frac{(W^TX)_{lj}}{(W^TWH)_{lj}},\quad l=1,2,...,k;j=1,2,...,n</script></li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="PLSA-probabilistic-latent-semantic-analysis"><a href="#PLSA-probabilistic-latent-semantic-analysis" class="headerlink" title="PLSA(probabilistic latent semantic analysis)"></a>PLSA(probabilistic latent semantic analysis)</h3><ul>
 <li><p>生成模型</p>
 <blockquote>
-<p>每个文本拥有自己的话题概率分布<span class="math inline">\(P(z|d)\)</span>，每个话题有自己的单词概率分布<span class="math inline">\(P(w|z)\)</span>。即一个文本由其话题决定，一个话题由其单词决定</p>
+<p>每个文本拥有自己的话题概率分布$P(z|d)$，每个话题有自己的单词概率分布$P(w|z)$。即一个文本由其话题决定，一个话题由其单词决定</p>
 </blockquote>
 <ul>
 <li><p>生成模型生成文本-单词共现数据的步骤：</p>
 <ul>
-<li><p>根据P(d)，从文本（指标）集合中随机选取一个文本d，共生成N个文本；针对每个文本执行以下操作。</p></li>
-<li><p>在文本d给定条件下，依据P(z|d)从话题集合中随机选取一个话题z,共生成L个话题，这里L是文本长度</p></li>
+<li><p>根据P(d)，从文本（指标）集合中随机选取一个文本d，共生成N个文本；针对每个文本执行以下操作。</p>
+</li>
+<li><p>在文本d给定条件下，依据P(z|d)从话题集合中随机选取一个话题z,共生成L个话题，这里L是文本长度</p>
+</li>
 <li><p>在话题z给定条件下，根据P(w|z)从单词集合中随机选择一个单词w</p>
 <blockquote>
 <p>w和d是观测变量，z是隐变量</p>
-</blockquote></li>
+</blockquote>
+</li>
 </ul>
 <blockquote>
-<p>从数据生成过程可知，文本-单词共现数据T的生成概率为所有单词-文本对(w,d)的生成概率的乘积
-<span class="math display">\[
-P(T) = \prod_{(w,d)}P(w,d)^{n(w,d)}
-\]</span> 这里n(w,d)表示(w,d)的出现次数单词-文本对出现的总次数是NxL。
-<span class="math display">\[
+<p>从数据生成过程可知，文本-单词共现数据T的生成概率为所有单词-文本对(w,d)的生成概率的乘积</p>
+<script type="math/tex; mode=display">
+P(T) = \prod_{(w,d)}P(w,d)^{n(w,d)}</script><p>这里n(w,d)表示(w,d)的出现次数单词-文本对出现的总次数是NxL。</p>
+<script type="math/tex; mode=display">
 P(w,d) = P(d)P(w|d)
 \newline
 =P(d)\sum_{z}P(w,z|d)
 \newline
-=P(d)\sum_{z}P(z|d)P(w|z)
-\]</span>
-倒数第二步到最后一步基于一个假设：给定话题z的条件下，单词w和文本d条件独立:即给定d确定z之后，w就可以完全由z决定，而不需要再考虑d这个条件。
-<span class="math display">\[
+=P(d)\sum_{z}P(z|d)P(w|z)</script><p>倒数第二步到最后一步基于一个假设：给定话题z的条件下，单词w和文本d条件独立:即给定d确定z之后，w就可以完全由z决定，而不需要再考虑d这个条件。</p>
+<script type="math/tex; mode=display">
 P(w,z|d) = P(z|d)P(w|d,z)
 \newline
-=P(z|d)P(w|z)
-\]</span></p>
-</blockquote>
-<p>生成模型属于概率有向图模型，可以用有向图表示<img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20220918170426070-16738440550722.png" alt="image-20220918170426070"></p></li>
-</ul></li>
+=P(z|d)P(w|z)</script></blockquote>
+<p>生成模型属于概率有向图模型，可以用有向图表示<img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20220918170426070-16738440550722.png" alt="image-20220918170426070"></p>
+</li>
+</ul>
+</li>
 <li><p>共现模型</p>
 <blockquote>
-<p><span class="math display">\[
-P(w,d) = \sum_{z\in Z}P(z)P(w|z)P(d|z)
-\]</span></p>
-<p>同样假设话题z给定的情况下，单词w和文本d是条件独立的 <span class="math display">\[
-P(w,d|z) = P(w|z)P(d|z)
-\]</span></p>
-</blockquote></li>
+<script type="math/tex; mode=display">
+P(w,d) = \sum_{z\in Z}P(z)P(w|z)P(d|z)</script><p>同样假设话题z给定的情况下，单词w和文本d是条件独立的</p>
+<script type="math/tex; mode=display">
+P(w,d|z) = P(w|z)P(d|z)</script></blockquote>
+</li>
 </ul>
-<p>​ 从公式上而言共现模型和生成模型两者等价。<img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20220918172005928-16738440550711.png" alt="image-20220918172005928"></p>
+<p>​    从公式上而言共现模型和生成模型两者等价。<img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20220918172005928-16738440550711.png" alt="image-20220918172005928"></p>
 <ul>
 <li><p>模型性质</p>
 <ul>
-<li>如果直接定义单词文本的贡献概率P(w,d)，模型参数个数<span class="math inline">\(O(M·N)\)</span>。而引入隐变量之后，参数个数成为<span class="math inline">\(O(M·K+N·K)\)</span>，其中K是话题数。现实中<span class="math inline">\(K \ll
-M\)</span>。所以，模型更加简洁，减少过拟合的可能性。<img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20220918172922802-16738440550723.png" alt="image-20220918172922802"></li>
-</ul></li>
+<li>如果直接定义单词文本的贡献概率P(w,d)，模型参数个数$O(M·N)$。而引入隐变量之后，参数个数成为$O(M·K+N·K)$，其中K是话题数。现实中$K \ll M$。所以，模型更加简洁，减少过拟合的可能性。<img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20220918172922802-16738440550723.png" alt="image-20220918172922802"></li>
+</ul>
+</li>
 <li><p>模型的几何解释</p>
 <blockquote>
-<p>单纯形：<a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/wiki/几何学">几何学</a>上，<strong>单纯形</strong>或者<strong>n-单纯形</strong>是和<a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/wiki/三角形">三角形</a>类似的<em>n</em>维<a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/wiki/几何形状">几何体</a>。精确的讲，单纯形是某个n维以上的<a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/wiki/欧几里得空间">欧几里得空间</a>中的（<em>n</em>+1）个<a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/wiki/仿射变换">仿射无关</a>（也就是没有<em>m-1</em>维<a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/wiki/平面_(数学)">平面</a>包含<em>m</em>+1个点；这样的点集被称为处于<a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/wiki/一般位置">一般位置</a>）的<a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/wiki/点">点</a>的集合的<a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/wiki/凸包">凸包</a>。</p>
+<p>单纯形：<a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/wiki/几何学">几何学</a>上，<strong>单纯形</strong>或者<strong>n-单纯形</strong>是和<a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/wiki/三角形">三角形</a>类似的<em>n</em>维<a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/wiki/几何形状">几何体</a>。精确的讲，单纯形是某个n维以上的<a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/wiki/欧几里得空间">欧几里得空间</a>中的（<em>n</em>+1）个<a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/wiki/仿射变换">仿射无关</a>（也就是没有<em>m-1</em>维<a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/wiki/平面_(数学">平面</a>)包含<em>m</em>+1个点；这样的点集被称为处于<a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/wiki/一般位置">一般位置</a>）的<a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/wiki/点">点</a>的集合的<a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/wiki/凸包">凸包</a>。</p>
 <p>例如，0-单纯形就是<a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/wiki/点">点</a>，1-单纯形就是<a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/wiki/线段">线段</a>，2-单纯形就是<a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/wiki/三角形">三角形</a>，3-单纯形就是<a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/wiki/四面體">四面体</a>，而4-单纯形是一个<a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/wiki/正五胞体">五胞体</a>（每种情况都包含内部）。</p>
 <p><strong>这里的关键是n维空间中的n-1单纯形是有n个顶点</strong></p>
 </blockquote>
-<p>概率分布<span class="math inline">\(P(w|d)\)</span>表示文本d生成单词w的概率 <span class="math display">\[
-\sum_{i=1}^{M}P(w_i|d) = 1,\quad 0 \leq P(w_i|d)\leq1,i=1,2,...,M
-\]</span> 可以由M维空间的(M-1)单纯形中的点表示。</p>
+<p>概率分布$P(w|d)$表示文本d生成单词w的概率</p>
+<script type="math/tex; mode=display">
+\sum_{i=1}^{M}P(w_i|d) = 1,\quad 0 \leq P(w_i|d)\leq1,i=1,2,...,M</script><p>可以由M维空间的(M-1)单纯形中的点表示。</p>
 <blockquote>
 <p>为什么可以由M维空间中的M-1单纯形表示呢？</p>
 <p>可以递推考虑：</p>
@@ -445,51 +450,42 @@ M\)</span>。所以，模型更加简洁，减少过拟合的可能性。<img sr
 <p>可以由2维空间的1单纯形进行表示，所有满足条件的参数组合都在这个1单纯形上。</p>
 <p>则，推广到M个参数的约束，就可以由M维空间中的M-1单纯形上的点表示这样的参数组合。</p>
 </blockquote>
-<figure>
-<img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20220918211648082-16738440550724.png" alt="image-20220918211648082">
-<figcaption aria-hidden="true">image-20220918211648082</figcaption>
-</figure>
-<p>PLSA(生成模型)中文本概率分布有如下关系成立： <span class="math display">\[
-P(w|d) = \sum_{z}P(z|d)P(w|z)
-\]</span> 概率分布<span class="math inline">\(P(w|z)\)</span>也存在于M维空间中的(M-1)单纯形中(系数和是1，向量的线性表出在一个面上，则每个向量都在这个面上)。如果有K个话题，则对应(M-1)单纯形中的K个点。以这K个点为顶点，构成一个(K-1)单纯形，称为话题单纯形，是单词单纯形的子单纯形。图中所示是K=3,M=3。当K=2时，参数向量在空间中缩为线段。K=1缩为点。</p>
-<p>即参数空间相对变小。而且是维数级别的缩小。</p></li>
+<p><img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20220918211648082-16738440550724.png" alt="image-20220918211648082"></p>
+<p>PLSA(生成模型)中文本概率分布有如下关系成立：</p>
+<script type="math/tex; mode=display">
+P(w|d) = \sum_{z}P(z|d)P(w|z)</script><p>概率分布$P(w|z)$也存在于M维空间中的(M-1)单纯形中(系数和是1，向量的线性表出在一个面上，则每个向量都在这个面上)。如果有K个话题，则对应(M-1)单纯形中的K个点。以这K个点为顶点，构成一个(K-1)单纯形，称为话题单纯形，是单词单纯形的子单纯形。图中所示是K=3,M=3。当K=2时，参数向量在空间中缩为线段。K=1缩为点。</p>
+<p>即参数空间相对变小。而且是维数级别的缩小。</p>
+</li>
 <li><p>PLSA与LSA的关系</p>
 <ul>
-<li><p>对LSA而言，单词-文本矩阵进行奇异值分解得到<span class="math inline">\(X = U\Sigma
-V^T\)</span>，其中U和V为正交矩阵，<span class="math inline">\(\Sigma\)</span>为非负降序对角矩阵。<img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20220918213649385-16738440550725.png" alt="image-20220918213649385"></p></li>
-<li><p>对PLSA而言，共现模型也可以表示为三个矩阵乘积的形式： <span class="math display">\[
-X&#39; = U&#39;\Sigma &#39;V&#39;^T
+<li><p>对LSA而言，单词-文本矩阵进行奇异值分解得到$X = U\Sigma V^T$，其中U和V为正交矩阵，$\Sigma$为非负降序对角矩阵。<img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20220918213649385-16738440550725.png" alt="image-20220918213649385"></p>
+</li>
+<li><p>对PLSA而言，共现模型也可以表示为三个矩阵乘积的形式：</p>
+<script type="math/tex; mode=display">
+X' = U'\Sigma 'V'^T
 \newline
-X&#39; = [P(w,d)]_{M\times N}
+X' = [P(w,d)]_{M\times N}
 \newline
-U&#39;=[P(w|z)]_{M\times K}
+U'=[P(w|z)]_{M\times K}
 \newline
-\Sigma&#39; = [P&#39;(z)]_{K\times K}
+\Sigma' = [P'(z)]_{K\times K}
 \newline
-V&#39; = [P(d|z)]_{N\times K}
-\]</span></p></li>
+V' = [P(d|z)]_{N\times K}</script></li>
 <li><p>两组矩阵的区别</p>
 <ul>
-<li>U’和 V'是非负的，规范化的，表示条件概率分布</li>
+<li>U’和 V’是非负的，规范化的，表示条件概率分布</li>
 <li>U和V是正交的，未必非负，不表示概率分布</li>
-</ul></li>
-</ul></li>
-<li><p>PLSA求解算法</p>
-<figure>
-<img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20220918230311979-16738440550726.png" alt="image-20220918230311979">
-<figcaption aria-hidden="true">image-20220918230311979</figcaption>
-</figure>
-<figure>
-<img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20220918230411724-16738440550727.png" alt="image-20220918230411724">
-<figcaption aria-hidden="true">image-20220918230411724</figcaption>
-</figure>
-<figure>
-<img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20220918230642299-16738440550729.png" alt="image-20220918230642299">
-<figcaption aria-hidden="true">image-20220918230642299</figcaption>
-</figure></li>
 </ul>
-<h3 id="马尔可夫链蒙特卡洛法">马尔可夫链蒙特卡洛法</h3>
-<p>蒙特卡洛方法是从概率模型的随机抽样进行近似数值计算的方法。</p>
+</li>
+</ul>
+</li>
+<li><p>PLSA求解算法</p>
+<p><img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20220918230311979-16738440550726.png" alt="image-20220918230311979"></p>
+<p><img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20220918230411724-16738440550727.png" alt="image-20220918230411724"></p>
+<p><img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20220918230642299-16738440550729.png" alt="image-20220918230642299"></p>
+</li>
+</ul>
+<h3 id="马尔可夫链蒙特卡洛法"><a href="#马尔可夫链蒙特卡洛法" class="headerlink" title="马尔可夫链蒙特卡洛法"></a>马尔可夫链蒙特卡洛法</h3><p>蒙特卡洛方法是从概率模型的随机抽样进行近似数值计算的方法。</p>
 <p>马尔可夫链蒙特卡洛法则是以马尔可夫链为概率模型的蒙特卡洛法。构建一个马尔可夫链，使其分布就是要抽样的分布，首先基于该马尔可夫链进行随机游走，产生样本的序列，之后使用该平稳分布的样本进行近似数值计算。</p>
 <ul>
 <li><p>蒙特卡洛法</p>
@@ -497,229 +493,212 @@ V&#39; = [P(d|z)]_{N\times K}
 <li><p>随机抽样</p>
 <p>接受-拒绝法一般流程：</p>
 <ul>
-<li>从[0,1]均匀分布抽样随机数<span class="math inline">\(u_0\)</span>，然后计算<span class="math inline">\(x =
-F^{-1}(u_0)\)</span>得到建议分布的随机样本<span class="math inline">\(x\)</span>。(其中<span class="math inline">\(F(\cdot)\)</span>是建议分布的累积分布函数，<span class="math inline">\(F^{-1}(\cdot)\)</span>则是其逆函数)</li>
-<li>再从[0,1]均匀分布中抽样随机数<span class="math inline">\(u_1\)</span>，和<span class="math inline">\(A(x) =
-\frac{p(x)}{M\cdot q(x)}\)</span>比较，大于则拒绝；小于则接受。</li>
-<li>得到抽样<span class="math inline">\(x\)</span>。</li>
-</ul></li>
-<li><p>数学期望估计</p>
-<p>对概率密度函数<span class="math inline">\(p(x)\)</span>独立抽取n个样本<span class="math inline">\(x_1,x_2,...,x_n\)</span>，之后计算函数<span class="math inline">\(f(x)\)</span>的样本均值<span class="math inline">\(\hat{f}_n\)</span>: <span class="math display">\[
-\hat{f}_n = \frac{1}{n}\sum_{i=1}^nf(x_i)
-\]</span> 作为数学期望<span class="math inline">\(E_{p(x)}[f(x)]\)</span>的估计值。（由大数定律可得到）</p></li>
-<li><p>积分计算 <span class="math display">\[
-\int_{\mathcal{X}}h(x)dx = \int_{\mathcal{X}}g(x)f(x)dx=E_{p(x)}[f(x)]
-\]</span></p></li>
-</ul></li>
+<li>从[0,1]均匀分布抽样随机数$u_0$，然后计算$x = F^{-1}(u_0)$得到建议分布的随机样本$x$。(其中$F(\cdot)$是建议分布的累积分布函数，$F^{-1}(\cdot)$则是其逆函数)</li>
+<li>再从[0,1]均匀分布中抽样随机数$u_1$，和$A(x) = \frac{p(x)}{M\cdot q(x)}$比较，大于则拒绝；小于则接受。</li>
+<li>得到抽样$x$。</li>
 </ul>
-<h3 id="马尔可夫链">马尔可夫链</h3>
-<ul>
+</li>
+<li><p>数学期望估计</p>
+<p>对概率密度函数$p(x)$独立抽取n个样本$x_1,x_2,…,x_n$，之后计算函数$f(x)$的样本均值$\hat{f}_n$:</p>
+<script type="math/tex; mode=display">
+\hat{f}_n = \frac{1}{n}\sum_{i=1}^nf(x_i)</script><p>作为数学期望$E_{p(x)}[f(x)]$的估计值。（由大数定律可得到）</p>
+</li>
+<li><p>积分计算</p>
+<script type="math/tex; mode=display">
+\int_{\mathcal{X}}h(x)dx = \int_{\mathcal{X}}g(x)f(x)dx=E_{p(x)}[f(x)]</script></li>
+</ul>
+</li>
+</ul>
+<h3 id="马尔可夫链"><a href="#马尔可夫链" class="headerlink" title="马尔可夫链"></a>马尔可夫链</h3><ul>
 <li><p>遍历定理</p>
-<p>设有马尔可夫链 <span class="math inline">\(X =
-\{X_0,X_1,...,X_t,...\}\)</span>，状态空间为<span class="math inline">\(S\)</span>，若马尔可夫链是不可约、非周期且正常返的，则该马尔可夫链有唯一平稳分布<span class="math inline">\(\pi =
-(\pi_1,\pi_2,...)^T\)</span>，并且转移概率的极限分布是马尔可夫链的平稳分布
-<span class="math display">\[
-\lim_{t\rightarrow\infty}P(X_t=i|X_0=j) = \pi_i,i=1,2,...;j=1,2,...
-\]</span> 若<span class="math inline">\(f(X)\)</span>是定义在状态空间上的函数，<span class="math inline">\(E_{\pi}[|f(X)|]&lt;\infty\)</span>，则 <span class="math display">\[
+<p>设有马尔可夫链 $X = {X_0,X_1,…,X_t,…}$，状态空间为$S$，若马尔可夫链是不可约、非周期且正常返的，则该马尔可夫链有唯一平稳分布$\pi = (\pi_1,\pi_2,…)^T$，并且转移概率的极限分布是马尔可夫链的平稳分布</p>
+<script type="math/tex; mode=display">
+\lim_{t\rightarrow\infty}P(X_t=i|X_0=j) = \pi_i,i=1,2,...;j=1,2,...</script><p>若$f(X)$是定义在状态空间上的函数，$E_{\pi}[|f(X)|]&lt;\infty$，则</p>
+<script type="math/tex; mode=display">
 P\{\hat{f}_t\rightarrow E_\pi[f(X)] \} = 1,t\rightarrow \infty
 \\
 \hat{f}_t = \frac{1}{t}\sum_{s=1}^t f(x_s)
 \\
-E_\pi[f(X)] = \sum_if(i)\pi_i
-\]</span>
-样本均值是一次次时间步骤产生的，是时间均值。期望是同一时间状态空间不同状态和对应概率的积的和，是空间均值。遍历定理其实是证明了当时间趋于无穷的时候，时间均值就等于空间均值。</p></li>
+E_\pi[f(X)] = \sum_if(i)\pi_i</script><p>样本均值是一次次时间步骤产生的，是时间均值。期望是同一时间状态空间不同状态和对应概率的积的和，是空间均值。遍历定理其实是证明了当时间趋于无穷的时候，时间均值就等于空间均值。</p>
+</li>
 <li><p>可逆马尔可夫链</p>
-<p>设有马尔可夫链<span class="math inline">\(X =
-\{X_0,X_1,...,X_t,...\}\)</span>，状态空间为<span class="math inline">\(S\)</span>，转移概率矩阵为<span class="math inline">\(P\)</span>，如果状态分布<span class="math inline">\(\pi =
-(\pi_1,\pi_2,\cdot\cdot\cdot)^T\)</span>，对于任意状态<span class="math inline">\(i,j\in S\)</span>，对任意一个时刻<span class="math inline">\(t\)</span>满足: <span class="math display">\[
-P(X_t = i|X_{t-1} = j)\pi_j = P(X_{t-1}=j|X_t = i)\pi_i,i,j=1,2,...
-\]</span> 或简写为 <span class="math display">\[
-p_{ij}\pi_j = p_{ji}\pi_i,i,j=1,2,...
-\]</span> 则称此马尔可夫链<span class="math inline">\(X\)</span>为可逆马尔科夫链，上式称为<strong>细致平衡方程</strong>。</p>
+<p>设有马尔可夫链$X = {X_0,X_1,…,X_t,…}$，状态空间为$S$，转移概率矩阵为$P$，如果状态分布$\pi = (\pi_1,\pi_2,\cdot\cdot\cdot)^T$，对于任意状态$i,j\in S$，对任意一个时刻$t$满足:</p>
+<script type="math/tex; mode=display">
+P(X_t = i|X_{t-1} = j)\pi_j = P(X_{t-1}=j|X_t = i)\pi_i,i,j=1,2,...</script><p>或简写为</p>
+<script type="math/tex; mode=display">
+p_{ij}\pi_j = p_{ji}\pi_i,i,j=1,2,...</script><p>则称此马尔可夫链$X$为可逆马尔科夫链，上式称为<strong>细致平衡方程</strong>。</p>
 <p>直观上，对一个可逆马尔可夫链而言，以该马尔可夫链的平稳分布作为初始分布，进行随机状态转移，无论是面向未来还是面向过去，任何一个时刻的状态分布都是该平稳分布。</p>
-<p><strong>定理</strong>：满足细致平衡方程的状态分布<span class="math inline">\(\pi\)</span>就是该马尔可夫链的平稳分布，即 <span class="math display">\[
-P\pi = \pi
-\]</span></p></li>
+<p><strong>定理</strong>：满足细致平衡方程的状态分布$\pi$就是该马尔可夫链的平稳分布，即</p>
+<script type="math/tex; mode=display">
+P\pi = \pi</script></li>
 </ul>
-<h3 id="马尔可夫链蒙特卡罗法">马尔可夫链蒙特卡罗法</h3>
-<ul>
+<h3 id="马尔可夫链蒙特卡罗法"><a href="#马尔可夫链蒙特卡罗法" class="headerlink" title="马尔可夫链蒙特卡罗法"></a>马尔可夫链蒙特卡罗法</h3><ul>
 <li><p>基本思想</p>
 <ul>
 <li><p>目标</p>
 <ul>
 <li>对一个概率分布进行随机抽样</li>
 <li>求函数关于该概率分布的数学期望</li>
-</ul></li>
+</ul>
+</li>
 <li><p>手段</p>
 <ul>
 <li>传统的蒙特卡罗法：接受-拒绝法，重要性抽样法</li>
 <li>马尔可夫链蒙特卡罗法：更适合随机变量是多元的，密度函数是非标准形式的，随机变量各分量不独立等情况</li>
-</ul></li>
+</ul>
+</li>
 <li><p>Pipeline</p>
-<p>假设多元随机变量<span class="math inline">\(x \in
-\mathcal{X}\)</span>，其概率密度函数为<span class="math inline">\(p(x)\)</span>，<span class="math inline">\(f(x)\)</span>为定义在<span class="math inline">\(x\in
-\mathcal{X}\)</span>上的函数，目标是获得概率分布<span class="math inline">\(p(x)\)</span>的样本集合，以及求函数<span class="math inline">\(f(x)\)</span>的数学期望<span class="math inline">\(E_{p(x)}[f(x)]\)</span>。</p>
+<p>假设多元随机变量$x \in \mathcal{X}$，其概率密度函数为$p(x)$，$f(x)$为定义在$x\in \mathcal{X}$上的函数，目标是获得概率分布$p(x)$的样本集合，以及求函数$f(x)$的数学期望$E_{p(x)}[f(x)]$。</p>
 <ul>
-<li><p>在随机变量<span class="math inline">\(x\)</span>的状态空间<span class="math inline">\(S\)</span>上构造一个满足遍历定理的马尔可夫链，使其平稳分布为目标分布<span class="math inline">\(p(x)\)</span></p>
+<li><p>在随机变量$x$的状态空间$S$上构造一个满足遍历定理的马尔可夫链，使其平稳分布为目标分布$p(x)$</p>
 <blockquote>
 <p>连续变量的时候需要定义转移核函数；离散变量的时候需要定义转移矩阵。</p>
 <p>一个方法是定义特殊的转移核函数或转移矩阵，构建可逆马尔可夫链。这样可以保证（充分条件：可逆马尔科夫连一定有唯一平稳分布）遍历定理成立。</p>
-</blockquote></li>
-<li><p>从状态空间某一点<span class="math inline">\(x_0\)</span>出发，用构造的马尔可夫链进行随机游走，产生样本序列<span class="math inline">\(x_0,x_1,...,x_t,...\)</span></p></li>
-<li><p>应用马尔可夫链的遍历定理，确定正整数m和n，(m&lt;n)，得到样本集合<span class="math inline">\(\{x_{m+1},x_{m+2},...,x_n\}\)</span>，求得函数<span class="math inline">\(f(x)\)</span>的遍历均值 <span class="math display">\[
-\hat{E}f = \frac{1}{n-m}\sum_{i=m+1}^nf(x_i)
-\]</span> 就是马尔可夫链蒙特卡洛法的计算公式</p></li>
-</ul></li>
-</ul></li>
+</blockquote>
+</li>
+<li><p>从状态空间某一点$x_0$出发，用构造的马尔可夫链进行随机游走，产生样本序列$x_0,x_1,…,x_t,…$</p>
+</li>
+<li><p>应用马尔可夫链的遍历定理，确定正整数m和n，(m&lt;n)，得到样本集合${x<em>{m+1},x</em>{m+2},…,x_n}$，求得函数$f(x)$的遍历均值</p>
+<script type="math/tex; mode=display">
+\hat{E}f = \frac{1}{n-m}\sum_{i=m+1}^nf(x_i)</script><p>就是马尔可夫链蒙特卡洛法的计算公式</p>
+</li>
 </ul>
-<h3 id="马尔可夫链蒙特卡罗法与统计学习">马尔可夫链蒙特卡罗法与统计学习</h3>
-<p>在贝叶斯学习中起着重要作用：它可以用于概率模型的学习和推理上。</p>
-<p>假设<strong>观测数据</strong>由随机变量<span class="math inline">\(y\in
-\mathcal{Y}\)</span>表示，<strong>模型</strong>由随机变量<span class="math inline">\(x\in
-\mathcal{X}\)</span>表示，贝叶斯学习通过贝叶斯定理计算给定数据条件下的模型的后验概率，并选择后验概率最大的模型。</p>
-<p>后验概率 <span class="math display">\[
-p(x|y) =
-\frac{p(x)p(y|x)}{\int_{\mathcal{X}}p(y|x&#39;)p(x&#39;)dx&#39;}
-\]</span> 贝叶斯经常需要三种积分运算：</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="马尔可夫链蒙特卡罗法与统计学习"><a href="#马尔可夫链蒙特卡罗法与统计学习" class="headerlink" title="马尔可夫链蒙特卡罗法与统计学习"></a>马尔可夫链蒙特卡罗法与统计学习</h3><p>在贝叶斯学习中起着重要作用：它可以用于概率模型的学习和推理上。</p>
+<p>假设<strong>观测数据</strong>由随机变量$y\in \mathcal{Y}$表示，<strong>模型</strong>由随机变量$x\in \mathcal{X}$表示，贝叶斯学习通过贝叶斯定理计算给定数据条件下的模型的后验概率，并选择后验概率最大的模型。</p>
+<p>后验概率</p>
+<script type="math/tex; mode=display">
+p(x|y) = \frac{p(x)p(y|x)}{\int_{\mathcal{X}}p(y|x')p(x')dx'}</script><p>贝叶斯经常需要三种积分运算：</p>
 <ul>
-<li><p>规范化：后验概率计算中需要的： <span class="math display">\[
-\int_{\mathcal{X}}p(y|x&#39;)p(x&#39;)dx&#39;
-\]</span></p></li>
-<li><p>边缘化：如果有隐变量<span class="math inline">\(z\in\mathcal{Z}\)</span>，后验概率的计算需要边缘化计算
-<span class="math display">\[
-p(x|y)=\int_{\mathcal{Z}}p(x,z|y)dz
-\]</span></p></li>
-<li><p>数学期望：如果有一个函数<span class="math inline">\(f(x)\)</span>，可以计算该函数关于后验概率分布的数学期望
-<span class="math display">\[
-E_{p(x)}[f(x)] = \int_{\mathcal{X}}f(x)p(x|y)dx
-\]</span></p></li>
+<li><p>规范化：后验概率计算中需要的：</p>
+<script type="math/tex; mode=display">
+\int_{\mathcal{X}}p(y|x')p(x')dx'</script></li>
+<li><p>边缘化：如果有隐变量$z\in\mathcal{Z}$，后验概率的计算需要边缘化计算</p>
+<script type="math/tex; mode=display">
+p(x|y)=\int_{\mathcal{Z}}p(x,z|y)dz</script></li>
+<li><p>数学期望：如果有一个函数$f(x)$，可以计算该函数关于后验概率分布的数学期望</p>
+<script type="math/tex; mode=display">
+E_{p(x)}[f(x)] = \int_{\mathcal{X}}f(x)p(x|y)dx</script></li>
 </ul>
-<h3 id="metropolis-hastings算法">Metropolis-Hastings算法</h3>
-<p>假设要抽样的概率分布为<span class="math inline">\(p(x)\)</span>。Metropolis-Hastings算法采用的转移核为<span class="math inline">\(p(x,x&#39;)\)</span>的马尔可夫链： <span class="math display">\[
-p(x,x&#39;) = q(x,x&#39;)\alpha(x,x&#39;)
-\]</span> 其中<span class="math inline">\(q(x,x&#39;)\)</span>和<span class="math inline">\(\alpha(x,x&#39;)\)</span>分别被称为建议分布和接受分布。</p>
+<h3 id="Metropolis-Hastings算法"><a href="#Metropolis-Hastings算法" class="headerlink" title="Metropolis-Hastings算法"></a>Metropolis-Hastings算法</h3><p>假设要抽样的概率分布为$p(x)$。Metropolis-Hastings算法采用的转移核为$p(x,x’)$的马尔可夫链：</p>
+<script type="math/tex; mode=display">
+p(x,x') = q(x,x')\alpha(x,x')</script><p>其中$q(x,x’)$和$\alpha(x,x’)$分别被称为建议分布和接受分布。</p>
 <ul>
 <li><p>建议分布</p>
 <ul>
 <li>是另一个马尔可夫链的转移核</li>
 <li>是不可约的，即概率值恒不为0</li>
 <li>是一个容易抽样的分布</li>
-<li>常见的两种形式
-<ul>
-<li>假设建议分布是对称的：q(x,x') = q(x',x)
-<ul>
-<li>比如选择条件概率分布<span class="math inline">\(p(x&#39;|x)\)</span>，<strong>定义为</strong>以<span class="math inline">\(x\)</span>为均值的多元正态分布，协方差矩阵是常数矩阵（在知道当前的x后，就可以从正态分布中抽取下一步的x'）</li>
-</ul></li>
-<li>独立抽样。假设q(x,x')与当前状态x无关，即q(x,x') = q(x')</li>
-</ul></li>
-</ul></li>
+<li>常见的两种形式<ul>
+<li>假设建议分布是对称的：q(x,x’) = q(x’,x)<ul>
+<li>比如选择条件概率分布$p(x’|x)$，<strong>定义为</strong>以$x$为均值的多元正态分布，协方差矩阵是常数矩阵（在知道当前的x后，就可以从正态分布中抽取下一步的x’）</li>
+</ul>
+</li>
+<li>独立抽样。假设q(x,x’)与当前状态x无关，即q(x,x’) = q(x’)</li>
+</ul>
+</li>
+</ul>
+</li>
 <li><p>接受分布</p>
 <ul>
-<li>公式定义 <span class="math display">\[
-\alpha(x,x&#39;) = min\{1,\frac{p(x&#39;)q(x&#39;,x)}{p(x)q(x,x&#39;)}\}
-\]</span></li>
-</ul></li>
+<li>公式定义<script type="math/tex; mode=display">
+\alpha(x,x') = min\{1,\frac{p(x')q(x',x)}{p(x)q(x,x')}\}</script></li>
+</ul>
+</li>
 <li><p>满条件分布</p>
 <ul>
 <li><p>定义</p>
-<p>多元联合概率分布<span class="math inline">\(p(x)=p(x_1,x_2,...,x_k)\)</span>，其中<span class="math inline">\(x =
-(x_1,x_2,...,x_k)^T\)</span>是k维随机变量。如果条件概率分布<span class="math inline">\(p(x_I|x_{-I})\)</span>中所有k个变量全部出现，其中<span class="math inline">\(x_I = \{x_i,i\in I\},x_{-I}=\{x_i,i\notin
-I\},I\subset K = \{1,2,...,k\}\)</span></p></li>
+<p>多元联合概率分布$p(x)=p(x<em>1,x_2,…,x_k)$，其中$x = (x_1,x_2,…,x_k)^T$是k维随机变量。如果条件概率分布$p(x_I|x</em>{-I})$中所有k个变量全部出现，其中$x<em>I = {x_i,i\in I},x</em>{-I}={x_i,i\notin I},I\subset K = {1,2,…,k}$</p>
+</li>
 <li><p>性质</p>
-<p>对任意的<span class="math inline">\(x\in
-\mathcal{X}\)</span>和任意的<span class="math inline">\(I \subset
-K\)</span>，有 <span class="math display">\[
-p(x_I|x_{-I}) = \frac{p(x)}{\int p(x)dx_I} \propto p(x)
-\]</span> 而且对任意的<span class="math inline">\(x,x&#39;\in
-\mathcal{X}\)</span>和任意的<span class="math inline">\(I \subset
-K\)</span>，有 <span class="math display">\[
-\frac{p(x_I&#39;|x_{-I}&#39;)}{p(x_I|x_{-I})} = \frac{p(x&#39;)}{p(x)}
-\]</span>
-利用这个性质，可以通过满条件分布概率的比来计算联合概率的比，计算更加简单。</p></li>
-</ul></li>
+<p>对任意的$x\in \mathcal{X}$和任意的$I \subset K$，有</p>
+<script type="math/tex; mode=display">
+p(x_I|x_{-I}) = \frac{p(x)}{\int p(x)dx_I} \propto p(x)</script><p>而且对任意的$x,x’\in \mathcal{X}$和任意的$I \subset K$，有</p>
+<script type="math/tex; mode=display">
+\frac{p(x_I'|x_{-I}')}{p(x_I|x_{-I})} = \frac{p(x')}{p(x)}</script><p>利用这个性质，可以通过满条件分布概率的比来计算联合概率的比，计算更加简单。</p>
+</li>
+</ul>
+</li>
 <li><p>Pipeline</p>
 <ul>
-<li>输入：抽样的目标分布的密度函数<span class="math inline">\(p(x)\)</span>，函数<span class="math inline">\(f(x)\)</span></li>
-<li>输出：<span class="math inline">\(p(x)\)</span>的随机样本<span class="math inline">\(x_{m+1},x_{m+2},...,x_n\)</span>，函数样本均值<span class="math inline">\(f_{mn}\)</span></li>
+<li>输入：抽样的目标分布的密度函数$p(x)$，函数$f(x)$</li>
+<li>输出：$p(x)$的随机样本$x<em>{m+1},x</em>{m+2},…,x<em>n$，函数样本均值$f</em>{mn}$</li>
 <li>参数：收敛步数m，迭代步数n</li>
 </ul>
-<p>(1)任选初始值<span class="math inline">\(x_0\)</span></p>
-<p>(2)对i=1,2,...,n循环执行</p>
+<p>(1)任选初始值$x_0$</p>
+<p>(2)对i=1,2,…,n循环执行</p>
 <ul>
-<li>设状态<span class="math inline">\(x_{i-1} =
-x\)</span>，按照<strong>建议分布</strong><span class="math inline">\(q(x,x&#39;)\)</span>随机抽取一个候选状态<span class="math inline">\(x&#39;\)</span></li>
-<li>计算接受概率<span class="math inline">\(\alpha(x,x&#39;)\)</span></li>
-<li>从区间(0,1)中按均匀分布抽取<span class="math inline">\(u\)</span>
-<ul>
-<li>若<span class="math inline">\(u\leq
-\alpha(x,x&#39;)\)</span>，则状态<span class="math inline">\(x_i=x&#39;\)</span></li>
-<li>否则，<span class="math inline">\(x_i = x\)</span></li>
-</ul></li>
+<li>设状态$x_{i-1} = x$，按照<strong>建议分布</strong>$q(x,x’)$随机抽取一个候选状态$x’$</li>
+<li>计算接受概率$\alpha(x,x’)$</li>
+<li>从区间(0,1)中按均匀分布抽取$u$<ul>
+<li>若$u\leq \alpha(x,x’)$，则状态$x_i=x’$</li>
+<li>否则，$x_i = x$</li>
 </ul>
-<p>得到<strong>样本集合</strong>并计算<strong>函数样本均值</strong>并返回·</p></li>
+</li>
+</ul>
+<p>得到<strong>样本集合</strong>并计算<strong>函数样本均值</strong>并返回·</p>
+</li>
 <li><p>单分量Metropolis-Hastings算法</p>
 <p>在Metropolis-Hastings算法中，通常需要对多元变量分布进行抽样，有时对多元变量分布进行抽样是困难的。</p>
-<p>可以对多元变量的每一变量的条件分布一次进行抽样，从而实现对整个多元变量的一次抽样。</p></li>
+<p>可以对多元变量的每一变量的条件分布一次进行抽样，从而实现对整个多元变量的一次抽样。</p>
+</li>
 </ul>
-<h4 id="lda">LDA</h4>
-<blockquote>
+<h4 id="LDA"><a href="#LDA" class="headerlink" title="LDA"></a>LDA</h4><blockquote>
 <p>系列回顾：PLSA</p>
 <ul>
 <li><p>生成模型 or 判别模型</p>
-<p>预测模型的公式是<span class="math inline">\(P(y|x)\)</span>。即给定输入，输出给定输入的概率分布。</p>
+<p>预测模型的公式是$P(y|x)$。即给定输入，输出给定输入的概率分布。</p>
 <ul>
-<li><p>生成方法原理上由数据学习<strong>联合概率分布</strong><span class="math inline">\(P(X,Y)\)</span>，然后求出条件概率分布作为预测的模型，即生成模型：
-<span class="math display">\[
-P(Y|X) = \frac{P(X,Y)}{P(X)}
-\]</span>
-之所以称之为生成方法，是因为模型表示了给定输入X产生输出Y的生成关系。</p>
+<li><p>生成方法原理上由数据学习<strong>联合概率分布</strong>$P(X,Y)$，然后求出条件概率分布作为预测的模型，即生成模型：</p>
+<script type="math/tex; mode=display">
+P(Y|X) = \frac{P(X,Y)}{P(X)}</script><p>之所以称之为生成方法，是因为模型表示了给定输入X产生输出Y的生成关系。</p>
 <p>以HMM(隐马尔可夫模型)为例：</p>
 <p><strong>构成</strong></p>
 <ul>
-<li><span class="math inline">\(\pi\)</span>:出事状态概率向量</li>
-<li><span class="math inline">\(A\)</span>:状态转移概率矩阵</li>
-<li><span class="math inline">\(B\)</span>:观测概率矩阵</li>
+<li>$\pi$:出事状态概率向量</li>
+<li>$A$:状态转移概率矩阵</li>
+<li>$B$:观测概率矩阵</li>
 </ul>
-<p><span class="math display">\[
-\lambda = (A,B,\pi)
-\]</span></p>
-<p><strong>基本假设</strong></p>
+<script type="math/tex; mode=display">
+\lambda = (A,B,\pi)</script><p><strong>基本假设</strong></p>
 <ul>
 <li>齐次马尔可夫假设：t时刻的状态只依赖前一时刻的状态</li>
 <li>观测独立性假设：任意时刻的观测只依赖该时刻马尔可夫链的状态</li>
 </ul>
 <p><strong>三个基本问题</strong></p>
 <ul>
-<li>概率计算问题：给定模型<span class="math inline">\(\lambda =
-(A,B,\pi)\)</span>和观测序列<span class="math inline">\(O=(o_1,o_2,...,o_T)\)</span>,计算在模型<span class="math inline">\(\lambda\)</span>下序列<span class="math inline">\(O\)</span>出现的概率</li>
-<li>学习问题：已知观测序列，估计模型<span class="math inline">\(\lambda
-= (A,B,\pi)\)</span>的参数，使得该模型下观测序列出现的概率<span class="math inline">\(P(O|\lambda)\)</span>最大，即极大似然估计方法估计参数</li>
-<li>预测问题（解码问题）：已知模型和观测序列，求解最有可能的对应的状态序列<span class="math inline">\(P(I|O)\)</span></li>
+<li>概率计算问题：给定模型$\lambda = (A,B,\pi)$和观测序列$O=(o_1,o_2,…,o_T)$,计算在模型$\lambda$下序列$O$出现的概率</li>
+<li>学习问题：已知观测序列，估计模型$\lambda = (A,B,\pi)$的参数，使得该模型下观测序列出现的概率$P(O|\lambda)$最大，即极大似然估计方法估计参数</li>
+<li>预测问题（解码问题）：已知模型和观测序列，求解最有可能的对应的状态序列$P(I|O)$</li>
 </ul>
 <p><strong>概率计算</strong></p>
 <ul>
 <li><p>直接计算</p>
-<p>状态序列<span class="math inline">\(I\)</span>的概率是：<span class="math inline">\(P(I|\lambda)\)</span></p>
-<p>对固定的状态序列<span class="math inline">\(I\)</span>，观测序列<span class="math inline">\(O\)</span>的概率为：<span class="math inline">\(P(O|I,\lambda)\)</span></p>
-<p>则<span class="math inline">\(O\)</span>和<span class="math inline">\(I\)</span>同时出现的联合概率为：<span class="math inline">\(P(O,I|\lambda) =
-P(O|I,\lambda)P(I|\lambda)\)</span></p>
-<p>对所有可能的状态序列<span class="math inline">\(I\)</span>求和，得到观测序列<span class="math inline">\(O\)</span>的概率为： <span class="math display">\[
-P(O|\lambda) = \sum_{I}P(O|I,\lambda)P(I|\lambda)
-\]</span>
-由此，可以很明显地看出，HMM拟合观测序列（x）和状态序列（y）的联合分布。</p>
-<p>学习时，我们数据只有观测序列（x），最大化<span class="math inline">\(P(O|\lambda)\)</span>然后使用EM算法进行参数估计。</p>
-<p>得到模型之后，状态序列y由马尔科夫模型生成，然后生成观测序列x。</p></li>
-<li><p>前向算法</p></li>
-<li><p>后向算法</p></li>
+<p>状态序列$I$的概率是：$P(I|\lambda)$</p>
+<p>对固定的状态序列$I$，观测序列$O$的概率为：$P(O|I,\lambda)$</p>
+<p>则$O$和$I$同时出现的联合概率为：$P(O,I|\lambda) = P(O|I,\lambda)P(I|\lambda)$</p>
+<p>对所有可能的状态序列$I$求和，得到观测序列$O$的概率为：</p>
+<script type="math/tex; mode=display">
+P(O|\lambda) = \sum_{I}P(O|I,\lambda)P(I|\lambda)</script><p>由此，可以很明显地看出，HMM拟合观测序列（x）和状态序列（y）的联合分布。</p>
+<p>学习时，我们数据只有观测序列（x），最大化$P(O|\lambda)$然后使用EM算法进行参数估计。</p>
+<p>得到模型之后，状态序列y由马尔科夫模型生成，然后生成观测序列x。</p>
+</li>
+<li><p>前向算法</p>
+</li>
+<li><p>后向算法</p>
+</li>
 </ul>
 <p><strong>学习算法</strong></p>
 <ul>
 <li>监督学习方法：直接大数定律，极大似然估计</li>
-<li>Baum-Welch算法（EM算法）
-<ul>
+<li>Baum-Welch算法（EM算法）<ul>
 <li>写出Q函数</li>
 <li>利用拉格朗日乘子法求解极值点</li>
-</ul></li>
+</ul>
+</li>
 </ul>
 <p><strong>预测算法</strong></p>
 <ul>
@@ -727,58 +706,47 @@ P(O|\lambda) = \sum_{I}P(O|I,\lambda)P(I|\lambda)
 <ul>
 <li>每个时刻t选择最可能出现的状态，然后得到状态序列，作为预测结果</li>
 <li>缺点：不能保证预测的状态序列整体是最优的</li>
-</ul></li>
+</ul>
+</li>
 <li><p>维特比算法</p>
 <ul>
 <li>动态规划求解最优路径</li>
 </ul>
 <blockquote>
-<p>https://www.zhihu.com/question/20136144</p>
-</blockquote></li>
-</ul></li>
-<li><p>判别模型：直接学习<span class="math inline">\(P(Y|X)\)</span>作为预测的模型。典型的判别模型包括k近邻法，感知机，逻辑斯蒂回归模型，最大熵模型，支持向量机，提升方法和条件随机场等。</p></li>
+<p><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/20136144">https://www.zhihu.com/question/20136144</a></p>
+</blockquote>
+</li>
 </ul>
-<p>因此，PLSA模型显然也是一种生成模型。文本-单词共现数据T的生成概率为：<span class="math inline">\(\prod \limits_{(w,d)}P(w,d)^{n(w,d)}\)</span></p>
-<p>而每个单词对<span class="math inline">\((w,d)\)</span>的生成概率由以下公式决定： <span class="math display">\[
-P(w,d) = P(d)P(w|d)=P(d)\sum_{z}P(w,z|d)=P(d)\sum_{z}P(z|d)P(w|z)
-\]</span> 共现模型的公式更能体现其作为生成模型的特点： <span class="math display">\[
-P(w,d) =\sum_zP(x,d,z) = \sum_zP(z)P(w,d|z)
-\]</span>
-该学习过程已经需要计算X（文本-单词对）和Y（主题）的联合概率分布了。在推断过程中根据X计算Y的过程中就可以使用生成模型的方式计算P(Y|X)（即对文档进行主题聚类）。也可以根据学习到的模型生成文本-单词对。</p></li>
+</li>
+<li><p>判别模型：直接学习$P(Y|X)$作为预测的模型。典型的判别模型包括k近邻法，感知机，逻辑斯蒂回归模型，最大熵模型，支持向量机，提升方法和条件随机场等。</p>
+</li>
+</ul>
+<p>因此，PLSA模型显然也是一种生成模型。文本-单词共现数据T的生成概率为：$\prod \limits_{(w,d)}P(w,d)^{n(w,d)}$</p>
+<p>而每个单词对$(w,d)$的生成概率由以下公式决定：</p>
+<script type="math/tex; mode=display">
+P(w,d) = P(d)P(w|d)=P(d)\sum_{z}P(w,z|d)=P(d)\sum_{z}P(z|d)P(w|z)</script><p>共现模型的公式更能体现其作为生成模型的特点：</p>
+<script type="math/tex; mode=display">
+P(w,d) =\sum_zP(x,d,z) = \sum_zP(z)P(w,d|z)</script><p>该学习过程已经需要计算X（文本-单词对）和Y（主题）的联合概率分布了。在推断过程中根据X计算Y的过程中就可以使用生成模型的方式计算P(Y|X)（即对文档进行主题聚类）。也可以根据学习到的模型生成文本-单词对。</p>
+</li>
 </ul>
 </blockquote>
 <p>那么有了PLSA后，为何会提出LDA呢？</p>
-<p>pLSA中，主题的概率分布P(c|d)和词在主题下的概率分布P(w|c)既然是概率分布，那么就必须要有样本进行统计才能得到这些概率分布。更具体的讲，主题模型就是为了做这个事情的，训练已获得的数据样本，得到这些参数，那么一个pLSA模型便得到了，但是这个时候问题就来了：这些参数是建立在训练样本上得到的。这是个大问题啊！你怎么能确保新加入的数据同样符合这些参数呢？你能不能别这么草率鲁莽？但是频率学派就有这么任性，他们认为参数是存在并且是确定的，
-只是我们未知而已，并且正是因为未知，我们才去训练pLSA的，训练之后得到的参数同样适合于新加入的数据，因为他们相信参数是确定的，既然适合于训练数据，那么也同样适合于新加入的数据了。</p>
-<p>​
-但是真实情况却不是这样，尤其是训练样本量比较少的情况下的时候，这个时候首先就不符合大数定律的条件（这里插一句大数定律和中心极限定律，在无数次<a target="_blank" rel="noopener" href="https://www.zhihu.com/search?q=独立同分布&amp;search_source=Entity&amp;hybrid_search_source=Entity&amp;hybrid_search_extra=%7B%22sourceType%22%3A%22answer%22%2C%22sourceId%22%3A38969800%7D">独立同分布</a>的随机事件中，事件的频率趋于一个稳定的概率值，这是大数定律；而同样的无数次独立同分布的随机事件中，事件的分布趋近于一个稳定的正态分布，而这个正太分布的期望值正是大数定律里面的概率值。所以，<a target="_blank" rel="noopener" href="https://www.zhihu.com/search?q=中心极限定理&amp;search_source=Entity&amp;hybrid_search_source=Entity&amp;hybrid_search_extra=%7B%22sourceType%22%3A%22answer%22%2C%22sourceId%22%3A38969800%7D">中心极限定理</a>比大数定律揭示的现象更深刻，同时成立的条件当然也要相对来说苛刻一些。
-非数学系出身，不对请直接喷），所以频率并不能很好的近似于概率，所以得到的参数肯定不好。我们都知道，概率的获取必须以拥有大量可重复性实验为前提，但是这里的主题模型训练显然并不能在每个场景下都有大量的训练数据。所以，当训练数据量偏小的时候，pLSA就无可避免的陷入了过拟合的泥潭里了。为了解决这个问题，LDA给这些参数都加入了一个先验知识，就是当数据量小的时候，我人为的给你一些专家性的指导，你这个参数应该这样不应该那样。比如你要统计一个地区的<a target="_blank" rel="noopener" href="https://www.zhihu.com/search?q=人口年龄分布&amp;search_source=Entity&amp;hybrid_search_source=Entity&amp;hybrid_search_extra=%7B%22sourceType%22%3A%22answer%22%2C%22sourceId%22%3A38969800%7D">人口年龄分布</a>，假如你手上有的训练数据是一所大学的<a target="_blank" rel="noopener" href="https://www.zhihu.com/search?q=人口数据&amp;search_source=Entity&amp;hybrid_search_source=Entity&amp;hybrid_search_extra=%7B%22sourceType%22%3A%22answer%22%2C%22sourceId%22%3A38969800%7D">人口数据</a>，统计出来的结果肯定是年轻人占比绝大多数，这个时候你训练出来的模型肯定是有问题的，但是我现在加入一些先验知识进去，专家认为这个地区中老年人口怎么占比这么少？不行，我得给你修正修正，这个时候得到的结果就会好很多。所以LDA相比pLSA就优在这里，它对这些参数加入了一些先验的分布进去。</p>
+<p>pLSA中，主题的概率分布P(c|d)和词在主题下的概率分布P(w|c)既然是概率分布，那么就必须要有样本进行统计才能得到这些概率分布。更具体的讲，主题模型就是为了做这个事情的，训练已获得的数据样本，得到这些参数，那么一个pLSA模型便得到了，但是这个时候问题就来了：这些参数是建立在训练样本上得到的。这是个大问题啊！你怎么能确保新加入的数据同样符合这些参数呢？你能不能别这么草率鲁莽？但是频率学派就有这么任性，他们认为参数是存在并且是确定的， 只是我们未知而已，并且正是因为未知，我们才去训练pLSA的，训练之后得到的参数同样适合于新加入的数据，因为他们相信参数是确定的，既然适合于训练数据，那么也同样适合于新加入的数据了。</p>
+<p>​        但是真实情况却不是这样，尤其是训练样本量比较少的情况下的时候，这个时候首先就不符合大数定律的条件（这里插一句大数定律和中心极限定律，在无数次<a target="_blank" rel="noopener" href="https://www.zhihu.com/search?q=独立同分布&amp;search_source=Entity&amp;hybrid_search_source=Entity&amp;hybrid_search_extra={&quot;sourceType&quot;%3A&quot;answer&quot;%2C&quot;sourceId&quot;%3A38969800}">独立同分布</a>的随机事件中，事件的频率趋于一个稳定的概率值，这是大数定律；而同样的无数次独立同分布的随机事件中，事件的分布趋近于一个稳定的正态分布，而这个正太分布的期望值正是大数定律里面的概率值。所以，<a target="_blank" rel="noopener" href="https://www.zhihu.com/search?q=中心极限定理&amp;search_source=Entity&amp;hybrid_search_source=Entity&amp;hybrid_search_extra={&quot;sourceType&quot;%3A&quot;answer&quot;%2C&quot;sourceId&quot;%3A38969800}">中心极限定理</a>比大数定律揭示的现象更深刻，同时成立的条件当然也要相对来说苛刻一些。 非数学系出身，不对请直接喷），所以频率并不能很好的近似于概率，所以得到的参数肯定不好。我们都知道，概率的获取必须以拥有大量可重复性实验为前提，但是这里的主题模型训练显然并不能在每个场景下都有大量的训练数据。所以，当训练数据量偏小的时候，pLSA就无可避免的陷入了过拟合的泥潭里了。为了解决这个问题，LDA给这些参数都加入了一个先验知识，就是当数据量小的时候，我人为的给你一些专家性的指导，你这个参数应该这样不应该那样。比如你要统计一个地区的<a target="_blank" rel="noopener" href="https://www.zhihu.com/search?q=人口年龄分布&amp;search_source=Entity&amp;hybrid_search_source=Entity&amp;hybrid_search_extra={&quot;sourceType&quot;%3A&quot;answer&quot;%2C&quot;sourceId&quot;%3A38969800}">人口年龄分布</a>，假如你手上有的训练数据是一所大学的<a target="_blank" rel="noopener" href="https://www.zhihu.com/search?q=人口数据&amp;search_source=Entity&amp;hybrid_search_source=Entity&amp;hybrid_search_extra={&quot;sourceType&quot;%3A&quot;answer&quot;%2C&quot;sourceId&quot;%3A38969800}">人口数据</a>，统计出来的结果肯定是年轻人占比绝大多数，这个时候你训练出来的模型肯定是有问题的，但是我现在加入一些先验知识进去，专家认为这个地区中老年人口怎么占比这么少？不行，我得给你修正修正，这个时候得到的结果就会好很多。所以LDA相比pLSA就优在这里，它对这些参数加入了一些先验的分布进去。</p>
 <p>但是，当训练样本量足够大，pLSA的效果是可以等同于LDA的，因为过拟合的原因就是训练数据量太少，当把数据量提上去之后，过拟合现象会有明显的改观。</p>
 <blockquote>
-<p>作者：weizier
-链接：https://www.zhihu.com/question/23642556/answer/38969800</p>
+<p>作者：weizier<br>链接：<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/23642556/answer/38969800">https://www.zhihu.com/question/23642556/answer/38969800</a></p>
 </blockquote>
 <p>当隐分布没有限制的时候，广义EM算法就是EM算法。但是当隐分布本身有限制的时候，比如存在一个先验分布的限制。（以PLSA→LDA为例）</p>
-<figure>
-<img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/v2-a868b18611aa43395d534f94ebcd8221_720w.jpg" alt="img">
-<figcaption aria-hidden="true">img</figcaption>
-</figure>
+<p><img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/v2-a868b18611aa43395d534f94ebcd8221_720w.jpg" alt="img"></p>
 <p>由于加入了先验分布的限制，导致广义EM算法中的第一步E无法达到无限制最优，所以KL距离无法为0<img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/v2-2c76444860b4fbfad17b8978c18f1cda_720w.jpg" alt="img"></p>
-<p>也求是说，当隐分布没有限制的时候，<span class="math inline">\(p(x|y,\theta^{(t)})\)</span>是可以计算的，KL距离可以为0，即在E步的时候可以取到最优解。但是当隐分布有限制，比如LDA中引入了先验分布，这时候<span class="math inline">\(p(x|y,\theta^{(t)})\)</span>难以计算，就需要用变分的思想，在限制的范围内找到最接近的<span class="math inline">\(q(x)\)</span>来代替<span class="math inline">\(p(x|y,\theta^{(t)})\)</span>的计算，近似在E步中实现最优。</p>
-<p>EM算法的目标从证据转变为了证据下限（ELBO),且假设变分分布<span class="math inline">\(q(x)\)</span>的分量相互独立。则自由能被改写为：<img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/v2-f9f283ed1adc265c6b54b5b7fd1dcbc1_720w.jpg" alt="img"></p>
+<p>也求是说，当隐分布没有限制的时候，$p(x|y,\theta^{(t)})$是可以计算的，KL距离可以为0，即在E步的时候可以取到最优解。但是当隐分布有限制，比如LDA中引入了先验分布，这时候$p(x|y,\theta^{(t)})$难以计算，就需要用变分的思想，在限制的范围内找到最接近的$q(x)$来代替$p(x|y,\theta^{(t)})$的计算，近似在E步中实现最优。</p>
+<p>EM算法的目标从证据转变为了证据下限（ELBO),且假设变分分布$q(x)$的分量相互独立。则自由能被改写为：<img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/v2-f9f283ed1adc265c6b54b5b7fd1dcbc1_720w.jpg" alt="img"></p>
 <p>这样就得到VBEM算法：</p>
-<figure>
-<img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/v2-d3ae8be76ce5f2e4f5bc7b85a926b0de_720w.jpg" alt="img">
-<figcaption aria-hidden="true">img</figcaption>
-</figure>
-<figure>
-<img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/v2-d2fe741002136a34980ee5188a5f4a74_720w.jpg" alt="img">
-<figcaption aria-hidden="true">img</figcaption>
-</figure>
+<p><img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/v2-d3ae8be76ce5f2e4f5bc7b85a926b0de_720w.jpg" alt="img"></p>
+<p><img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/v2-d2fe741002136a34980ee5188a5f4a74_720w.jpg" alt="img"></p>
 <p>当然，对于某个难以计算的分布进行估计除了使用变分的思想，还可以使用吉布斯采样进行估计。下面也会进一步讨论。</p>
-<h2 id="广义em的另一个特例是ws算法">广义EM的另一个特例是WS算法</h2>
-<h3 id="bp算法">BP算法</h3>
-<p><strong>前向传播</strong>：使用前馈神经网络接收输入<span class="math inline">\(x\)</span>并产生输出<span class="math inline">\(\hat{y}\)</span>时，信息通过网络向前流动。输入<span class="math inline">\(x\)</span>提供初始信息，然后传播到每一层的隐藏单元，最终产生输出<span class="math inline">\(\hat{y}\)</span>。在<strong>训练过程</strong>中，前向传播可以持续向前直到产生标量代价函数<span class="math inline">\(J(\theta)\)</span>。</p>
+<h2 id="广义EM的另一个特例是WS算法"><a href="#广义EM的另一个特例是WS算法" class="headerlink" title="广义EM的另一个特例是WS算法"></a>广义EM的另一个特例是WS算法</h2><h3 id="BP算法"><a href="#BP算法" class="headerlink" title="BP算法"></a>BP算法</h3><p><strong>前向传播</strong>：使用前馈神经网络接收输入$x$并产生输出$\hat{y}$时，信息通过网络向前流动。输入$x$提供初始信息，然后传播到每一层的隐藏单元，最终产生输出$\hat{y}$。在<strong>训练过程</strong>中，前向传播可以持续向前直到产生标量代价函数$J(\theta)$。</p>
 <p><strong>反向传播</strong>：允许来自代价函数的信息向后流动，以便计算梯度。</p>
 <blockquote>
 <p>反向传播算法使用简单和廉价的程序来实现梯度的数值化求解。它不是多层神经网络的学习算法，仅仅是计算梯度的工具，服务于另一种算法（如随机梯度下降）使用该梯度进行学习。</p>
@@ -786,157 +754,250 @@ P(w,d) =\sum_zP(x,d,z) = \sum_zP(z)P(w,d|z)
 </blockquote>
 <p><strong>计算图</strong></p>
 <ul>
-<li>操作(operation)：一个或多个变量的简单函数。
-<ul>
+<li>操作(operation)：一个或多个变量的简单函数。<ul>
 <li>不失一般性，我们定义一个操作仅返回单个输出变量。</li>
-<li>如果变量<span class="math inline">\(y\)</span>是变量<span class="math inline">\(x\)</span>通过一个操作计算得到的，那么我们画一条从<span class="math inline">\(x\)</span>到<span class="math inline">\(y\)</span>的有向边。</li>
-</ul></li>
-<li>例子
-<ul>
-<li>以逻辑回归预测为例：<span class="math inline">\(\hat{y} =
-\sigma(x^\top w + b)\)</span></li>
+<li>如果变量$y$是变量$x$通过一个操作计算得到的，那么我们画一条从$x$到$y$的有向边。</li>
+</ul>
+</li>
+<li>例子<ul>
+<li>以逻辑回归预测为例：$\hat{y} = \sigma(x^\top w + b)$</li>
 <li>其计算图为：<img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20230118152805093-16740268877022.png" alt="image-20230118152805093"></li>
-</ul></li>
+</ul>
+</li>
 </ul>
 <p><strong>微积分链式法则</strong></p>
-<p>假设<span class="math inline">\(x\in \mathbb{R}^m,y\in
-\mathbb{R}^n\)</span> <span class="math inline">\(,g\)</span>是从<span class="math inline">\(\mathbb{R}^m\)</span>到<span class="math inline">\(\mathbb{R}^n\)</span>的映射，<span class="math inline">\(f\)</span>是从<span class="math inline">\(\mathbb{R}^n\)</span>到<span class="math inline">\(\mathbb{R}\)</span>的映射。如果<span class="math inline">\(y = g(x)\)</span>且<span class="math inline">\(z =
-f(y)\)</span>，则有 <span class="math display">\[
-\frac{\partial z}{\partial x_i} = \sum_j \frac{\partial z}{\partial y_j}
-\frac{\partial y_j}{\partial x_i}
-\]</span> 使用向量标记法可以写成： <span class="math display">\[
-\nabla_xz = (\frac{\partial y}{\partial x})^\top\nabla_yz
-\]</span> 扩展到张量则写为： <span class="math display">\[
-\nabla_Xz = \sum_j(\nabla_XY_j)\frac{\partial z}{\partial Y_j}
-\]</span> <strong>递归使用链式法则实现反向传播</strong></p>
+<p>假设$x\in \mathbb{R}^m,y\in \mathbb{R}^n$ $,g$是从$\mathbb{R}^m$到$\mathbb{R}^n$的映射，$f$是从$\mathbb{R}^n$到$\mathbb{R}$的映射。如果$y = g(x)$且$z = f(y)$，则有</p>
+<script type="math/tex; mode=display">
+\frac{\partial z}{\partial x_i} = \sum_j \frac{\partial z}{\partial y_j} \frac{\partial y_j}{\partial x_i}</script><p>使用向量标记法可以写成：</p>
+<script type="math/tex; mode=display">
+\nabla_xz = (\frac{\partial y}{\partial x})^\top\nabla_yz</script><p>扩展到张量则写为：</p>
+<script type="math/tex; mode=display">
+\nabla_Xz = \sum_j(\nabla_XY_j)\frac{\partial z}{\partial Y_j}</script><p><strong>递归使用链式法则实现反向传播</strong></p>
 <p>使用链式法则，我们可以直接写出某个标量关于计算图中任何产生该标量的节点之间的梯度的代数表达式。但是其中的许多子表达式会重复出现若干次，造成指数多的重复计算。</p>
-<figure>
-<img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20230118153012736.png" alt="image-20230118153012736">
-<figcaption aria-hidden="true">image-20230118153012736</figcaption>
-</figure>
-<figure>
-<img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20230118153034668.png" alt="image-20230118153034668">
-<figcaption aria-hidden="true">image-20230118153034668</figcaption>
-</figure>
+<p><img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20230118153012736.png" alt="image-20230118153012736"></p>
+<p><img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20230118153034668.png" alt="image-20230118153034668"></p>
 <p>为了解决这个问题，可以考虑对一些子结果进行存储，以避免重复计算。</p>
-<p>上面倒数第二个式子的建议是，仅计算<span class="math inline">\(f(w)\)</span>的值一次并存储在变量<span class="math inline">\(x\)</span>中，这是反向传播算法采用的方法。而最后一个式子则提出一种替代方法，其中子表达式<span class="math inline">\(f(w)\)</span>不止出现了一次，每次只在需要时重新计算<span class="math inline">\(f(w)\)</span>。</p>
-<p>当存储<span class="math inline">\(f(w)\)</span>需要的存储较小时，前者占优，节省时间；而当存储受限时，后者也是链式法则的有效实现。</p>
+<p>上面倒数第二个式子的建议是，仅计算$f(w)$的值一次并存储在变量$x$中，这是反向传播算法采用的方法。而最后一个式子则提出一种替代方法，其中子表达式$f(w)$不止出现了一次，每次只在需要时重新计算$f(w)$。</p>
+<p>当存储$f(w)$需要的存储较小时，前者占优，节省时间；而当存储受限时，后者也是链式法则的有效实现。</p>
 <p><strong>总结</strong></p>
-<figure>
-<img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/2018050922212487.png" alt="img">
-<figcaption aria-hidden="true">img</figcaption>
-</figure>
-<figure>
-<img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/2018050922230279.png" alt="img">
-<figcaption aria-hidden="true">img</figcaption>
-</figure>
+<p><img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/2018050922212487.png" alt="img"></p>
+<p><img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/2018050922230279.png" alt="img"></p>
 <p>以上对BP算法进行简单回顾，下面进入正题。</p>
-<h3 id="wake-sleep算法">Wake-Sleep算法</h3>
-<blockquote>
+<h3 id="Wake-Sleep算法"><a href="#Wake-Sleep算法" class="headerlink" title="Wake-Sleep算法"></a>Wake-Sleep算法</h3><blockquote>
 <p><strong>背景介绍</strong></p>
+<p><strong>梯度下降法</strong>（以及相关的L-BFGS算法等）在使用随机初始化权重的深度网络上效果不好的技术原因是：梯度会变得非常小。具体而言，当使用<strong>反向传播方法</strong>计算导数的时候，随着网络的深度的增加，反向传播的梯度（从输出层到网络的最初几层）的幅度值会急剧地减小。结果就造成了整体的损失函数相对于最初几层的权重的导数非常小。这样，当使用梯度下降法的时候，最初几层的权重变化非常缓慢，以至于它们不能够从样本中进行有效的学习。这种问题通常被称为“梯度的弥散”。</p>
+<p>与梯度弥散问题紧密相关的问题是：当神经网络中的最后几层含有足够数量神经元的时候，可能单独这几层就足以对有标签数据进行建模，而不用最初几层的帮助。因此，对所有层都使用随机初始化的方法训练得到的整个网络的性能将会与训练得到的浅层网络（仅由深度网络的最后几层组成的浅层网络）的性能相似。</p>
+<p>为了解决梯度弥散问题，推动深度神经网络的进展，Hitton提出了RBM——一类具有两层结构的、对称链接无自反馈的随机神经网络模型（一种特殊的马尔科夫随机场）。</p>
 <ul>
 <li><p>玻尔兹曼机</p>
 <p>玻尔兹曼机最初作为一种广义的“联结主义”引入，用来学习二值向量上的任意概率分布。</p>
-<p>我们在d维二值随机向量<span class="math inline">\(x \in
-\{0,1\}^d\)</span>上定义玻尔兹曼机。他是一种基于能量的模型，我们可以使用能量函数定义联合概率分布
-<span class="math display">\[
-P(x) = \frac{exp(-E(x))}{Z}
-\]</span> 其中<span class="math inline">\(E(x)\)</span>是能量函数，<span class="math inline">\(Z\)</span>是用于确保<span class="math inline">\(\sum_x P(x) = 1\)</span>的配分函数。</p>
-<p>其中<span class="math inline">\(E(x) = -x^\top Ux - b^\top
-x\)</span></p>
-<p>其中<span class="math inline">\(U\)</span>是模型参数的权重矩阵，<span class="math inline">\(b\)</span>是偏置向量。</p>
+<p>我们在d维二值随机向量$x \in {0,1}^d$上定义玻尔兹曼机。他是一种基于能量的模型，我们可以使用能量函数定义联合概率分布</p>
+<script type="math/tex; mode=display">
+P(x) = \frac{exp(-E(x))}{Z}</script><p>其中$E(x)$是能量函数，$Z$是用于确保$\sum_x P(x) =  1$的配分函数。</p>
+<p>其中$E(x) = -x^\top Ux - b^\top x$</p>
+<p>其中$U$是模型参数的权重矩阵，$b$是偏置向量。</p>
 <p>类似于隐藏单元将逻辑回归转换为MLP，称为函数的万能近似器，具有隐藏单元的玻尔兹曼机不再局限于建模变量之间的线性关系，相反，它成为了离散变量上概率质量函数的万能近似器。</p>
-<p>我们将<span class="math inline">\(x\)</span>拆分为可见单元<span class="math inline">\(v\)</span>和隐藏单元<span class="math inline">\(h\)</span>，则能量函数变为： <span class="math display">\[
-E(v,h)=-v^\top Rv - v^\top Wh-h^\top Sh-b^\top v -c^\top h
-\]</span>
-玻尔兹曼机的学习算法通常基于最大似然。所有玻尔兹曼机都具有难以处理的配分函数，因此最大似然梯度必须使用特定技术来近似。</p>
-<p>玻尔兹曼机有一个有趣的性质，当基于最大似然的学习规则训练时，连接两个单元的特定权重的更新仅取决于这两个单元在不同分布下收集的统计信息：<span class="math inline">\(P_{model}(v)\)</span>和<span class="math inline">\(\hat{P}_{data}(v)P_{model}(h|v)\)</span>。</p>
-<p>对于玻尔兹曼机而言，训练任一连接两个单元的权重参数，只需用到对应的这两个单元的数据，而与其他单元的数据无关。即玻尔兹曼机的训练规则是局部的（local）。这种性质相较于传统的MLP反向传播来更新参数需要更少的生物学假设。</p></li>
+<p>我们将$x$拆分为可见单元$v$和隐藏单元$h$，则能量函数变为：</p>
+<script type="math/tex; mode=display">
+E(v,h)=-v^\top Rv - v^\top Wh-h^\top Sh-b^\top v -c^\top h</script><p>玻尔兹曼机的学习算法通常基于最大似然。所有玻尔兹曼机都具有难以处理的配分函数，因此最大似然梯度必须使用特定技术来近似。</p>
+<p>玻尔兹曼机有一个有趣的性质，当基于最大似然的学习规则训练时，连接两个单元的特定权重的更新仅取决于这两个单元在不同分布下收集的统计信息：$P<em>{model}(v)$和$\hat{P}</em>{data}(v)P_{model}(h|v)$。 </p>
+<p>对于玻尔兹曼机而言，训练任一连接两个单元的权重参数，只需用到对应的这两个单元的数据，而与其他单元的数据无关。即玻尔兹曼机的训练规则是局部的（local）。这种性质相较于传统的MLP反向传播来更新参数需要更少的生物学假设。</p>
+</li>
+<li><p>受限玻尔兹曼机（RBM）</p>
+<p>RBM只有一层可见变量和一层隐变量，同时可见变量之间，隐变量之间不直接相连。即对应的图是一个二分图。</p>
+<p><img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20230119142734031.png" alt="image-20230119142734031"></p>
+<p>从二值版本的受限玻尔兹曼机开始，令观察层由一组$n_v$个二值随机变量组成，记为$\mathbf{v}$;令隐藏层由$n_h$个二值随机变量组成，记为$\mathbf{h}$。</p>
+<p>类似于普通的玻尔兹曼机，受限玻尔兹曼机也是基于能量的模型，其联合概率分布由能量函数指定：</p>
+<script type="math/tex; mode=display">
+P(\mathbf{v}=v,\mathbf{h} = h) = \frac{1}{Z}\exp(-E(v,h))</script><p>其中RBM中的能量函数由下 给出：</p>
+<script type="math/tex; mode=display">
+E(v,h) = -b^\top v - c^\top h -c^\top Wh</script><blockquote>
+<p>这里没有对应的h二次项和v二次项，因为有限玻尔兹曼机不允许同层单元相连</p>
+</blockquote>
+<p>其中Z是被称为配分函数的归一化常数：</p>
+<script type="math/tex; mode=display">
+Z = \sum_v\sum_h\exp\{-E(v,h\}</script><p>从配分函数Z的定义显而易见，计算Z的朴素方法（对所有状态进行穷举求和）计算上可能是难以处理的，除非有巧妙设计的算法可以利用概率分布中的规则来更快地计算Z。在受限玻尔兹曼机的情况下，Long and Servedio（2010）正式证明配分函数Z是难解的。难解的配分函数Z意味着归一化联合概率分布P(ν)也难以评估。</p>
+<p>虽然P(v)难解，但RBM的二分图结构具有非常特殊的性质，其条件分布$P(\mathbf{h}|\mathbf{v})$和$P(\mathbf{v}|\mathbf{h})$是<strong>因子的(factorial)</strong>，且计算和采样是相对简单的。</p>
+<blockquote>
+<p>A <strong>factorial distribution</strong> happens when a set of <a target="_blank" rel="noopener" href="https://www.statisticshowto.com/probability-and-statistics/types-of-variables/">variables </a>are <a target="_blank" rel="noopener" href="https://www.statisticshowto.com/probability-and-statistics/dependent-events-independent/#or">independent events</a>. In other words, the variables don’t interact at all; Given two events x and y, the probability of x doesn’t change when you factor in y. Therefore, the probability of x, given that y has happened —P(x|y)— will be the same as P(x).</p>
+</blockquote>
+<p>从联合分布中导出条件分布是直观的：</p>
+<p><img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20230119160734718.png" alt="image-20230119160734718"></p>
+<p>由于我们相对可见单元$\mathbf{v}$计算条件概率，相对分布$P(\mathbf{h}|\mathbf{v})$我们可以将仅含$\mathbf{v}$的项视为常数，归置于左边系数中。</p>
+<p>而又由于条件分布是因子的，即$\mathbf{h}$的联合概率分布可以写成单独元素$h_j$上（未归一化）分布的乘积。则原问题变成对单个二值变量$h_j$的分布进行归一化的简单问题。</p>
+<p><img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20230119162114113.png" alt="image-20230119162114113"></p>
+<p>现在我们可以将关于隐藏层的完全条件分布表达为因子形式：</p>
+<p><img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20230119162137597.png" alt="image-20230119162137597"></p>
+<p>类似的推导将显示我们感兴趣的另一个条件分布，P(ν| h)也是因子形式的分布：</p>
+<p><img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20230119162154540.png" alt="image-20230119162154540"></p>
+</li>
+<li><p>训练受限玻尔兹曼机</p>
+<p>RBM的训练对于模型而言需要确定两部分：</p>
+<ul>
+<li>如果想确定模型，首先需要知道可见层和隐藏层的节点个数，可见层节点个数即为输入的数据维数；隐藏层节点个数在一些研究领域中和可见层节点个数有关，但是多数情况下，隐藏层节点个数根据使用而定或在参数一定的情况下，使得模型能量最小时的隐藏层节点个数。</li>
+<li>其次，需要确定模型的三个参数$\theta = {W_{ij},b_i,c_j}$</li>
+</ul>
+<p>根据梯度下降法优化的话，各参数梯度如下：</p>
+<script type="math/tex; mode=display">
+\frac{\partial \ln P(v^t)}{\partial w_{i,j}} = P(h_j=1|v^t)v_i^t - \sum_v P(v)P(h_j=1|v)v
+_i
+\\
+\frac{\partial \ln P(v^t)}{\partial b_i} = v_i^t-\sum_v P(v)v_i
+\\
+\frac{\partial \ln P(v^t)}{\partial c_j} = P(h_j = 1|v^t) - \sum_vP(v)P(h_j = 1|v)</script><p>由于上面三个式子的第二项均含$P(v)$，它仍然含有参数，难以求出。又由于RBM允许高效计算$\widetilde{P}(v)$的估计和微分，且允许高效地（以块吉布斯采样的形式）进行MCMC采样，所以可以很容易地使用配分函数近似技术进行训练。</p>
+<p>尽管利用Gibbs采样我们可以得到对数似然函数关于未知参数梯度的近似，但通常情况下需要使用较大的采样步数，这使得RBM的训练效率仍然不高，尤其是当观测数据 的特征维数较高时。2002年，Hinton提出了RBM的一个快速学习算法，即对比散度（Contrastive Divergence，CD）。</p>
+<p><strong>训练算法：CD算法</strong></p>
+<p>与Gibbs采样不同，Hinton指出当使用训练数据初始化$v<em>0$时，我们仅需要使用k（通常k=1）步Gibbs采样便可以得到足够好的近似。其思想是：假设给模型一个训练样本$v_0$，通过$P(h_j = 1|v) = \sigma (c_j + \sum_i v_iW</em>{ij})$求所有隐藏层节点的概率值，然后每个概率值和随机数进行比较得到每一个隐藏层节点的状态，然后通过公式$P(v<em>i=1|h) = \sigma(b_i + \sum</em>{j}W<em>{ij}h_j)$求取每一个可见层节点的概率值，再由$P(h_j = 1|v) = \sigma (c_j + \sum_i v_iW</em>{ij})$求取每一个隐藏层节点的概率值。最后参数梯度公式变为：</p>
+<p><img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/901086-20160720142047560-1297816644.jpg" alt="img"></p>
+<p>其中，μ是学习率，data和recon分别表示训练数据的概率分布和重构后的概率分布。</p>
+<blockquote>
+<p>为什么这一算法称为“对比散度”算法呢？是因为 Hinton 在算法中使用 <strong>KL散度</strong>度量两个概率分布之间的相似程度，并以此为基础推导了使得 KL 散度能取得极小值的神经元参数调整公式。</p>
+</blockquote>
+<p>通过以上方法都可以求出参数的梯度来，由每一个参数的梯度对原参数值进行修改来使模型的能量减小。</p>
+<p><img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/v2-92b26582f981e8c5065069a5181d29dc_b.jpg" alt="img"></p>
+<p>如果把从从<strong>显层到隐层</strong>的神经元状态更新看作是<strong>特征提取</strong>，也就是对客观事物的<strong>认知</strong>的话，那么从<strong>隐层逆向对显层</strong>的神经元状态更新则可看作是<strong>生成显层数据</strong>，也就是<strong>重构输入</strong>的过程。</p>
+<p><strong>模型的评估</strong></p>
+<p>对于模型的评估，一般程序中并不会去真的计算当模型训练好时的模型能量E，而是采用近似的方法来对模型进行评估。</p>
+<p>常用的近似方法是<strong>重构误差</strong>，所谓重构误差是指以训练样本作为初始状态，经过RBM模型的分布进行一次Gibbs采样后与原数据的差异值。具体解释如下：</p>
+<p><img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/901086-20160720142412138-634396373.jpg" alt="img"></p>
+<p>对于一个给定的样本通过公式对所有隐藏层节点的条件概率进行采样，再通过公式对所有可见层节点的条件概率进行采样，最后由样本值和采样出的可见层概率值做差取绝对值，作为该模型的评估。重构误差能够在一定程度上反映RBM对训练数据的似然度。</p>
+</li>
+<li><p>深度信念网络</p>
+<blockquote>
+<p>深度信念网络（deep belief network）是第一批成功应用深度架构训练的非卷积模型之一，它的成功，证明了深度架构的可行性。</p>
+</blockquote>
+<p>深度信念网络是具有若干潜变量层的生成模型。潜变量通常是二值的，而可见单元可以是二值或实数的。尽管构造连接比较稀疏的DBN是可能的，但在一般的模型中，每层的每个单元连接到每个相邻层中的每个单元（没有层内连接）。<strong>顶部两层</strong>之间的连接是<strong>无向</strong>的。而<strong>所有其他层</strong>之间的连接是<strong>有向</strong>的，箭头指向最接近数据的层。</p>
+<p><img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20230120142411174.png" alt="image-20230120142411174"><br>具有I个隐藏层的DBN包含I个权重矩阵$W^{(1)},…,W^{(l)}$，同时也包含I+1个偏置向量：$b^{(0)},…,b^{(l)}$，其中$b(0)$是可见层的偏置。DBN表示的概率分布由下式给出：</p>
+<p><img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20230120142930815.png" alt="image-20230120142930815"></p>
+<p>Hinton 所提出的深度信念网的训练，针对的是 <strong>BP 网络在层数较多，即有一定深度时所面临的收敛速度慢和容易陷入局部最优解的问题</strong>。Hinton 认为，导致这两个问题的原因，都是<strong>由于网络初始的权向量设定过于随机</strong>，导致使用训练集进行有监督训练时，很难快速收敛到全局最优解上。因此，Hinton 提出的深度信念网的训练方法，采用了<strong>有监督学习和无监督学习相结合的模式</strong>，即：</p>
+<ul>
+<li>首先使用无监督学习模式，逐层对网络进行预训练，使得网络能够发现数据本身中蕴含的特征概率分布结构，即<strong>将各神经元的权值引导到对训练集数据具有最佳特征发现能力的初始值上</strong>，这一步是深度信念网最主要的训练过程，所使用的是被称为“<strong>对比散度法</strong>”的概率学习算法；</li>
+<li>在预训练完成后，需要<strong>对网络参数进行调优</strong>。调优可以继续采用<strong>无监督的“wake-sleep”算法</strong>，这样得到的模型是一个能够重现训练集样本数据的“生成模型”；也可以使用<strong>有类别标签的数据</strong>，采用<strong>联合训练</strong>，或者 <strong>BP算法</strong>来对网络参数进行调整，以得到一个性能优越的分类器模型。</li>
+</ul>
+<p><strong>深度信念网络的训练</strong></p>
+<p>而深度信念网的预训练，采用的是<strong>逐层贪心法</strong>的训练办法。也就是说，<strong>先训练最靠近可见层的一层隐层，得到最优解后，再将该隐层的输出作为训练集数据，用于训练下一个隐层</strong>。因此，深度信念网预训练算法的核心，是如何<strong>训练一个由可见层（或输出已知的隐层）与相连的隐层构成的一个受限玻尔兹曼机</strong>。对此，Hinton 在 2002 年就提出了有效的训练算法，称为“<strong>对比散度算法</strong>”。</p>
+<p><strong>当训练完深度信念网中的一层受限玻尔兹曼机，则可以固定其参数，并将显层输入数据生成的隐层输出状态作为下一层受限玻尔兹曼机的显层输入，进行下一层的训练</strong>。这样逐层完成所有层的预训练。此时，就得到了整个网络的参数预设值。</p>
+<p>深度信念网的预训练算法，为具有相当多层级和成千上万个神经元的大规模深度神经网络的训练开辟了一条有效路径，使得训练集样本的关键特征被一层层挖掘出来，也使得整个网络的参数被设置到了最优参数的附近。但此时，<strong>还需要对参数进行调优</strong>，才能保证获得一个优质的深度神经网络模型。</p>
+<p>根据任务的不同，有不同的调优方法，我们在背景中仅介绍联合训练和BP算法，Wake-Sleep算法在正文中介绍</p>
+<ul>
+<li><p>联合训练算法</p>
+<p><img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NDM3ODgzNQ==,size_16,color_FFFFFF,t_70.png" alt="在这里插入图片描述"></p>
+<p>如果要把深度信念网做成一个分类器，那么，就一定要增加用于输出分类结果的显见神经元，并通过有监督学习，使其能够对样本输入输出正确的类别。一种采用与<strong>预训练时相同的算法</strong>进行有监督学习的方法是联合训练，即在预训练最后一层受限玻尔兹曼机时，<strong>对倒数第 2 层添加一组代表样本类别的神经元</strong>$y$，</p>
+</li>
+<li><p>BP算法</p>
+<p>如果对标准的深度信念网进行训练后，得到了一个生成模型，那么可以在最后一层隐层之后，再加入一层输出的显见层，将提取到最优特征的隐层输出，映射为不同的分类结果输出。此时，可以采用已有的 BP 算法来对网络参数进行调优。由于整个网络已经经过了预训练，每层神经元的参数都经过了目标明确的最优初始化，并且网络可以逐层提取出样本数据中最有效的特征信息，因此 BP 算法调优的过程不仅速度会很快，而且很容易获得全局最优解。</p>
+</li>
+</ul>
+</li>
 </ul>
 </blockquote>
-<h2 id="广义em的再一个特例是gibbs-sampling">广义EM的再一个特例是Gibbs
-Sampling</h2>
-<h3 id="gibbs-sampling">Gibbs Sampling</h3>
-<p>吉布斯抽样是单分量Metropolis-Hastings算法的特殊情况。前者抽样会在样本点见移动，但可能会由于被拒绝而有停留；后者会在样本点之间持续移动。前者适合于满条件概率分布不容易计算的情况，使用更容易抽样的条件概率分布做建议分布。后者适合于满条件概率分布容易计算的情况。</p>
-<p>定义建议分布是当前变量<span class="math inline">\(x_j,j=1,2,...,k\)</span>的满条件概率分布 <span class="math display">\[
-q(x,x&#39;) = p(x&#39;_j|x_{-j})
-\]</span>
-这时，接受概率很容易得到是1。因此，转移核函数也是满条件概率分布： <span class="math display">\[
-p(x,x&#39;) = p(x&#39;_j|x_{-j})
-\]</span></p>
+<h3 id="Wake-Sleep算法-1"><a href="#Wake-Sleep算法-1" class="headerlink" title="Wake-Sleep算法"></a>Wake-Sleep算法</h3><p>在人类学习的过程中，大脑中有两个进程一直在交替运转，一曰<strong>抽象</strong>，一曰<strong>想象</strong>。</p>
 <ul>
-<li><p>输入：目标概率分布的密度函数<span class="math inline">\(p(x)\)</span>，函数<span class="math inline">\(f(x)\)</span></p></li>
-<li><p>输出：<span class="math inline">\(p(x)\)</span>的随机样本<span class="math inline">\(x_{m+1},x_{m+2},...,x_n\)</span>，函数样本均值<span class="math inline">\(f_{mn}\)</span></p></li>
-<li><p>参数：收敛步数m，迭代步数n</p></li>
+<li>抽象：就是我们将感知到的来自现实世界中的一切信息（影像、声音、文字等等），编码为低维表示（encode）存储在大脑中的过程。<ul>
+<li>比如你在现实世界中看见过无数的猫，它们软绵绵的肉掌、傲娇的性格、慵懒的声音被你所感知，进而抽象为你对猫这一概念的认识而记录在大脑中。当你想起猫的时候，你很难意识到自己想的是哪一只具体的猫的形象，恰恰相反，在你大脑中首先出现的是“猫”作为一个低维的抽象概念的集合。</li>
+</ul>
+</li>
+<li>想象：就是将脑海中的抽象概念具化为世界中的声光色影的过程。比如提到猫之后，脑海中就会出现Tom的形象。甚至可以自己创造出从未见过的Tom的形象。</li>
+</ul>
+<p>将抽象和想象这两个交缠在一起的概念分离开来，就是wake和sleep。在清醒的时候，你无时无刻不在抽象，整个世界的声光色影瞬息间坍塌为低维的抽象概念，交由你的大脑进行分析和处理。清醒时也会有想象，但相对而言decoder被抑制了。而只有在睡梦中，你才能体验到最极致和最逼真的想象，因为encoder已经几乎不工作，而decoder有足够的运算资源将低维的魔方展开为有血有肉的世界。</p>
+<p>基于以上猜想，Hitton做出以下的假设：</p>
+<ul>
+<li>清醒时，大脑中抽象的进程在运作，而想象得到提升。换句话说，encoder在工作，学习的却是decoder的能力。</li>
+<li>睡梦中，大脑中想象的进程在运作，而抽象获得增强。换句话说，decoder在工作，学习的却是encode的能力。</li>
+</ul>
+<blockquote>
+<p>这两个假设看着就不太合理，感觉明明白天学习的时候抽象能力也得到了加强啊，这么想也没错。但既然目的是让机器模仿人类学习，做一些能让问题简化的假设倒是无伤大雅。何况，这个假设也并不是全无道理。试想一下，恰恰是清醒时看到了真实的世界，才使得我们在想象是有了<strong>参照物</strong>，从而使得想象更加逼真，而睡着时亦同理。</p>
+</blockquote>
+<p>基于这两个假设，Hinton就构建了W-S算法的两个状态：</p>
+<ul>
+<li>Wake学习状态：encoder接受真实存在的样本$\mathbf{x}$作为输入，将其encode成抽象的表示$q<em>{\phi}(\mathbf{z}|\mathbf{x})$，然后从$q</em>\phi(\mathbf{z}|\mathbf{x})$中采样得到$\mathbf{z}’$，通过decoder重建得到$\mathbf{x}’$，目的是通过优化decoder的weights使得$\mathbf{x}’$和$\mathbf{x}$尽可能相似。</li>
+<li>Sleep学习状态：decoder接受并不存在的抽象样本$\mathbf{z}$作为输入，将其decoder为具象的表示$p<em>\theta(\mathbf{x}|\mathbf{z})$，然后从$p</em>\theta(\mathbf{x}|\mathbf{z})$中采样得到$\mathbf{x}’$，由encoder抽象得到$\mathbf{z}’$目的是通过优化encoder的weights使得$\mathbf{z}$和$\mathbf{z}’$尽可能相似。</li>
+</ul>
+<p>WS算法，也是广义EM算法的一种特例。 WS算法分为认知阶段和生成阶段。</p>
+<p><img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/v2-3cedb136d8aa7808071ffccb0ae18217_720w.jpg" alt="img"></p>
+<p>在前面自由能里面，我们将KL距离引入了， 这里刚好这<strong>两个阶段分别优化了KL距离的两种形态。 固定P优化Q，和固定Q优化P</strong>。</p>
+<p><img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/v2-ae5fcf55ed247450ce8084ea43b8bc3b_720w.jpg" alt="img"></p>
+<p>所以当我们取代自由能理解， 全部切换到KL距离的理解， 广义EM算法的E步骤和M步骤就分别是E投影和M投影。 因为要求KL距离最优， 可以等价于垂直。 而这个投影， 可以<strong>衍生到数据D的流形空间， 和模型M的流形空间</strong>。</p>
+<p><img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/v2-468b515b4d26ebc4765f82bf3ed1c3bf_720w.jpg" alt="img"></p>
+<p>所以你认同WS算法是一种广义EM算法（GEM）之后， 基于KL距离再认识GEM算法。 引入了数据流形和模型流形。 引入了E投影和M投影。</p>
+<p>不过要注意的wake识别阶段对应的是M步骤， 而sleep生成阶段对应的E步骤。 所以<strong>WS算法对应的是广义ME算法</strong>。 </p>
+<h2 id="广义EM的再一个特例是Gibbs-Sampling"><a href="#广义EM的再一个特例是Gibbs-Sampling" class="headerlink" title="广义EM的再一个特例是Gibbs Sampling"></a>广义EM的再一个特例是Gibbs Sampling</h2><h3 id="Gibbs-Sampling"><a href="#Gibbs-Sampling" class="headerlink" title="Gibbs Sampling"></a>Gibbs Sampling</h3><p>吉布斯抽样是单分量Metropolis-Hastings算法的特殊情况。前者抽样会在样本点见移动，但可能会由于被拒绝而有停留；后者会在样本点之间持续移动。前者适合于满条件概率分布不容易计算的情况，使用更容易抽样的条件概率分布做建议分布。后者适合于满条件概率分布容易计算的情况。</p>
+<p>定义建议分布是当前变量$x_j,j=1,2,…,k$的满条件概率分布</p>
+<script type="math/tex; mode=display">
+q(x,x') = p(x'_j|x_{-j})</script><p>这时，接受概率很容易得到是1。因此，转移核函数也是满条件概率分布：</p>
+<script type="math/tex; mode=display">
+p(x,x') = p(x'_j|x_{-j})</script><ul>
+<li><p>输入：目标概率分布的密度函数$p(x)$，函数$f(x)$</p>
+</li>
+<li><p>输出：$p(x)$的随机样本$x<em>{m+1},x</em>{m+2},…,x<em>n$，函数样本均值$f</em>{mn}$</p>
+</li>
+<li><p>参数：收敛步数m，迭代步数n</p>
+</li>
 <li><p>具体步骤：</p>
-<figure>
-<img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20221026163129064-16738440550728.png" alt="image-20221026163129064">
-<figcaption aria-hidden="true">image-20221026163129064</figcaption>
-</figure></li>
+<p><img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20221026163129064-16738440550728.png" alt="image-20221026163129064"></p>
+</li>
 <li><p>抽样计算</p>
 <p>可以利用概率分布的性质提高抽样的效率。</p>
-<figure>
-<img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20221026164342352-167384405507310.png" alt="image-20221026164342352">
-<figcaption aria-hidden="true">image-20221026164342352</figcaption>
-</figure>
-<p>也就是说，直接算看上去是和所有变量都有关的（都出现在了式子左边部分）但是实际上通过式子右边部分计算，只需要用到部分变量即可进行计算，更加简单。</p></li>
+<p><img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20221026164342352-167384405507310.png" alt="image-20221026164342352"></p>
+<p>也就是说，直接算看上去是和所有变量都有关的（都出现在了式子左边部分）但是实际上通过式子右边部分计算，只需要用到部分变量即可进行计算，更加简单。</p>
+</li>
 </ul>
-<h2 id="ws算法是vae和gan组合的简化版">WS算法是VAE和GAN组合的简化版</h2>
-<h3 id="vae">VAE</h3>
-<h3 id="gan">GAN</h3>
-<h2 id="kl距离的统一">KL距离的统一</h2>
-<h3 id="熵">熵</h3>
+<p>其实，前面基于KL距离的认知， 严格放到信息理论的领域， 对于前面E投影和M投影都有严格的定义。 <strong>M投影的名称是类似的，但是具体是moment projection，但是E投影应该叫I投影，具体是information projection</strong>。</p>
+<p><img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/v2-bb16f97e3b82fb113b8ba475b6e51164_720w.jpg" alt="img"></p>
+<p>上面这种可能不太容易体会到M投影和I投影的差异， 如果再回到最小KL距离，有一个经典的比较。 可以体会M投影和I投影的差异。 <strong>上面是I投影，只覆盖一个峰。 下面是M投影， 覆盖了两个峰。</strong></p>
+<p><img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/v2-891a8c795f084923d7d913936af335ed_720w.jpg" alt="img"></p>
+<p>当我们不是直接计算KL距离， 而是<strong>基于蒙特卡洛<a target="_blank" rel="noopener" href="https://www.zhihu.com/search?q=抽样方法&amp;search_source=Entity&amp;hybrid_search_source=Entity&amp;hybrid_search_extra={&quot;sourceType&quot;%3A&quot;answer&quot;%2C&quot;sourceId&quot;%3A275171156}">抽样方法</a>来估算KL距离</strong>。</p>
+<p><img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/v2-6e39522a095e0d417634fd9d84253531_720w.jpg" alt="img"></p>
+<p>这时候， 广义EM算法，就是Gibbs Sampling了。 所以Gibbs Sampling，本质上就是采用了蒙特卡洛方法计算的广义EM算法。</p>
+<p><img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/v2-934635b34223baace727b634aa50c13f_720w.jpg" alt="img"></p>
+<p>所以， 如果把M投影和I投影看成是一个变量上的最小距离点，<strong>那么Gibbs Sampling和广义EM算法的收敛过程是一致的</strong>。</p>
+<p><img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/v2-58cb1338ae2e5dee38cce4b2ef44e4e8_720w.jpg" alt="img"></p>
+<p>VAE的发明者，Hinton的博士后， Max Welling在论文“Bayesian K-Means as a “Maximization-Expectation” Algorithm”中， 对这种关系有如下很好的总结！</p>
+<p><img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/v2-c09456c8096cf7625b6292e2142dbfd3_720w.jpg" alt="img"></p>
+<p>这样， 通过广义EM算法把Gibbs Sampling和EM， VB， K-Means和WS算法全部联系起来了。 有了Gibbs Sampling的背书， 你是不是能更好的理解， 为什么WS算法可以是ME步骤，而不是EM的步骤呢？另外，我们知道坐标下降Coordinate Descent也可以看成一种Gibbs Sampling过程， 如果有人把Coordinate Descent和EM算法联系起来， 你还会觉得奇怪么？</p>
 <blockquote>
+<p>TODO: 找时间阅读这篇论文，并详细地解释上面的话！</p>
+</blockquote>
+<p><img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/v2-c2e9aabea1d26cb927d553dd8e16b339_720w.jpg" alt="img"></p>
+<p>现在我们发现<strong>VB和Gibbs Sampling都可以放到广义EM的大框架</strong>下， 只是求解过程一个采用近似逼近， 一个采用<a target="_blank" rel="noopener" href="https://www.zhihu.com/search?q=蒙特卡洛采样&amp;search_source=Entity&amp;hybrid_search_source=Entity&amp;hybrid_search_extra={&quot;sourceType&quot;%3A&quot;answer&quot;%2C&quot;sourceId&quot;%3A275171156}">蒙特卡洛采样</a>。 有了EM算法和Gibbs Sampling的关系， 现在你理解， 为什么Hinton能够发明<strong>CD算法</strong>了么？ 细节就不展开了。 </p>
+<p><img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/v2-de39e478652bd2fd7231e33722bd153f_720w.jpg" alt="img"></p>
+<h2 id="WS算法是VAE和GAN组合的简化版"><a href="#WS算法是VAE和GAN组合的简化版" class="headerlink" title="WS算法是VAE和GAN组合的简化版"></a>WS算法是VAE和GAN组合的简化版</h2><blockquote>
+<p>TODO: On Unifying Deep Generative Models</p>
+</blockquote>
+<h3 id="VAE"><a href="#VAE" class="headerlink" title="VAE"></a>VAE</h3><h3 id="GAN"><a href="#GAN" class="headerlink" title="GAN"></a>GAN</h3><h2 id="KL距离的统一"><a href="#KL距离的统一" class="headerlink" title="KL距离的统一"></a>KL距离的统一</h2><h3 id="熵"><a href="#熵" class="headerlink" title="熵"></a>熵</h3><blockquote>
 <p>信息论中，熵是接受的每条消息中<strong>包含的信息的平均值</strong>。又被称为信息熵、信源熵、平均自信息量。可以被理解为<strong>不确定性的度量</strong>，熵越大，信源的分布越随机</p>
 <p>1948年，由克劳德·爱尔伍德·香农将热力学中的熵引入信息论，所以也叫做：香农熵</p>
 </blockquote>
-<p>在信息论中，<strong>熵</strong>是信息量的期望。 <span class="math display">\[
-H(x) =\sum_{x}p(x)h(x) - \sum_{x}p(x)\log p(x)
-\]</span> 其中，<span class="math inline">\(h(x)\)</span>代表的是信息量的大小。考虑这个函数需要满足条件：<strong>概率大的事件对应小的存储空间，说人话，就是成反比</strong></p>
+<p>在信息论中，<strong>熵</strong>是信息量的期望。</p>
+<script type="math/tex; mode=display">
+H(x) =\sum_{x}p(x)h(x) - \sum_{x}p(x)\log p(x)</script><p>其中，$h(x)$代表的是信息量的大小。考虑这个函数需要满足条件：<strong>概率大的事件对应小的存储空间，说人话，就是成反比</strong></p>
 <blockquote>
 <p>可以考虑信息的编码（哈夫曼树和哈夫曼编码），最优的结构就是将常出现的信息放在数的根部，然后不常见的不断分支下去。概率越大，信息量越小这个结论本身就是使编码最优得到的天然结果。</p>
 </blockquote>
-<p>脑海中第一反应出来满足这个条件最直观是<strong>反比例函数</strong>，<span class="math inline">\(\frac{1}{p(x)}\)</span>。</p>
+<p>脑海中第一反应出来满足这个条件最直观是<strong>反比例函数</strong>，$\frac{1}{p(x)}$。</p>
 <p>之后我们发现这个公式中有个除法非常讨厌，我们想着去掉它，脑海中第一反应出来的满足这个条件的一定是<strong>取对数</strong>，至于为什么取对数，那说道就很多，取对数是指数的<strong>逆操作</strong>，</p>
 <ul>
 <li>对数操作可以让原本不符合正态分布的模型符合正态分布，比如随着模型自变量的增加，因变量的方差也增大的模型取对数后会更加稳定</li>
 <li>取对数操作可以rescale（原谅我，这里思前想后还是感觉一个英文单词更加生动）其实本质来说都是因为第一点。说人话版本，人不喜欢乘法，对数可以把乘法变加法</li>
-<li>考虑独立事件<span class="math inline">\(x\)</span>和<span class="math inline">\(y\)</span>，显然有<span class="math inline">\(h(x,y) = h(x) +
-h(y)\)</span>。对数形式也能很好满足这一要求。</li>
+<li>考虑独立事件$x$和$y$，显然有$h(x,y) = h(x) + h(y)$。对数形式也能很好满足这一要求。</li>
 </ul>
-<h3 id="交叉熵和相对熵">交叉熵和相对熵</h3>
-<p>因为是我们用2bit模式存储，为了计算方便，这里取a = 2</p>
-<p>先计算刚刚有关天气问题 P=[p1,p2,p3,p4]
-：【阴、晴、雨、雪】的信息熵，假设我们对天气的概率一无所知，那么四种天气的发生概率为<strong>等概率（服从平均分布）</strong>，即
-P=[1/4,1/4,1/4,1/4]，带入公式得到 H(P)=2，存储信息需要的空间 Sn=2n</p>
-<p>继续思考，假设我们考虑天气的城市是一个地处中国南方雨季的城市，那么阴天和雨天的概率从<strong>经验角度（先验概率）</strong>来看大于晴天雪天，把这种分布<strong>记为</strong>
-Q=[1/4,1/8,1/2,1/8]，带入公式信息熵
-H(Q)=1.75H(Q)=1.75，存储信息需要的空间 Sn=1.75n</p>
-<p>直观的来考虑上面不同的两种情况，明显当<strong>事件的不确定性变小</strong>时候，我们可以改变存储策略（00
-雨天 01
-阴天），再通过编码，节省存储空间。信息熵的大小<strong>就是用来度量这个不确定大小的</strong>。</p>
-<figure>
-<img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20230116155936453.png" alt="image-20230116155936453">
-<figcaption aria-hidden="true">image-20230116155936453</figcaption>
-</figure>
-<p>假定在<strong>确定性更大的概率分布</strong>的情况下，用<strong>更不确定的存储策略</strong>来计算。则得到<strong>交叉熵</strong>：
-<span class="math display">\[
-H(p,q) = -\sum_xp(x)\log q(x)
-\]</span> 计算交叉熵得到：</p>
-<figure>
-<img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20230116160702485.png" alt="image-20230116160702485">
-<figcaption aria-hidden="true">image-20230116160702485</figcaption>
-</figure>
+<h3 id="交叉熵和相对熵"><a href="#交叉熵和相对熵" class="headerlink" title="交叉熵和相对熵"></a>交叉熵和相对熵</h3><p>因为是我们用2bit模式存储，为了计算方便，这里取a = 2</p>
+<p>先计算刚刚有关天气问题 P=[p1,p2,p3,p4] ：【阴、晴、雨、雪】的信息熵，假设我们对天气的概率一无所知，那么四种天气的发生概率为<strong>等概率（服从平均分布）</strong>，即 P=[1/4,1/4,1/4,1/4]，带入公式得到 H(P)=2，存储信息需要的空间 Sn=2n</p>
+<p>继续思考，假设我们考虑天气的城市是一个地处中国南方雨季的城市，那么阴天和雨天的概率从<strong>经验角度（先验概率）</strong>来看大于晴天雪天，把这种分布<strong>记为</strong> Q=[1/4,1/8,1/2,1/8]，带入公式信息熵 H(Q)=1.75H(Q)=1.75，存储信息需要的空间 Sn=1.75n</p>
+<p>直观的来考虑上面不同的两种情况，明显当<strong>事件的不确定性变小</strong>时候，我们可以改变存储策略（00 雨天 01 阴天），再通过编码，节省存储空间。信息熵的大小<strong>就是用来度量这个不确定大小的</strong>。</p>
+<p><img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20230116155936453.png" alt="image-20230116155936453"></p>
+<p>假定在<strong>确定性更大的概率分布</strong>的情况下，用<strong>更不确定的存储策略</strong>来计算。则得到<strong>交叉熵</strong>：</p>
+<script type="math/tex; mode=display">
+H(p,q) = -\sum_xp(x)\log q(x)</script><p>计算交叉熵得到：</p>
+<p><img src="/2023/01/16/%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM/image-20230116160702485.png" alt="image-20230116160702485"></p>
 <p>上表直观的展现的<strong>交叉熵</strong>的数值表现，PQZW依次<strong>不确定性越来越低</strong>，极端情况的W不确定性为0，即<strong>是确定的</strong></p>
 <p><strong>交叉熵，用来高衡量在给定的真实分布下，使用非真实分布指定的策略消除系统的不确定性所需要付出努力的大小</strong></p>
 <p>总的来说，<strong>我们的目的是：让熵尽可能小，即存储空间小（消除系统的不确定的努力小）</strong></p>
 <p>通过上表我们发现一个规律，为了让熵小，解决方案是：<strong>是用确定性更大的概率乘以确定性更小的存储因子</strong>，比如不确定性越大的概率分布，如P概率分布，其信息熵越大；<strong>基于同一真实（确定性）分布的情况下</strong>，套用不确定性更大的存储因子，如P的存储因子，得出的交叉熵越大</p>
 <p>在机器学习中，即用测试结果集（样本结果集）的概率乘以训练出来的结果集存储因子，而在不断的训练过程中，我们要做的就是通过不断调整参数，降低这个值，<strong>使得模型更加的稳定，不确定性越来越小</strong>，即突出需要表征的数值的特点（白话文也就是分类的效果更好）</p>
-<p>有了信息熵和交叉熵后，<strong>相对熵是用来衡量两个概率分布之间的差异</strong>，记为
-D(P||Q)=H(P,Q)−H(P)，也称之为<strong>KL散度</strong> <span class="math display">\[
-D_{KL}(p||q) = \sum_xp(x)\log \frac{p(x)}{q(x)}
-\]</span> 当
-P(x)=Q(x)的时候，该值为0，深度学习过程也是一个降低该值的过程，<strong>该值越低，训练出来的概率Q越接近样本集概率P，即越准确</strong>。</p>
+<p>有了信息熵和交叉熵后，<strong>相对熵是用来衡量两个概率分布之间的差异</strong>，记为 D(P||Q)=H(P,Q)−H(P)，也称之为<strong>KL散度</strong></p>
+<script type="math/tex; mode=display">
+D_{KL}(p||q) = \sum_xp(x)\log \frac{p(x)}{q(x)}</script><p>当 P(x)=Q(x)的时候，该值为0，深度学习过程也是一个降低该值的过程，<strong>该值越低，训练出来的概率Q越接近样本集概率P，即越准确</strong>。</p>
 
     </div>
 
@@ -1018,9 +1079,7 @@ P(x)=Q(x)的时候，该值为0，深度学习过程也是一个降低该值的�
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#em2"><span class="nav-number">1.</span> <span class="nav-text">EM2</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B9%BF%E4%B9%89em%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFvbem"><span class="nav-number">1.1.</span> <span class="nav-text">广义EM的一个特例是VBEM</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#lsalatent-semantic-analysis"><span class="nav-number">1.1.1.</span> <span class="nav-text">LSA(latent semantic analysis)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#plsaprobabilistic-latent-semantic-analysis"><span class="nav-number">1.1.2.</span> <span class="nav-text">PLSA(probabilistic
-latent semantic analysis)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E9%93%BE%E8%92%99%E7%89%B9%E5%8D%A1%E6%B4%9B%E6%B3%95"><span class="nav-number">1.1.3.</span> <span class="nav-text">马尔可夫链蒙特卡洛法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E9%93%BE"><span class="nav-number">1.1.4.</span> <span class="nav-text">马尔可夫链</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E9%93%BE%E8%92%99%E7%89%B9%E5%8D%A1%E7%BD%97%E6%B3%95"><span class="nav-number">1.1.5.</span> <span class="nav-text">马尔可夫链蒙特卡罗法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E9%93%BE%E8%92%99%E7%89%B9%E5%8D%A1%E7%BD%97%E6%B3%95%E4%B8%8E%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0"><span class="nav-number">1.1.6.</span> <span class="nav-text">马尔可夫链蒙特卡罗法与统计学习</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#metropolis-hastings%E7%AE%97%E6%B3%95"><span class="nav-number">1.1.7.</span> <span class="nav-text">Metropolis-Hastings算法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#lda"><span class="nav-number">1.1.7.1.</span> <span class="nav-text">LDA</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B9%BF%E4%B9%89em%E7%9A%84%E5%8F%A6%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFws%E7%AE%97%E6%B3%95"><span class="nav-number">1.2.</span> <span class="nav-text">广义EM的另一个特例是WS算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#bp%E7%AE%97%E6%B3%95"><span class="nav-number">1.2.1.</span> <span class="nav-text">BP算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#wake-sleep%E7%AE%97%E6%B3%95"><span class="nav-number">1.2.2.</span> <span class="nav-text">Wake-Sleep算法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B9%BF%E4%B9%89em%E7%9A%84%E5%86%8D%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFgibbs-sampling"><span class="nav-number">1.3.</span> <span class="nav-text">广义EM的再一个特例是Gibbs
-Sampling</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#gibbs-sampling"><span class="nav-number">1.3.1.</span> <span class="nav-text">Gibbs Sampling</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ws%E7%AE%97%E6%B3%95%E6%98%AFvae%E5%92%8Cgan%E7%BB%84%E5%90%88%E7%9A%84%E7%AE%80%E5%8C%96%E7%89%88"><span class="nav-number">1.4.</span> <span class="nav-text">WS算法是VAE和GAN组合的简化版</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#vae"><span class="nav-number">1.4.1.</span> <span class="nav-text">VAE</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gan"><span class="nav-number">1.4.2.</span> <span class="nav-text">GAN</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kl%E8%B7%9D%E7%A6%BB%E7%9A%84%E7%BB%9F%E4%B8%80"><span class="nav-number">1.5.</span> <span class="nav-text">KL距离的统一</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%86%B5"><span class="nav-number">1.5.1.</span> <span class="nav-text">熵</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%A4%E5%8F%89%E7%86%B5%E5%92%8C%E7%9B%B8%E5%AF%B9%E7%86%B5"><span class="nav-number">1.5.2.</span> <span class="nav-text">交叉熵和相对熵</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#EM2"><span class="nav-number">1.</span> <span class="nav-text">EM2</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B9%BF%E4%B9%89EM%E7%9A%84%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFVBEM"><span class="nav-number">1.1.</span> <span class="nav-text">广义EM的一个特例是VBEM</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#LSA-latent-semantic-analysis"><span class="nav-number">1.1.1.</span> <span class="nav-text">LSA(latent semantic analysis)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PLSA-probabilistic-latent-semantic-analysis"><span class="nav-number">1.1.2.</span> <span class="nav-text">PLSA(probabilistic latent semantic analysis)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E9%93%BE%E8%92%99%E7%89%B9%E5%8D%A1%E6%B4%9B%E6%B3%95"><span class="nav-number">1.1.3.</span> <span class="nav-text">马尔可夫链蒙特卡洛法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E9%93%BE"><span class="nav-number">1.1.4.</span> <span class="nav-text">马尔可夫链</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E9%93%BE%E8%92%99%E7%89%B9%E5%8D%A1%E7%BD%97%E6%B3%95"><span class="nav-number">1.1.5.</span> <span class="nav-text">马尔可夫链蒙特卡罗法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E9%93%BE%E8%92%99%E7%89%B9%E5%8D%A1%E7%BD%97%E6%B3%95%E4%B8%8E%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0"><span class="nav-number">1.1.6.</span> <span class="nav-text">马尔可夫链蒙特卡罗法与统计学习</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Metropolis-Hastings%E7%AE%97%E6%B3%95"><span class="nav-number">1.1.7.</span> <span class="nav-text">Metropolis-Hastings算法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#LDA"><span class="nav-number">1.1.7.1.</span> <span class="nav-text">LDA</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B9%BF%E4%B9%89EM%E7%9A%84%E5%8F%A6%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFWS%E7%AE%97%E6%B3%95"><span class="nav-number">1.2.</span> <span class="nav-text">广义EM的另一个特例是WS算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#BP%E7%AE%97%E6%B3%95"><span class="nav-number">1.2.1.</span> <span class="nav-text">BP算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Wake-Sleep%E7%AE%97%E6%B3%95"><span class="nav-number">1.2.2.</span> <span class="nav-text">Wake-Sleep算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Wake-Sleep%E7%AE%97%E6%B3%95-1"><span class="nav-number">1.2.3.</span> <span class="nav-text">Wake-Sleep算法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B9%BF%E4%B9%89EM%E7%9A%84%E5%86%8D%E4%B8%80%E4%B8%AA%E7%89%B9%E4%BE%8B%E6%98%AFGibbs-Sampling"><span class="nav-number">1.3.</span> <span class="nav-text">广义EM的再一个特例是Gibbs Sampling</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Gibbs-Sampling"><span class="nav-number">1.3.1.</span> <span class="nav-text">Gibbs Sampling</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#WS%E7%AE%97%E6%B3%95%E6%98%AFVAE%E5%92%8CGAN%E7%BB%84%E5%90%88%E7%9A%84%E7%AE%80%E5%8C%96%E7%89%88"><span class="nav-number">1.4.</span> <span class="nav-text">WS算法是VAE和GAN组合的简化版</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#VAE"><span class="nav-number">1.4.1.</span> <span class="nav-text">VAE</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GAN"><span class="nav-number">1.4.2.</span> <span class="nav-text">GAN</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#KL%E8%B7%9D%E7%A6%BB%E7%9A%84%E7%BB%9F%E4%B8%80"><span class="nav-number">1.5.</span> <span class="nav-text">KL距离的统一</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%86%B5"><span class="nav-number">1.5.1.</span> <span class="nav-text">熵</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%A4%E5%8F%89%E7%86%B5%E5%92%8C%E7%9B%B8%E5%AF%B9%E7%86%B5"><span class="nav-number">1.5.2.</span> <span class="nav-text">交叉熵和相对熵</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
